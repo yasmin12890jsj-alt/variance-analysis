@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#140b29" />
-  <title>تحليل الفروقات</title>
+  <title>VARIANCE PRO — تحليل الفروقات</title>
   <style>
     :root {
       --bg: #120926;
@@ -41,7 +41,7 @@
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Kufi Arabic", sans-serif;
     }
 
-    /* 1. Intro Screen */
+    /* 1. Intro Screen - VARIANCE PRO */
     #introScreen {
       position: fixed;
       inset: 0;
@@ -58,23 +58,23 @@
 
     .intro-orb {
       position: absolute;
-      width: 260px;
-      height: 260px;
+      width: 280px;
+      height: 280px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(167, 139, 250, 0.35), rgba(91, 33, 182, 0.05) 70%);
+      background: radial-gradient(circle, rgba(167, 139, 250, 0.38), rgba(91, 33, 182, 0.05) 70%);
       animation: pulseOrb 2.4s ease-in-out infinite alternate;
       pointer-events: none;
     }
 
     @keyframes pulseOrb {
       0% { transform: scale(0.85); opacity: 0.65; }
-      100% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1.22); opacity: 1; }
     }
 
     .intro-logo {
       position: relative;
-      width: 90px;
-      height: 90px;
+      width: 92px;
+      height: 92px;
       border-radius: 26px;
       background: linear-gradient(135deg, var(--violet-deep), var(--violet-bright));
       display: grid;
@@ -94,9 +94,10 @@
 
     .intro-title {
       position: relative;
-      font-size: 27px;
+      font-size: 28px;
       font-weight: 900;
       margin: 0 0 8px 0;
+      letter-spacing: 0.5px;
     }
 
     .intro-tag {
@@ -129,7 +130,7 @@
 
     .login-card {
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       background: linear-gradient(180deg, rgba(39, 21, 82, 0.95), rgba(29, 16, 61, 0.98));
       border: 1px solid var(--line-strong);
       border-radius: 22px;
@@ -143,6 +144,14 @@
       align-items: center;
       gap: 8px;
       margin-bottom: 16px;
+    }
+
+    .auth-msg {
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin-top: 8px;
+      display: none;
     }
 
     /* 3. Main App */
@@ -186,7 +195,7 @@
     .brand h1 {
       font-size: 14.5px;
       margin: 0;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .brand small {
@@ -344,10 +353,10 @@
       font-weight: 700;
     }
 
-    .field input {
+    .field input, .field select {
       width: 100%;
       padding: 10px 12px;
-      font-size: 15px;
+      font-size: 14.5px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--line-strong);
       background: #100822;
@@ -355,7 +364,7 @@
       outline: none;
     }
 
-    .field input:focus {
+    .field input:focus, .field select:focus {
       border-color: var(--violet-bright);
     }
 
@@ -471,6 +480,29 @@
       line-height: 1.65;
     }
 
+    .rate-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #100822;
+      border: 1px solid var(--line);
+      margin-bottom: 7px;
+      font-size: 12.5px;
+    }
+
+    .rate-item input {
+      width: 110px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--line-strong);
+      background: var(--card-2);
+      color: var(--text);
+      font-size: 13px;
+    }
+
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -531,9 +563,9 @@
   <div id="introScreen">
     <div class="intro-orb"></div>
     <div class="intro-logo">Δ</div>
-    <h1 class="intro-title" id="introTitle">تحليل الفروقات</h1>
-    <p class="intro-tag">Variance Analysis • Analyse des Écarts</p>
-    <button type="button" class="intro-skip" onclick="goToLogin()">متابعة</button>
+    <h1 class="intro-title" id="introTitle">VARIANCE PRO</h1>
+    <p class="intro-tag" id="introTag">تحليل الفروقات • Variance Analysis • Analyse des Écarts</p>
+    <button type="button" class="intro-skip" onclick="goToLogin()" id="btnIntroNext">متابعة</button>
   </div>
 
   <!-- 2. Login Screen -->
@@ -541,8 +573,8 @@
     <div class="login-card">
       <div class="login-top">
         <div>
-          <h2 style="margin:0; font-size:18px; font-weight:900;" id="loginTitle">تسجيل الدخول</h2>
-          <small style="color:var(--muted);" id="loginSub">مرحباً بكِ في منصة تحليل الفروقات</small>
+          <h2 style="margin:0; font-size:18px; font-weight:900;" id="loginTitle">تسجيل الدخول — VARIANCE PRO</h2>
+          <small style="color:var(--muted);" id="loginSub">نظام إدارة وتحليل الفروقات والصلاحيات</small>
         </div>
         <select id="loginLang" class="sel" onchange="syncLang(this.value)">
           <option value="ar">العربية</option>
@@ -552,18 +584,33 @@
       </div>
 
       <div class="field">
-        <label id="lblUser">اسم المستخدم أو المؤسسة</label>
-        <input type="text" id="userInput" placeholder="مثال: ياسمين" />
+        <label id="lblUser">اسم المستخدم</label>
+        <input type="text" id="userInput" placeholder="admin / accountant / analyst / user" />
       </div>
 
       <div class="field">
-        <label id="lblPass">كلمة المرور أو الرمز</label>
+        <label id="lblPass">كلمة المرور</label>
         <input type="password" id="passInput" placeholder="••••••••" />
       </div>
 
+      <div class="field">
+        <label id="lblRole">الصلاحية (عند إنشاء حساب جديد أو اختيار دور)</label>
+        <select id="roleInput">
+          <option value="admin">مدير (Admin)</option>
+          <option value="accountant">محاسب (Accountant)</option>
+          <option value="analyst">محلل (Analyst)</option>
+          <option value="user" selected>مستخدم عادي (User)</option>
+        </select>
+      </div>
+
       <div class="btn-row">
-        <button type="button" class="btn btn-primary" onclick="doLogin()" id="btnLogin">دخول إلى التطبيق</button>
-        <button type="button" class="btn btn-sec" onclick="quickGuestLogin()" id="btnGuest">دخول سريع</button>
+        <button type="button" class="btn btn-primary" onclick="handleAuthLogin()" id="btnLogin">دخول</button>
+        <button type="button" class="btn btn-sec" onclick="handleRegisterUser()" id="btnRegister">إنشاء حساب</button>
+      </div>
+
+      <div id="authMessage" class="auth-msg"></div>
+      <div class="note-text" style="margin-top:10px; font-size:11.5px;" id="authHint">
+        حساب تجريبي افتراضي: اسم المستخدم <strong>admin</strong> وكلمة المرور <strong>1234</strong> (يمكنكِ إنشاء حساب جديد بأي صلاحية).
       </div>
     </div>
   </div>
@@ -574,7 +621,7 @@
       <div class="brand">
         <div class="brand-icon">Δ</div>
         <div>
-          <h1 id="appNameHdr">تحليل الفروقات</h1>
+          <h1 id="appNameHdr">VARIANCE PRO</h1>
           <small id="userBadge">حساب • تشخيص • معالجة</small>
         </div>
       </div>
@@ -600,17 +647,19 @@
           <option value="2027">2027</option>
         </select>
         <select id="currSel" class="sel" onchange="renderAll()">
-          <option value="DZD" selected>DZD (د.ج)</option>
-          <option value="EUR">EUR (€)</option>
-          <option value="USD">USD ($)</option>
-          <option value="GBP">GBP (£)</option>
-          <option value="MAD">MAD</option>
+          <option value="DZD" selected>DZD</option>
+          <option value="EUR">EUR</option>
+          <option value="USD">USD</option>
+          <option value="GBP">GBP</option>
+          <option value="SAR">SAR</option>
+          <option value="AED">AED</option>
         </select>
         <select id="appLang" class="sel" onchange="syncLang(this.value)">
           <option value="ar">AR</option>
           <option value="fr">FR</option>
           <option value="en">EN</option>
         </select>
+        <button type="button" class="btn btn-sec" style="padding:5px 9px; font-size:11px;" onclick="logoutUser()" id="btnLogout">خروج</button>
       </div>
     </header>
 
@@ -620,48 +669,68 @@
       <section id="page-home" class="page active">
         <div class="kpi-grid">
           <div class="kpi">
-            <div class="kpi-lbl">عدد التحليلات</div>
+            <div class="kpi-lbl" id="lblKpiCount">عدد التحليلات</div>
             <div class="kpi-val vtext" id="kCount">0</div>
             <div class="kpi-sub" id="kPeriod">11/2026</div>
           </div>
           <div class="kpi">
-            <div class="kpi-lbl">ملائم (Favorable)</div>
+            <div class="kpi-lbl" id="lblKpiFav">ملائم (Favorable)</div>
             <div class="kpi-val fav" id="kFav">0</div>
-            <div class="kpi-sub">أداء إيجابي</div>
+            <div class="kpi-sub" id="lblFavSub">أداء إيجابي</div>
           </div>
           <div class="kpi">
-            <div class="kpi-lbl">غير ملائم (Défavorable)</div>
+            <div class="kpi-lbl" id="lblKpiDefav">غير ملائم (Défavorable)</div>
             <div class="kpi-val defav" id="kDefav">0</div>
-            <div class="kpi-sub">يحتاج معالجة</div>
+            <div class="kpi-sub" id="lblDefavSub">يحتاج معالجة</div>
           </div>
           <div class="kpi">
-            <div class="kpi-lbl">نسبة الفرق (%)</div>
+            <div class="kpi-lbl" id="lblKpiPct">نسبة الفرق (%)</div>
             <div class="kpi-val" style="color:var(--warn)" id="kPct">0.0%</div>
-            <div class="kpi-sub">متوسط النسبة</div>
+            <div class="kpi-sub" id="lblPctSub">متوسط النسبة</div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-head">
-            <h3 class="card-title">📊 رسوم بيانية للمقارنة</h3>
+            <h3 class="card-title" id="lblChartTitle">📊 رسوم بيانية للمقارنة</h3>
             <span class="pill" id="currPill">DZD</span>
           </div>
           <div class="chart-row">
-            <div class="chart-label"><span>المعياري / التقديري</span><span id="lblStd">0.00</span></div>
+            <div class="chart-label"><span id="lblBarStd">المعياري / التقديري</span><span id="lblStd">0.00</span></div>
             <div class="bar-track"><div class="bar-fill" id="barStd" style="width:0%"></div></div>
           </div>
           <div class="chart-row">
-            <div class="chart-label"><span>الفعلي</span><span id="lblAct">0.00</span></div>
+            <div class="chart-label"><span id="lblBarAct">الفعلي</span><span id="lblAct">0.00</span></div>
             <div class="bar-track"><div class="bar-fill fav-bg" id="barAct" style="width:0%"></div></div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-head">
-            <h3 class="card-title">🧠 سبب الفرق وكيفية المعالجة</h3>
-            <span class="pill">تشخيص</span>
+            <h3 class="card-title" id="lblDiagTitle">🧠 سبب الفرق وكيفية المعالجة</h3>
+            <span class="pill" id="rolePill">USER</span>
           </div>
           <div id="homeDiagBox" class="note-text">أدخلي عملية من تبويب «إدخال» لحساب الفرق، تحديد نوعه، معرفة أسبابه، واقتراح الحلول.</div>
+        </div>
+
+        <!-- إدارة العملات وأسعار الصرف -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" id="lblCurrCard">💱 العملات وتحديث أسعار الصرف</h3>
+            <span class="pill">DZD • EUR • USD • GBP • SAR • AED</span>
+          </div>
+          <div class="grid-2">
+            <div class="field">
+              <label id="lblNewCurrCode">إضافة رمز عملة جديدة (مثال: CAD أو CHF)</label>
+              <input type="text" id="newCurrCode" placeholder="CAD" maxlength="6" />
+            </div>
+            <div class="field">
+              <label id="lblNewCurrRate">معامل التحويل اليدوي للعملة الجديدة</label>
+              <input type="text" inputmode="decimal" id="newCurrRate" placeholder="1.00" />
+            </div>
+          </div>
+          <button type="button" class="btn btn-sec" onclick="addCustomCurrency()" id="btnAddCurr">+ إضافة العملة</button>
+          <div id="ratesList" style="margin-top:12px;"></div>
         </div>
       </section>
 
@@ -816,67 +885,183 @@
     <nav class="bottom-nav">
       <button type="button" class="nav-btn active" onclick="goPage('page-home', 0)">
         <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
-        <span>الرئيسية</span>
+        <span id="navHome">الرئيسية</span>
       </button>
       <button type="button" class="nav-btn" onclick="goPage('page-input', 1)">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>
-        <span>إدخال</span>
+        <span id="navInput">إدخال</span>
       </button>
       <button type="button" class="nav-btn" onclick="goPage('page-laws', 2)">
         <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <span>القوانين</span>
+        <span id="navLaws">القوانين</span>
       </button>
       <button type="button" class="nav-btn" onclick="goPage('page-solutions', 3)">
         <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-        <span>الحلول</span>
+        <span id="navSol">الحلول</span>
       </button>
       <button type="button" class="nav-btn" onclick="goPage('page-history', 4)">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-        <span>السجل</span>
+        <span id="navHist">السجل</span>
       </button>
     </nav>
   </div>
 
   <script>
-    const DB_KEY = 'va_violet_clean_v5';
+    const DB_KEY = 'variance_pro_db_v1';
+    const USERS_KEY = 'variance_pro_users_v1';
+    const SESSION_KEY = 'variance_pro_session_v1';
+    const RATES_KEY = 'variance_pro_rates_v1';
+
     let items = [];
+    let users = [];
+    let rates = { DZD: 1, EUR: 1, USD: 1, GBP: 1, SAR: 1, AED: 1 };
+    let currentUser = null;
+
     try {
       items = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
       if (!Array.isArray(items)) items = [];
-    } catch (e) {
-      items = [];
+    } catch (e) { items = []; }
+
+    try {
+      users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+      if (!Array.isArray(users)) users = [];
+    } catch (e) { users = []; }
+
+    try {
+      const savedRates = JSON.parse(localStorage.getItem(RATES_KEY) || 'null');
+      if (savedRates && typeof savedRates === 'object') rates = Object.assign(rates, savedRates);
+    } catch (e) {}
+
+    async function hashPass(password) {
+      const enc = new TextEncoder().encode(password);
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function ensureDefaultAdmin() {
+      if (!users.some(u => u.username === 'admin')) {
+        users.push({
+          username: 'admin',
+          passHash: await hashPass('1234'),
+          role: 'admin'
+        });
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      }
+    }
+
+    function showAuthMsg(text, ok) {
+      const box = document.getElementById('authMessage');
+      box.style.display = 'block';
+      box.style.background = ok ? 'rgba(52, 211, 153, 0.14)' : 'rgba(251, 113, 133, 0.15)';
+      box.style.color = ok ? '#6ee7b7' : '#fda4af';
+      box.textContent = text;
+    }
+
+    async function handleRegisterUser() {
+      const u = document.getElementById('userInput').value.trim().toLowerCase();
+      const p = document.getElementById('passInput').value;
+      const role = document.getElementById('roleInput').value;
+      if (!u || p.length < 3) {
+        showAuthMsg('أدخلي اسم مستخدم وكلمة مرور (3 أحرف على الأقل).', false);
+        return;
+      }
+      if (users.some(x => x.username === u)) {
+        showAuthMsg('اسم المستخدم موجود مسبقاً، اضغطي على دخول.', false);
+        return;
+      }
+      users.push({ username: u, passHash: await hashPass(p), role });
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      showAuthMsg('تم إنشاء الحساب بنجاح، يمكنكِ الدخول الآن.', true);
+    }
+
+    async function handleAuthLogin() {
+      await ensureDefaultAdmin();
+      const u = document.getElementById('userInput').value.trim().toLowerCase();
+      const p = document.getElementById('passInput').value;
+      if (!u || !p) {
+        showAuthMsg('يرجى إدخال اسم المستخدم وكلمة المرور.', false);
+        return;
+      }
+      const found = users.find(x => x.username === u);
+      const h = await hashPass(p);
+      if (!found || found.passHash !== h) {
+        showAuthMsg('بيانات الدخول غير صحيحة.', false);
+        return;
+      }
+      currentUser = { username: found.username, role: found.role };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+      openMainApp();
+    }
+
+    function logoutUser() {
+      currentUser = null;
+      localStorage.removeItem(SESSION_KEY);
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    }
+
+    function openMainApp() {
+      document.getElementById('introScreen').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      const roleLabel = currentUser ? `${currentUser.username} (${currentUser.role.toUpperCase()})` : 'USER';
+      document.getElementById('userBadge').textContent = roleLabel;
+      document.getElementById('rolePill').textContent = (currentUser ? currentUser.role : 'user').toUpperCase();
+      renderCurrenciesUI();
+      renderAll();
     }
 
     const i18n = {
       ar: {
         dir: 'rtl',
-        appTitle: 'تحليل الفروقات',
-        loginTitle: 'تسجيل الدخول',
-        loginSub: 'مرحباً بكِ في منصة تحليل الفروقات',
-        lblUser: 'اسم المستخدم أو المؤسسة',
-        lblPass: 'كلمة المرور أو الرمز',
-        btnLogin: 'دخول إلى التطبيق',
-        btnGuest: 'دخول سريع'
+        appTitle: 'VARIANCE PRO',
+        loginTitle: 'تسجيل الدخول — VARIANCE PRO',
+        loginSub: 'نظام إدارة وتحليل الفروقات والصلاحيات',
+        lblUser: 'اسم المستخدم',
+        lblPass: 'كلمة المرور',
+        lblRole: 'الصلاحية',
+        btnLogin: 'دخول',
+        btnRegister: 'إنشاء حساب',
+        btnLogout: 'خروج',
+        navHome: 'الرئيسية',
+        navInput: 'إدخال',
+        navLaws: 'القوانين',
+        navSol: 'الحلول',
+        navHist: 'السجل'
       },
       fr: {
         dir: 'ltr',
-        appTitle: 'Analyse des Écarts',
-        loginTitle: 'Connexion',
-        loginSub: 'Bienvenue sur la plateforme d’analyse des écarts',
-        lblUser: 'Nom d’utilisateur ou entreprise',
-        lblPass: 'Mot de passe ou code',
-        btnLogin: 'Entrer dans l’application',
-        btnGuest: 'Accès rapide'
+        appTitle: 'VARIANCE PRO',
+        loginTitle: 'Connexion — VARIANCE PRO',
+        loginSub: 'Gestion des écarts, budgets et rôles',
+        lblUser: 'Nom d’utilisateur',
+        lblPass: 'Mot de passe',
+        lblRole: 'Rôle',
+        btnLogin: 'Connexion',
+        btnRegister: 'Créer un compte',
+        btnLogout: 'Quitter',
+        navHome: 'Accueil',
+        navInput: 'Saisie',
+        navLaws: 'Formules',
+        navSol: 'Actions',
+        navHist: 'Historique'
       },
       en: {
         dir: 'ltr',
-        appTitle: 'Variance Analysis',
-        loginTitle: 'Sign In',
-        loginSub: 'Welcome to the Variance Analysis platform',
-        lblUser: 'Username or Organization',
-        lblPass: 'Password or Code',
-        btnLogin: 'Enter Application',
-        btnGuest: 'Quick Access'
+        appTitle: 'VARIANCE PRO',
+        loginTitle: 'Sign In — VARIANCE PRO',
+        loginSub: 'Variance management, budgets and permissions',
+        lblUser: 'Username',
+        lblPass: 'Password',
+        lblRole: 'Role',
+        btnLogin: 'Sign In',
+        btnRegister: 'Register',
+        btnLogout: 'Logout',
+        navHome: 'Home',
+        navInput: 'Input',
+        navLaws: 'Formulas',
+        navSol: 'Actions',
+        navHist: 'History'
       }
     };
 
@@ -886,18 +1071,32 @@
       document.documentElement.dir = cfg.dir;
       document.getElementById('loginLang').value = lang;
       document.getElementById('appLang').value = lang;
-      document.getElementById('introTitle').textContent = cfg.appTitle;
       document.getElementById('appNameHdr').textContent = cfg.appTitle;
       document.getElementById('loginTitle').textContent = cfg.loginTitle;
       document.getElementById('loginSub').textContent = cfg.loginSub;
       document.getElementById('lblUser').textContent = cfg.lblUser;
       document.getElementById('lblPass').textContent = cfg.lblPass;
+      document.getElementById('lblRole').textContent = cfg.lblRole;
       document.getElementById('btnLogin').textContent = cfg.btnLogin;
-      document.getElementById('btnGuest').textContent = cfg.btnGuest;
+      document.getElementById('btnRegister').textContent = cfg.btnRegister;
+      document.getElementById('btnLogout').textContent = cfg.btnLogout;
+      document.getElementById('navHome').textContent = cfg.navHome;
+      document.getElementById('navInput').textContent = cfg.navInput;
+      document.getElementById('navLaws').textContent = cfg.navLaws;
+      document.getElementById('navSol').textContent = cfg.navSol;
+      document.getElementById('navHist').textContent = cfg.navHist;
     }
 
     function goToLogin() {
       document.getElementById('introScreen').style.display = 'none';
+      const savedSess = localStorage.getItem(SESSION_KEY);
+      if (savedSess) {
+        try {
+          currentUser = JSON.parse(savedSess);
+          openMainApp();
+          return;
+        } catch (e) {}
+      }
       document.getElementById('loginScreen').style.display = 'flex';
     }
 
@@ -907,21 +1106,6 @@
         goToLogin();
       }
     }, 2000);
-
-    function doLogin() {
-      const name = document.getElementById('userInput').value.trim() || 'مستخدم';
-      document.getElementById('userBadge').textContent = name;
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('mainApp').style.display = 'block';
-      renderAll();
-    }
-
-    function quickGuestLogin() {
-      document.getElementById('userBadge').textContent = 'حساب • تشخيص • معالجة';
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('mainApp').style.display = 'block';
-      renderAll();
-    }
 
     function goPage(pageId, idx) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -948,8 +1132,56 @@
       return document.getElementById('currSel').value;
     }
 
-    function fmt(n) {
-      return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + getCurr();
+    function convertAmount(baseAmount) {
+      const c = getCurr();
+      const r = parseFloat(rates[c]) || 1;
+      return baseAmount * r;
+    }
+
+    function fmt(baseAmount) {
+      const v = convertAmount(baseAmount);
+      return Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + getCurr();
+    }
+
+    function renderCurrenciesUI() {
+      const sel = document.getElementById('currSel');
+      const prev = sel.value;
+      sel.innerHTML = Object.keys(rates).map(code => `<option value="${code}">${code}</option>`).join('');
+      sel.value = rates[prev] ? prev : 'DZD';
+
+      const list = document.getElementById('ratesList');
+      list.innerHTML = Object.keys(rates).map(code => `
+        <div class="rate-item">
+          <strong>${code}</strong>
+          <input type="text" inputmode="decimal" value="${rates[code]}" onchange="updateRate('${code}', this.value)" />
+        </div>
+      `).join('');
+    }
+
+    function updateRate(code, v) {
+      const num = parseFloat(String(v).replace(',', '.'));
+      if (!isNaN(num) && num > 0) {
+        rates[code] = num;
+        localStorage.setItem(RATES_KEY, JSON.stringify(rates));
+        renderAll();
+      }
+    }
+
+    function addCustomCurrency() {
+      const code = document.getElementById('newCurrCode').value.trim().toUpperCase();
+      const rVal = parseFloat(document.getElementById('newCurrRate').value.replace(',', '.'));
+      if (!code || code.length < 2) return;
+      rates[code] = (!isNaN(rVal) && rVal > 0) ? rVal : 1;
+      localStorage.setItem(RATES_KEY, JSON.stringify(rates));
+      document.getElementById('newCurrCode').value = '';
+      document.getElementById('newCurrRate').value = '';
+      renderCurrenciesUI();
+      renderAll();
+    }
+
+    function canModify() {
+      const role = currentUser ? currentUser.role : 'user';
+      return role === 'admin' || role === 'accountant' || role === 'analyst';
     }
 
     function saveEntry(entry) {
@@ -960,38 +1192,42 @@
         period: `${month}/${year}`,
         ...entry
       });
-      try {
-        localStorage.setItem(DB_KEY, JSON.stringify(items));
-      } catch (e) {}
+      try { localStorage.setItem(DB_KEY, JSON.stringify(items)); } catch (e) {}
       renderAll();
     }
 
     function deleteEntry(id) {
+      if (!canModify()) {
+        alert('صلاحية المستخدم الحالي للعرض فقط (User).');
+        return;
+      }
       items = items.filter(x => x.id !== id);
-      try {
-        localStorage.setItem(DB_KEY, JSON.stringify(items));
-      } catch (e) {}
+      try { localStorage.setItem(DB_KEY, JSON.stringify(items)); } catch (e) {}
       renderAll();
     }
 
     function editEntry(id) {
+      if (!canModify()) {
+        alert('صلاحية المستخدم الحالي للعرض فقط (User).');
+        return;
+      }
       const target = items.find(x => x.id === id);
       if (!target) return;
       const updated = prompt('تعديل السبب أو الملاحظة:', target.cause);
       if (updated !== null && updated.trim() !== '') {
         target.cause = updated.trim();
-        try {
-          localStorage.setItem(DB_KEY, JSON.stringify(items));
-        } catch (e) {}
+        try { localStorage.setItem(DB_KEY, JSON.stringify(items)); } catch (e) {}
         renderAll();
       }
     }
 
     function clearAll() {
+      if (!canModify()) {
+        alert('صلاحية المستخدم الحالي للعرض فقط (User).');
+        return;
+      }
       items = [];
-      try {
-        localStorage.removeItem(DB_KEY);
-      } catch (e) {}
+      try { localStorage.removeItem(DB_KEY); } catch (e) {}
       renderAll();
     }
 
@@ -1138,7 +1374,7 @@
       const rows = items.map(x => [
         x.period,
         `"${x.title}"`,
-        x.diffVal.toFixed(2),
+        convertAmount(x.diffVal).toFixed(2),
         getCurr(),
         x.pct.toFixed(2) + '%',
         x.isFav ? 'Favorable' : 'Défavorable',
@@ -1150,11 +1386,13 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'variance-analysis.csv';
+      a.download = 'variance-pro.csv';
       a.click();
       URL.revokeObjectURL(url);
     }
 
+    ensureDefaultAdmin();
+    renderCurrenciesUI();
     renderAll();
   </script>
 </body>
