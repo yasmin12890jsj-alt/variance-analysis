@@ -3,24 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0f4c81" />
-  <title>تحليل الفروقات المحاسبية - Variance Analysis</title>
+  <meta name="theme-color" content="#0b132b" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230b132b'/%3E%3Cpath d='M14 42L26 28L36 35L50 18' stroke='%2310b981' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='50' cy='18' r='5' fill='%23f59e0b'/%3E%3C/svg%3E" />
+  <title>الموسوعة الشاملة لتحليل الفروقات والميزانية + مساعد ذكي</title>
   <style>
     :root {
-      --primary: #0f4c81;
-      --primary-dark: #093256;
-      --accent: #0ea5e9;
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --fav-bg: #dcfce7;
-      --fav-text: #166534;
-      --unfav-bg: #fee2e2;
-      --unfav-text: #991b1b;
-      --warn-bg: #fef3c7;
-      --warn-text: #92400e;
+      --bg: #070d19;
+      --panel: #0f172a;
+      --panel-2: #162033;
+      --panel-3: #1e293b;
+      --line: rgba(148, 163, 184, 0.16);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --emerald: #10b981;
+      --emerald-bg: rgba(16, 185, 129, 0.14);
+      --rose: #f43f5e;
+      --rose-bg: rgba(244, 63, 94, 0.14);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.14);
+      --sky: #38bdf8;
+      --sky-bg: rgba(56, 189, 248, 0.14);
+      --violet: #a78bfa;
+      --violet-bg: rgba(167, 139, 250, 0.14);
+      --r: 18px;
     }
 
     * {
@@ -30,24 +35,28 @@
 
     body {
       margin: 0;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(16, 185, 129, 0.12), transparent 36%),
+        radial-gradient(circle at 88% 8%, rgba(167, 139, 250, 0.12), transparent 36%),
+        var(--bg);
       color: var(--text);
-      line-height: 1.6;
-      padding-bottom: 40px;
+      line-height: 1.65;
+      padding-bottom: 64px;
+      min-height: 100vh;
     }
 
-    header {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: #fff;
-      padding: 18px 16px;
+    .topbar {
       position: sticky;
       top: 0;
-      z-index: 50;
-      box-shadow: 0 4px 14px rgba(15, 76, 129, 0.2);
+      z-index: 40;
+      backdrop-filter: blur(14px);
+      background: rgba(7, 13, 25, 0.88);
+      border-bottom: 1px solid var(--line);
+      padding: 13px 16px;
     }
 
-    .header-top {
-      max-width: 980px;
+    .topbar-inner {
+      max-width: 1120px;
       margin: 0 auto;
       display: flex;
       flex-wrap: wrap;
@@ -56,240 +65,405 @@
       gap: 12px;
     }
 
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(167, 139, 250, 0.2));
+      border: 1px solid rgba(167, 139, 250, 0.35);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
     .brand h1 {
       margin: 0;
-      font-size: 1.25rem;
+      font-size: 1.12rem;
       font-weight: 800;
     }
 
     .brand p {
-      margin: 2px 0 0;
-      font-size: 0.82rem;
-      opacity: 0.9;
+      margin: 1px 0 0;
+      font-size: 0.77rem;
+      color: var(--muted);
     }
 
-    .controls-bar {
+    .selectors {
       display: flex;
-      flex-wrap: wrap;
       gap: 8px;
-      align-items: center;
+      flex-wrap: wrap;
     }
 
     select, input, button, textarea {
-      font-size: 0.95rem;
-      border-radius: 10px;
-      border: 1px solid var(--border);
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      font-size: 0.92rem;
       outline: none;
     }
 
-    header select {
-      background: rgba(255, 255, 255, 0.14);
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.35);
-      padding: 7px 10px;
-      font-weight: 600;
+    select {
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 8px 11px;
+      font-weight: 700;
       cursor: pointer;
     }
 
-    header select option {
-      color: var(--text);
-      background: #fff;
-    }
-
-    .container {
-      max-width: 980px;
+    .wrap {
+      max-width: 1120px;
       margin: 18px auto 0;
       padding: 0 14px;
     }
 
-    .card {
-      background: var(--card);
-      border-radius: 16px;
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
       padding: 18px;
       margin-bottom: 16px;
-      border: 1px solid var(--border);
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
     }
 
-    .card-title {
+    .panel-title {
       margin: 0 0 14px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--primary);
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: var(--sky);
       display: flex;
+      justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       gap: 8px;
     }
 
-    .grid-2 {
+    .grid-4 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 12px;
     }
 
     .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px;
     }
 
     .field label {
       display: block;
-      font-size: 0.84rem;
-      font-weight: 600;
-      margin-bottom: 5px;
-      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #cbd5e1;
     }
 
     .field input, .field select {
       width: 100%;
       padding: 10px 12px;
-      background: #fff;
+      background: var(--panel-2);
       color: var(--text);
     }
 
     .field input:focus, .field select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+      border-color: var(--emerald);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.16);
     }
 
-    .tabs {
+    .hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .nav-pills {
       display: flex;
       gap: 8px;
       overflow-x: auto;
       padding-bottom: 6px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
-    .tab-btn {
-      background: #e2e8f0;
-      color: var(--text);
-      border: none;
-      padding: 9px 14px;
-      font-weight: 700;
-      font-size: 0.86rem;
+    .pill-btn {
+      background: var(--panel-2);
+      color: #cbd5e1;
+      border: 1px solid var(--line);
+      padding: 10px 14px;
+      font-weight: 800;
+      font-size: 0.84rem;
       white-space: nowrap;
       cursor: pointer;
       transition: 0.2s;
     }
 
-    .tab-btn.active {
-      background: var(--primary);
-      color: #fff;
+    .pill-btn.active {
+      background: linear-gradient(135deg, #10b981, #0ea5e9);
+      color: #05111a;
+      border-color: transparent;
     }
 
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
+    .pill-btn[data-sec="ai"].active {
+      background: linear-gradient(135deg, #8b5cf6, #38bdf8);
+      color: #080b16;
+    }
+
+    .btn-run {
+      background: linear-gradient(135deg, #10b981, #0ea5e9);
+      color: #05111a;
       border: none;
       padding: 12px 18px;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 14px;
-      transition: 0.2s;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
-
-    .results-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .res-box {
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      background: #f8fafc;
-    }
-
-    .res-label {
-      font-size: 0.82rem;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .res-val {
-      font-size: 1.25rem;
       font-weight: 800;
-      margin: 4px 0;
+      cursor: pointer;
+      flex: 1;
+      min-width: 210px;
     }
 
-    .badge {
+    .btn-ghost {
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--line);
+      padding: 11px 14px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .hero-result {
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .hero-result.fav {
+      background: var(--emerald-bg);
+      border-color: rgba(16, 185, 129, 0.45);
+    }
+
+    .hero-result.unfav {
+      background: var(--rose-bg);
+      border-color: rgba(244, 63, 94, 0.45);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 14px;
+    }
+
+    .stat-name {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .stat-num {
+      font-size: 1.24rem;
+      font-weight: 800;
+      margin: 5px 0 8px;
+    }
+
+    .bar-track {
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.16);
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .tag {
       display: inline-block;
       padding: 3px 10px;
       border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 700;
+      font-size: 0.75rem;
+      font-weight: 800;
     }
 
-    .badge-fav {
-      background: var(--fav-bg);
-      color: var(--fav-text);
+    .tag-fav {
+      background: var(--emerald-bg);
+      color: #6ee7b7;
     }
 
-    .badge-unfav {
-      background: var(--unfav-bg);
-      color: var(--unfav-text);
+    .tag-unfav {
+      background: var(--rose-bg);
+      color: #fda4af;
     }
 
-    .badge-neutral {
-      background: #e2e8f0;
-      color: #334155;
+    .tag-zero {
+      background: var(--sky-bg);
+      color: #7dd3fc;
     }
 
-    .issue-item {
-      background: var(--warn-bg);
-      color: var(--warn-text);
-      border-radius: 12px;
+    .tag-ai {
+      background: var(--violet-bg);
+      color: #ddd6fe;
+    }
+
+    .alert-box {
+      background: var(--amber-bg);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fde68a;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      font-size: 0.88rem;
+    }
+
+    .alert-box strong {
+      display: block;
+      color: #fbbf24;
+      margin-bottom: 2px;
+    }
+
+    .history-item, .guide-box {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
       padding: 12px 14px;
       margin-bottom: 10px;
+      font-size: 0.88rem;
+    }
+
+    .history-item {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* واجهة الذكاء الاصطناعي الداخلي */
+    .chat-box {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      max-height: 360px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .msg {
+      padding: 11px 14px;
+      border-radius: 14px;
+      max-width: 90%;
       font-size: 0.9rem;
+      white-space: pre-line;
     }
 
-    .issue-item strong {
-      display: block;
-      margin-bottom: 3px;
+    .msg-ai {
+      background: var(--violet-bg);
+      border: 1px solid rgba(167, 139, 250, 0.35);
+      color: #f3e8ff;
+      align-self: flex-start;
     }
 
-    .guide-list {
-      margin: 0;
-      padding-inline-start: 20px;
+    .msg-user {
+      background: var(--sky-bg);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #e0f2fe;
+      align-self: flex-end;
     }
 
-    .guide-list li {
-      margin-bottom: 10px;
+    .quick-qs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .hint {
+    .q-chip {
+      background: var(--panel-3);
+      color: #e2e8f0;
+      border: 1px solid var(--line);
+      padding: 7px 12px;
+      border-radius: 999px;
       font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 4px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chat-form input {
+      flex: 1;
+      min-width: 200px;
+      padding: 11px 13px;
+      background: var(--panel-2);
+      color: var(--text);
+    }
+
+    .btn-ai {
+      background: linear-gradient(135deg, #8b5cf6, #38bdf8);
+      color: #070d19;
+      border: none;
+      padding: 11px 18px;
+      font-weight: 800;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="header-top">
+  <header class="topbar">
+    <div class="topbar-inner">
       <div class="brand">
-        <h1 id="appTitle">منصة تحليل الفروقات المحاسبية</h1>
-        <p id="appSubtitle">حساب الفروقات، تشخيص المشاكل، ودعم متعدد اللغات والعملات</p>
+        <div class="brand-mark">
+          <svg width="24" height="24" viewBox="0 0 64 64" fill="none">
+            <path d="M14 42L26 28L36 35L50 18" stroke="#10b981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="50" cy="18" r="5" fill="#a78bfa"/>
+          </svg>
+        </div>
+        <div>
+          <h1 id="t_title">الموسوعة الشاملة لتحليل الفروقات والميزانية</h1>
+          <p id="t_sub">مواد • يد عاملة • أعباء ثابتة ومتغيرة • مبيعات • ميزانية مرنة • ذكاء اصطناعي</p>
+        </div>
       </div>
 
-      <div class="controls-bar">
-        <select id="langSelect" aria-label="Language">
+      <div class="selectors">
+        <select id="langSel" aria-label="Language">
           <option value="ar">العربية (AR)</option>
           <option value="fr">Français (FR)</option>
           <option value="en">English (EN)</option>
         </select>
-
-        <select id="currencySelect" aria-label="Currency">
+        <select id="curSel" aria-label="Currency">
           <option value="DZD">DZD (د.ج)</option>
           <option value="EUR">EUR (€)</option>
           <option value="USD">USD ($)</option>
@@ -298,407 +472,936 @@
     </div>
   </header>
 
-  <div class="container">
-    <div class="card">
-      <h2 class="card-title" id="fxCardTitle">إعدادات العملة وسعر الصرف</h2>
-      <div class="grid-3">
+  <main class="wrap">
+    <!-- الإعدادات العامة والعملة -->
+    <section class="panel">
+      <div class="panel-title">
+        <span id="t_cfgTitle">الإعدادات العامة والعملة</span>
+        <span class="tag tag-ai" id="t_cfgBadge">AI + DZD/EUR/USD</span>
+      </div>
+      <div class="grid-4">
         <div class="field">
-          <label id="baseCurrencyLabel" for="baseCurrency">عملة الإدخال (المعطيات)</label>
-          <select id="baseCurrency">
-            <option value="DZD">DZD - دينار جزائري</option>
-            <option value="EUR">EUR - يورو</option>
-            <option value="USD">USD - دولار أمريكي</option>
+          <label id="t_baseCurLbl" for="baseCur">عملة الإدخال</label>
+          <select id="baseCur">
+            <option value="DZD">DZD</option>
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
           </select>
         </div>
-
         <div class="field">
-          <label id="fxRateLabel" for="fxRate">سعر التحويل إلى عملة العرض المختارة</label>
+          <label id="t_rateLbl" for="fxRate">سعر التحويل لعملة العرض</label>
           <input type="number" id="fxRate" step="any" value="1" min="0.000001" />
-          <div class="hint" id="fxHint">مثال: إذا أدخلت بـ EUR وتريد العرض بـ DZD، أدخل سعر الصرف (مثال 145).</div>
+          <div class="hint" id="t_rateHint">مثال: 145 لتحويل EUR إلى DZD</div>
         </div>
-
         <div class="field">
-          <label id="itemNatureLabel" for="itemNature">طبيعة العنصر المحاسبي</label>
-          <select id="itemNature">
-            <option value="cost">تكلفة / أعباء (Cost / Charge)</option>
-            <option value="revenue">إيراد / مبيعات (Revenue / Sales)</option>
+          <label id="t_natureLbl" for="natureSel">طبيعة العنصر</label>
+          <select id="natureSel">
+            <option value="cost">تكلفة / أعباء (Cost)</option>
+            <option value="revenue">إيراد / مبيعات (Revenue)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label id="t_jointRuleLbl" for="jointRule">معالجة التداخل (Joint)</label>
+          <select id="jointRule">
+            <option value="isolate">عزل الفارق المشترك</option>
+            <option value="std_base">قاعدة المعيار الأساسي</option>
           </select>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="card">
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="materials" id="tabMaterials">المواد الأولية</button>
-        <button class="tab-btn" data-tab="labor" id="tabLabor">اليد العاملة المباشرة</button>
-        <button class="tab-btn" data-tab="general" id="tabGeneral">أعباء غير مباشرة / نشاط</button>
-        <button class="tab-btn" data-tab="problems" id="tabProblems">معالجة مشاكل الفروقات</button>
+    <!-- أقسام التطبيق الشاملة -->
+    <section class="panel">
+      <div class="nav-pills">
+        <button class="pill-btn active" data-sec="mat" id="t_tabMat">المواد والشراء</button>
+        <button class="pill-btn" data-sec="lab" id="t_tabLab">اليد العاملة</button>
+        <button class="pill-btn" data-sec="ovh" id="t_tabOvh">الأعباء (ثابتة/متغيرة)</button>
+        <button class="pill-btn" data-sec="sls" id="t_tabSls">المبيعات والإيرادات</button>
+        <button class="pill-btn" data-sec="bud" id="t_tabBud">الميزانية المرنة</button>
+        <button class="pill-btn" data-sec="ai" id="t_tabAi">المساعد الذكي (AI)</button>
+        <button class="pill-btn" data-sec="fixes" id="t_tabFixes">المشاكل والحلول</button>
+        <button class="pill-btn" data-sec="hist" id="t_tabHist">السجل</button>
       </div>
 
-      <div id="panel-materials" class="tab-panel">
-        <div class="grid-2">
+      <!-- 1. المواد الأولية والشراء -->
+      <div id="sec-mat" class="sec-box">
+        <div class="grid-4">
           <div class="field">
-            <label id="matQActualLabel">الكمية الفعلية المستهلكة (Q فعلية)</label>
-            <input type="number" id="matQActual" step="any" value="120" />
+            <label id="t_mqAct">الكمية المستهلكة الفعلية</label>
+            <input type="number" id="mqAct" step="any" value="120" />
           </div>
           <div class="field">
-            <label id="matQStdLabel">الكمية المعيارية المقررة (Q معيارية)</label>
-            <input type="number" id="matQStd" step="any" value="100" />
+            <label id="t_mqStd">الكمية المعيارية المقررة</label>
+            <input type="number" id="mqStd" step="any" value="100" />
           </div>
           <div class="field">
-            <label id="matPActualLabel">السعر الفعلي للوحدة (P فعلي)</label>
-            <input type="number" id="matPActual" step="any" value="550" />
+            <label id="t_mpAct">السعر الفعلي للوحدة</label>
+            <input type="number" id="mpAct" step="any" value="550" />
           </div>
           <div class="field">
-            <label id="matPStdLabel">السعر المعياري للوحدة (P معياري)</label>
-            <input type="number" id="matPStd" step="any" value="500" />
+            <label id="t_mpStd">السعر المعياري للوحدة</label>
+            <input type="number" id="mpStd" step="any" value="500" />
           </div>
         </div>
         <div class="field" style="margin-top:12px;">
-          <label id="matQPurchasedLabel">الكمية المشتراة خلال الفترة (اختياري - لكشف فرق الشراء عن الاستهلاك)</label>
-          <input type="number" id="matQPurchased" step="any" placeholder="اتركه فارغاً إذا كان يساوي الكمية المستهلكة" />
+          <label id="t_mqPur">الكمية المشتراة (اختياري - الشراء مقابل الاستهلاك)</label>
+          <input type="number" id="mqPur" step="any" placeholder="مثال: 150" />
         </div>
-        <button class="btn-primary" id="calcMaterialsBtn">احسب فروقات المواد الأولية</button>
+        <div class="btn-row">
+          <button class="btn-run" id="runMat">تحليل فروقات المواد والشراء</button>
+          <button class="btn-ghost" type="button" id="exMat">مثال جاهز</button>
+        </div>
       </div>
 
-      <div id="panel-labor" class="tab-panel" style="display:none;">
-        <div class="grid-2">
+      <!-- 2. اليد العاملة -->
+      <div id="sec-lab" class="sec-box" style="display:none;">
+        <div class="grid-4">
           <div class="field">
-            <label id="labHActualLabel">الساعات الفعلية (H فعلية)</label>
-            <input type="number" id="labHActual" step="any" value="85" />
+            <label id="t_lhAct">الساعات الفعلية</label>
+            <input type="number" id="lhAct" step="any" value="90" />
           </div>
           <div class="field">
-            <label id="labHStdLabel">الساعات المعيارية (H معيارية)</label>
-            <input type="number" id="labHStd" step="any" value="80" />
+            <label id="t_lhStd">الساعات المعيارية</label>
+            <input type="number" id="lhStd" step="any" value="80" />
           </div>
           <div class="field">
-            <label id="labRActualLabel">معدل الأجر الفعلي للساعة (R فعلي)</label>
-            <input type="number" id="labRActual" step="any" value="1200" />
+            <label id="t_lrAct">معدل الأجر الفعلي</label>
+            <input type="number" id="lrAct" step="any" value="1300" />
           </div>
           <div class="field">
-            <label id="labRStdLabel">معدل الأجر المعياري للساعة (R معياري)</label>
-            <input type="number" id="labRStd" step="any" value="1250" />
-          </div>
-        </div>
-        <button class="btn-primary" id="calcLaborBtn">احسب فروقات اليد العاملة</button>
-      </div>
-
-      <div id="panel-general" class="tab-panel" style="display:none;">
-        <div class="grid-2">
-          <div class="field">
-            <label id="genActualLabel">المبلغ / القيمة الفعلية الإجمالية</label>
-            <input type="number" id="genActual" step="any" value="240000" />
-          </div>
-          <div class="field">
-            <label id="genBudgetLabel">المبلغ / القيمة المعيارية أو المخططة</label>
-            <input type="number" id="genBudget" step="any" value="200000" />
-          </div>
-          <div class="field">
-            <label id="genActActualLabel">مستوى النشاط الفعلي (وحدات / ساعات)</label>
-            <input type="number" id="genActActual" step="any" value="110" />
-          </div>
-          <div class="field">
-            <label id="genActBudgetLabel">مستوى النشاط المخطط (وحدات / ساعات)</label>
-            <input type="number" id="genActBudget" step="any" value="100" />
+            <label id="t_lrStd">معدل الأجر المعياري</label>
+            <input type="number" id="lrStd" step="any" value="1250" />
           </div>
         </div>
-        <button class="btn-primary" id="calcGeneralBtn">احسب الفارق وتحليل النشاط</button>
+        <div class="btn-row">
+          <button class="btn-run" id="runLab">تحليل فروقات اليد العاملة</button>
+          <button class="btn-ghost" type="button" id="exLab">مثال جاهز</button>
+        </div>
       </div>
 
-      <div id="panel-problems" class="tab-panel" style="display:none;">
-        <ul class="guide-list" id="problemsGuideList"></ul>
+      <!-- 3. الأعباء غير المباشرة الثابتة والمتغيرة -->
+      <div id="sec-ovh" class="sec-box" style="display:none;">
+        <div class="grid-4">
+          <div class="field">
+            <label id="t_ovVarAct">أعباء متغيرة فعلية</label>
+            <input type="number" id="ovVarAct" step="any" value="88000" />
+          </div>
+          <div class="field">
+            <label id="t_ovVarBud">أعباء متغيرة معيارية (للنشاط الفعلي)</label>
+            <input type="number" id="ovVarBud" step="any" value="80000" />
+          </div>
+          <div class="field">
+            <label id="t_ovFixAct">أعباء ثابتة فعلية</label>
+            <input type="number" id="ovFixAct" step="any" value="125000" />
+          </div>
+          <div class="field">
+            <label id="t_ovFixBud">أعباء ثابتة مخططة / ممتصة</label>
+            <input type="number" id="ovFixBud" step="any" value="120000" />
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-run" id="runOvh">تحليل الأعباء الثابتة والمتغيرة</button>
+          <button class="btn-ghost" type="button" id="exOvh">مثال جاهز</button>
+        </div>
       </div>
-    </div>
 
-    <div class="card" id="resultsCard">
-      <h2 class="card-title" id="resultsTitle">نتائج التحليل والتشخيص</h2>
-      <div class="results-grid" id="resultsGrid"></div>
-      <div id="issuesBox" style="margin-top:16px;"></div>
-    </div>
-  </div>
+      <!-- 4. المبيعات والإيرادات -->
+      <div id="sec-sls" class="sec-box" style="display:none;">
+        <div class="grid-4">
+          <div class="field">
+            <label id="t_sqAct">الكمية المباعة الفعلية</label>
+            <input type="number" id="sqAct" step="any" value="540" />
+          </div>
+          <div class="field">
+            <label id="t_sqBud">الكمية المباعة المخططة</label>
+            <input type="number" id="sqBud" step="any" value="500" />
+          </div>
+          <div class="field">
+            <label id="t_spAct">سعر البيع الفعلي للوحدة</label>
+            <input type="number" id="spAct" step="any" value="1950" />
+          </div>
+          <div class="field">
+            <label id="t_spBud">سعر البيع المخطط للوحدة</label>
+            <input type="number" id="spBud" step="any" value="2000" />
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-run" id="runSls">تحليل فروقات المبيعات والإيرادات</button>
+          <button class="btn-ghost" type="button" id="exSls">مثال جاهز</button>
+        </div>
+      </div>
+
+      <!-- 5. الميزانية المرنة والثابتة -->
+      <div id="sec-bud" class="sec-box" style="display:none;">
+        <div class="grid-4">
+          <div class="field">
+            <label id="t_bAct">الإنفاق / القيمة الفعلية</label>
+            <input type="number" id="bAct" step="any" value="260000" />
+          </div>
+          <div class="field">
+            <label id="t_bFixed">الميزانية الثابتة / المخططة</label>
+            <input type="number" id="bFixed" step="any" value="200000" />
+          </div>
+          <div class="field">
+            <label id="t_bActLvl">النشاط الفعلي (وحدات / ساعات)</label>
+            <input type="number" id="bActLvl" step="any" value="120" />
+          </div>
+          <div class="field">
+            <label id="t_bPlanLvl">النشاط المخطط (وحدات / ساعات)</label>
+            <input type="number" id="bPlanLvl" step="any" value="100" />
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-run" id="runBud">تحليل الميزانية المرنة والنشاط</button>
+          <button class="btn-ghost" type="button" id="exBud">مثال جاهز</button>
+        </div>
+      </div>
+
+      <!-- 6. المساعد الذكي الداخلي (AI) -->
+      <div id="sec-ai" class="sec-box" style="display:none;">
+        <div class="quick-qs" id="quickQuestions"></div>
+        <div class="chat-box" id="chatBox"></div>
+        <form class="chat-form" id="chatForm">
+          <input type="text" id="chatInput" placeholder="اسألني عن أي فارق، ميزانية، تداخل، عملة، أو مشكلة محاسبية..." />
+          <button class="btn-ai" type="submit" id="sendAiBtn">اسأل الذكاء الاصطناعي</button>
+        </form>
+      </div>
+
+      <!-- 7. المشاكل والحلول -->
+      <div id="sec-fixes" class="sec-box" style="display:none;">
+        <div id="fixesContainer"></div>
+      </div>
+
+      <!-- 8. السجل -->
+      <div id="sec-hist" class="sec-box" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+          <span style="font-weight:700;color:var(--muted);" id="t_histInfo">العمليات المحفوظة في هذا الجهاز</span>
+          <button class="btn-ghost" type="button" id="clearHist">مسح السجل</button>
+        </div>
+        <div id="historyList"></div>
+      </div>
+    </section>
+
+    <!-- لوحة النتائج -->
+    <section class="panel" id="resultPanel">
+      <div class="panel-title">
+        <span id="t_resTitle">لوحة النتائج والتشخيص</span>
+        <span class="tag tag-zero" id="t_resMode">تحليل فوري</span>
+      </div>
+      <div class="hero-result" id="heroBox"></div>
+      <div class="cards-grid" id="cardsGrid"></div>
+      <div id="alertsArea"></div>
+    </section>
+  </main>
 
   <script>
-    const DICT = {
+    const TXT = {
       ar: {
-        dir: "rtl",
-        lang: "ar",
-        appTitle: "منصة تحليل الفروقات المحاسبية",
-        appSubtitle: "حساب الفروقات، تشخيص المشاكل، ودعم متعدد اللغات والعملات",
-        fxCardTitle: "إعدادات العملة وسعر الصرف",
-        baseCurrencyLabel: "عملة الإدخال (المعطيات)",
-        fxRateLabel: "سعر التحويل إلى عملة العرض المختارة",
-        fxHint: "مثال: إذا أدخلت بـ EUR وتريد العرض بـ DZD، أدخل سعر الصرف (مثال 145).",
-        itemNatureLabel: "طبيعة العنصر المحاسبي",
-        cost: "تكلفة / أعباء (Cost)",
-        revenue: "إيراد / مبيعات (Revenue)",
-        tabMaterials: "المواد الأولية",
-        tabLabor: "اليد العاملة المباشرة",
-        tabGeneral: "أعباء غير مباشرة / نشاط",
-        tabProblems: "معالجة مشاكل الفروقات",
-        matQActualLabel: "الكمية الفعلية المستهلكة",
-        matQStdLabel: "الكمية المعيارية المقررة",
-        matPActualLabel: "السعر الفعلي للوحدة",
-        matPStdLabel: "السعر المعياري للوحدة",
-        matQPurchasedLabel: "الكمية المشتراة (اختياري - لكشف فرق الشراء عن الاستهلاك)",
-        matQPurchasedPh: "اتركه فارغاً إذا كان يساوي الكمية المستهلكة",
-        calcMaterialsBtn: "احسب فروقات المواد الأولية",
-        labHActualLabel: "الساعات الفعلية",
-        labHStdLabel: "الساعات المعيارية",
-        labRActualLabel: "معدل الأجر الفعلي للساعة",
-        labRStdLabel: "معدل الأجر المعياري للساعة",
-        calcLaborBtn: "احسب فروقات اليد العاملة",
-        genActualLabel: "المبلغ / القيمة الفعلية",
-        genBudgetLabel: "المبلغ / القيمة المعيارية أو المخططة",
-        genActActualLabel: "مستوى النشاط الفعلي",
-        genActBudgetLabel: "مستوى النشاط المخطط",
-        calcGeneralBtn: "احسب الفارق وتحليل النشاط",
-        resultsTitle: "نتائج التحليل والتشخيص",
+        dir: "rtl", lang: "ar",
+        title: "الموسوعة الشاملة لتحليل الفروقات والميزانية",
+        sub: "مواد • يد عاملة • أعباء ثابتة ومتغيرة • مبيعات • ميزانية مرنة • ذكاء اصطناعي",
+        cfgTitle: "الإعدادات العامة والعملة",
+        baseCurLbl: "عملة الإدخال",
+        rateLbl: "سعر التحويل لعملة العرض",
+        rateHint: "مثال: 145 لتحويل EUR إلى DZD",
+        natureLbl: "طبيعة العنصر",
+        costOpt: "تكلفة / أعباء (Cost)",
+        revOpt: "إيراد / مبيعات (Revenue)",
+        jointRuleLbl: "معالجة التداخل (Joint)",
+        isolateOpt: "عزل الفارق المشترك",
+        stdBaseOpt: "قاعدة المعيار الأساسي",
+        tabMat: "المواد والشراء",
+        tabLab: "اليد العاملة",
+        tabOvh: "الأعباء (ثابتة/متغيرة)",
+        tabSls: "المبيعات والإيرادات",
+        tabBud: "الميزانية المرنة",
+        tabAi: "المساعد الذكي (AI)",
+        tabFixes: "المشاكل والحلول",
+        tabHist: "السجل",
+        mqAct: "الكمية المستهلكة الفعلية",
+        mqStd: "الكمية المعيارية المقررة",
+        mpAct: "السعر الفعلي للوحدة",
+        mpStd: "السعر المعياري للوحدة",
+        mqPur: "الكمية المشتراة (اختياري - الشراء مقابل الاستهلاك)",
+        runMat: "تحليل فروقات المواد والشراء",
+        lhAct: "الساعات الفعلية",
+        lhStd: "الساعات المعيارية",
+        lrAct: "معدل الأجر الفعلي",
+        lrStd: "معدل الأجر المعياري",
+        runLab: "تحليل فروقات اليد العاملة",
+        ovVarAct: "أعباء متغيرة فعلية",
+        ovVarBud: "أعباء متغيرة معيارية (للنشاط الفعلي)",
+        ovFixAct: "أعباء ثابتة فعلية",
+        ovFixBud: "أعباء ثابتة مخططة",
+        runOvh: "تحليل الأعباء الثابتة والمتغيرة",
+        sqAct: "الكمية المباعة الفعلية",
+        sqBud: "الكمية المباعة المخططة",
+        spAct: "سعر البيع الفعلي للوحدة",
+        spBud: "سعر البيع المخطط للوحدة",
+        runSls: "تحليل فروقات المبيعات والإيرادات",
+        bAct: "الإنفاق / القيمة الفعلية",
+        bFixed: "الميزانية الثابتة / المخططة",
+        bActLvl: "النشاط الفعلي (وحدات / ساعات)",
+        bPlanLvl: "النشاط المخطط (وحدات / ساعات)",
+        runBud: "تحليل الميزانية المرنة والنشاط",
+        exBtn: "مثال جاهز",
+        resTitle: "لوحة النتائج والتشخيص",
         fav: "ملائم (Favorable)",
         unfav: "غير ملائم (Unfavorable)",
-        neutral: "متوازن (Zero)",
-        totalVar: "الفارق الإجمالي",
-        priceVar: "فارق السعر / المعدل",
-        qtyVar: "فارق الكمية / الوقت",
-        activityRatio: "نسبة تغير النشاط",
-        issuesHeading: "المشاكل المحتملة والتنبيهات المحاسبية:",
-        issueJointTitle: "مشكلة التداخل (Joint / Mixed Variance)",
-        issueJointDesc: "عندما يتغير السعر والكمية معاً، يظهر فرق مشترك. يُنصح بتوضيح المنهجية المعتمدة (تحميله على الكمية أو السعر أو عزله كفارق مشترك).",
-        issuePurchaseTitle: "عدم تطابق الكمية المشتراة مع المستهلكة",
-        issuePurchaseDesc: "الكمية المشتراة تختلف عن المستهلكة؛ يُفضل فصل فرق السعر عند لحظة الشراء عن فرق الكمية عند الاستهلاك الفعلي.",
-        issueActivityTitle: "تغير مستوى النشاط الفعلي عن المخطط",
-        issueActivityDesc: "مستوى النشاط تغير بنسبة ملحوظة؛ استخدم الميزانية المرنة لتفادي الخلط بين فرق الحجم/النشاط وفرق الكفاءة أو الإنفاق.",
-        issueFxTitle: "أثر تقلبات سعر الصرف والعملات الصعبة",
-        issueFxDesc: "تأكد من فصل أثر تغير سعر الصرف (EUR/USD/DZD) عن الفارق التشغيلي الحقيقي حتى لا يبدو الأداء التشغيلي أفضل أو أسوأ بسبب العملة.",
-        problemsGuide: [
-          "<strong>مشكلة التداخل (السعر × الكمية):</strong> حلها بتحديد قاعدة ثابتة (فارق السعر = (السعر الفعلي - المعياري) × الكمية المعيارية، وفارق الكمية = (الكمية الفعلية - المعيارية) × السعر المعياري، مع بيان الفارق المشترك).",
-          "<strong>فرق الكمية المشتراة عن المستهلكة:</strong> احسب فارق السعر على الكميات المشتراة وفارق الاستهلاك على الكميات المستخدمة فعلاً في الإنتاج.",
-          "<strong>تغير حجم النشاط (الميزانية الثابتة مقابل المرنة):</strong> لا تقارن تكلفة نشاط 120 وحدة بميزانية 100 وحدة مباشرة دون تعديل الميزانية المرنة.",
-          "<strong>تقلبات العملات الصعبة والدينار الجزائري:</strong> افصل فرق السعر بالعملة الأجنبية عن فرق سعر التحويل (Exchange Rate Variance)."
+        zero: "متوازن (0)",
+        vTotal: "الفارق الإجمالي",
+        vPrice: "فارق السعر / المعدل",
+        vQty: "فارق الكمية / الكفاءة",
+        vJoint: "فارق التداخل المشترك",
+        vPurPrice: "فارق السعر عند الشراء",
+        vVarSpend: "فارق الأعباء المتغيرة",
+        vFixSpend: "فارق الأعباء الثابتة",
+        vSalesPrice: "فارق سعر البيع",
+        vSalesVol: "فارق حجم المبيعات",
+        vFlexBud: "الميزانية المرنة المعدلة",
+        vVol: "فارق حجم النشاط",
+        vSpend: "فارق الإنفاق / الأداء التشغيلي",
+        histInfo: "العمليات المحفوظة في هذا الجهاز",
+        clearHist: "مسح السجل",
+        noHist: "لا توجد عمليات محفوظة بعد.",
+        aJoint: "تنبيه التداخل: السعر والكمية/الوقت تغيرا معاً. يُنصح بتحديد المعالجة بوضوح.",
+        aPur: "تنبيه الشراء والاستهلاك: الكمية المشتراة تختلف عن المستهلكة؛ افصل فرق الشراء عن فرق الاستهلاك.",
+        aAct: "تنبيه تغير النشاط: مستوى النشاط الفعلي يختلف عن المخطط؛ اعتمد الميزانية المرنة.",
+        aFx: "تنبيه العملة والصرف: تم تطبيق سعر تحويل؛ افصل أثر العملة عن الأداء التشغيلي.",
+        aiWelcome: "أهلاً بكِ في المساعد المحاسبي الذكي! اسأليني عن تحليل الفروقات، الميزانية المرنة، التداخل بين السعر والكمية، فرق الشراء عن الاستهلاك، الأعباء الثابتة والمتغيرة، أو تقلبات العملات (DZD / EUR / USD).",
+        aiPh: "اكتبي سؤالكِ المحاسبي هنا...",
+        aiBtn: "اسأل الذكاء الاصطناعي",
+        quickQs: [
+          "كيف أحل مشكلة التداخل بين السعر والكمية؟",
+          "ما الفرق بين الميزانية الثابتة والمرنة؟",
+          "لماذا نفصل فرق الشراء عن فرق الاستهلاك؟",
+          "كيف أتعامل مع تقلبات EUR / USD / DZD؟"
+        ],
+        fixes: [
+          "<strong>1. التداخل بين السعر والكمية (Joint Variance):</strong> يظهر عندما يتغير السعر والكمية معاً. يُعالج بعزل الفارق المشترك (ΔP × ΔQ) أو بتطبيق قاعدة موحدة وفق المنهجية المعتمدة.",
+          "<strong>2. فرق الشراء عن الاستهلاك:</strong> يُحسب فارق السعر على الكميات المشتراة لحظة الشراء، وفارق الكمية على المستهلك فعلياً في الإنتاج.",
+          "<strong>3. الميزانية الثابتة مقابل المرنة:</strong> تُعدّل الميزانية المرنة حسب النشاط الفعلي لفصل أثر تغير الحجم/النشاط عن فرق الإنفاق الفعلي.",
+          "<strong>4. الأعباء الثابتة والمتغيرة:</strong> افصل الأعباء المتغيرة (المرتبطة بالنشاط) عن الثابتة (المرتبطة بالزمن/الطاقة) لتشخيص السبب بدقة.",
+          "<strong>5. تقلبات العملات (DZD / EUR / USD):</strong> افصل أثر سعر الصرف عن السعر بالعملة الأجنبية حتى لا يظهر أداء تشغيلي وهمي."
         ]
       },
       fr: {
-        dir: "ltr",
-        lang: "fr",
-        appTitle: "Plateforme d'Analyse des Écarts",
-        appSubtitle: "Calcul des écarts, résolution des problèmes, multi-langues et multi-devises",
-        fxCardTitle: "Paramètres de devise et taux de change",
-        baseCurrencyLabel: "Devise de saisie (données)",
-        fxRateLabel: "Taux de conversion vers la devise affichée",
-        fxHint: "Exemple : saisie en EUR et affichage en DZD → saisissez le taux (ex. 145).",
-        itemNatureLabel: "Nature de l'élément comptable",
-        cost: "Coût / Charge",
-        revenue: "Produit / Chiffre d'affaires",
-        tabMaterials: "Matières premières",
-        tabLabor: "Main-d'œuvre directe",
-        tabGeneral: "Charges indirectes / Activité",
-        tabProblems: "Problèmes & solutions",
-        matQActualLabel: "Quantité réelle consommée",
-        matQStdLabel: "Quantité standard prévue",
-        matPActualLabel: "Prix unitaire réel",
-        matPStdLabel: "Prix unitaire standard",
-        matQPurchasedLabel: "Quantité achetée (optionnel - achat vs consommation)",
-        matQPurchasedPh: "Laisser vide si égale à la quantité consommée",
-        calcMaterialsBtn: "Calculer les écarts sur matières",
-        labHActualLabel: "Heures réelles",
-        labHStdLabel: "Heures standards",
-        labRActualLabel: "Taux horaire réel",
-        labRStdLabel: "Taux horaire standard",
-        calcLaborBtn: "Calculer les écarts sur main-d'œuvre",
-        genActualLabel: "Montant / Valeur réelle",
-        genBudgetLabel: "Montant / Valeur standard ou budget",
-        genActActualLabel: "Niveau d'activité réel",
-        genActBudgetLabel: "Niveau d'activité prévu",
-        calcGeneralBtn: "Calculer l'écart et l'activité",
-        resultsTitle: "Résultats et diagnostic",
+        dir: "ltr", lang: "fr",
+        title: "Suite Complète d'Analyse des Écarts & Budgets + IA",
+        sub: "Matières • Main-d'œuvre • Charges fixes/variables • Ventes • Budget flexible • IA",
+        cfgTitle: "Paramètres généraux & devises",
+        baseCurLbl: "Devise de saisie",
+        rateLbl: "Taux de conversion (affichage)",
+        rateHint: "Ex. : 145 pour convertir EUR en DZD",
+        natureLbl: "Nature de l'élément",
+        costOpt: "Coût / Charge",
+        revOpt: "Produit / Revenu",
+        jointRuleLbl: "Traitement écart conjoint",
+        isolateOpt: "Isoler l'écart conjoint",
+        stdBaseOpt: "Base standard classique",
+        tabMat: "Matières & Achats",
+        tabLab: "Main-d'œuvre",
+        tabOvh: "Charges (Fixes/Var.)",
+        tabSls: "Ventes & Revenus",
+        tabBud: "Budget flexible",
+        tabAi: "Assistant IA",
+        tabFixes: "Problèmes & solutions",
+        tabHist: "Historique",
+        mqAct: "Quantité consommée réelle",
+        mqStd: "Quantité standard",
+        mpAct: "Prix unitaire réel",
+        mpStd: "Prix unitaire standard",
+        mqPur: "Quantité achetée (optionnel)",
+        runMat: "Analyser matières & achats",
+        lhAct: "Heures réelles",
+        lhStd: "Heures standards",
+        lrAct: "Taux horaire réel",
+        lrStd: "Taux horaire standard",
+        runLab: "Analyser main-d'œuvre",
+        ovVarAct: "Charges variables réelles",
+        ovVarBud: "Charges variables standard (activité réelle)",
+        ovFixAct: "Charges fixes réelles",
+        ovFixBud: "Charges fixes prévues",
+        runOvh: "Analyser charges fixes & variables",
+        sqAct: "Quantité vendue réelle",
+        sqBud: "Quantité vendue prévue",
+        spAct: "Prix de vente réel",
+        spBud: "Prix de vente prévu",
+        runSls: "Analyser ventes & revenus",
+        bAct: "Montant / Valeur réelle",
+        bFixed: "Budget fixe / prévu",
+        bActLvl: "Activité réelle",
+        bPlanLvl: "Activité prévue",
+        runBud: "Analyser budget flexible & activité",
+        exBtn: "Exemple type",
+        resTitle: "Résultats & diagnostic",
         fav: "Favorable (F)",
         unfav: "Défavorable (Déf)",
-        neutral: "Nul (0)",
-        totalVar: "Écart global",
-        priceVar: "Écart sur prix / taux",
-        qtyVar: "Écart sur quantité / temps",
-        activityRatio: "Variation d'activité",
-        issuesHeading: "Points d'attention et problèmes fréquents :",
-        issueJointTitle: "Écart conjoint (Prix × Quantité)",
-        issueJointDesc: "Lorsque le prix et la quantité varient ensemble, précisez la convention adoptée (écart sur prix, sur quantité ou écart conjoint).",
-        issuePurchaseTitle: "Quantité achetée ≠ quantité consommée",
-        issuePurchaseDesc: "Distinguez l'écart sur prix d'achat (sur quantités achetées) de l'écart sur consommation (sur quantités utilisées).",
-        issueActivityTitle: "Variation du niveau d'activité",
-        issueActivityDesc: "Utilisez un budget flexible pour séparer l'effet volume/activité de l'effet rendement ou dépense.",
-        issueFxTitle: "Impact du taux de change (Devises fortes / DZD)",
-        issueFxDesc: "Isolez l'effet de change de la performance opérationnelle réelle.",
-        problemsGuide: [
-          "<strong>Écart conjoint :</strong> appliquez une méthode claire et constante pour éviter les ambiguïtés d'interprétation.",
-          "<strong>Achat vs consommation :</strong> calculez l'écart prix à l'achat et l'écart quantité à la consommation.",
-          "<strong>Activité réelle vs prévue :</strong> adaptez la référence au niveau d'activité réel (budget flexible).",
-          "<strong>Devises étrangères & DZD :</strong> séparez l'effet change de l'écart opérationnel."
+        zero: "Nul (0)",
+        vTotal: "Écart global",
+        vPrice: "Écart sur prix / taux",
+        vQty: "Écart sur quantité / rendement",
+        vJoint: "Écart conjoint",
+        vPurPrice: "Écart prix à l'achat",
+        vVarSpend: "Écart charges variables",
+        vFixSpend: "Écart charges fixes",
+        vSalesPrice: "Écart sur prix de vente",
+        vSalesVol: "Écart sur volume des ventes",
+        vFlexBud: "Budget flexible ajusté",
+        vVol: "Écart de volume / activité",
+        vSpend: "Écart de dépenses / opérationnel",
+        histInfo: "Calculs enregistrés sur cet appareil",
+        clearHist: "Effacer l'historique",
+        noHist: "Aucun calcul enregistré pour le moment.",
+        aJoint: "Écart conjoint détecté : prix et quantité varient ensemble.",
+        aPur: "Achat ≠ consommation : séparez l'écart d'achat de l'écart de consommation.",
+        aAct: "Niveau d'activité modifié : utilisez le budget flexible.",
+        aFx: "Conversion de devises active : isolez l'effet change.",
+        aiWelcome: "Bienvenue dans l'Assistant IA Comptable ! Posez vos questions sur l'analyse des écarts, le budget flexible, l'écart conjoint, l'achat vs consommation, les charges fixes/variables ou les devises (DZD / EUR / USD).",
+        aiPh: "Posez votre question comptable ici...",
+        aiBtn: "Demander à l'IA",
+        quickQs: [
+          "Comment traiter l'écart conjoint prix × quantité ?",
+          "Quelle différence entre budget fixe et flexible ?",
+          "Pourquoi séparer achat et consommation ?",
+          "Comment gérer l'effet change EUR / USD / DZD ?"
+        ],
+        fixes: [
+          "<strong>1. Écart conjoint :</strong> apparaît quand prix et quantité varient ensemble ; isolez-le ou appliquez une règle constante.",
+          "<strong>2. Achat vs consommation :</strong> calculez l'écart prix à l'achat et l'écart quantité à la consommation.",
+          "<strong>3. Budget fixe vs flexible :</strong> adaptez le budget à l'activité réelle pour isoler l'effet volume.",
+          "<strong>4. Charges fixes & variables :</strong> séparez l'effet activité des charges fixes de l'effet dépense.",
+          "<strong>5. Devises (DZD / EUR / USD) :</strong> isolez l'effet taux de change de la performance réelle."
         ]
       },
       en: {
-        dir: "ltr",
-        lang: "en",
-        appTitle: "Variance Analysis Hub",
-        appSubtitle: "Variance calculation, issue troubleshooting, multi-language & multi-currency",
-        fxCardTitle: "Currency & Exchange Rate Settings",
-        baseCurrencyLabel: "Input Currency",
-        fxRateLabel: "Conversion Rate to Selected Display Currency",
-        fxHint: "Example: if inputs are in EUR and display is DZD, enter exchange rate (e.g. 145).",
-        itemNatureLabel: "Accounting Item Nature",
-        cost: "Cost / Expense",
-        revenue: "Revenue / Sales",
-        tabMaterials: "Direct Materials",
-        tabLabor: "Direct Labor",
-        tabGeneral: "Overhead / Activity",
-        tabProblems: "Variance Issues & Fixes",
-        matQActualLabel: "Actual Quantity Used",
-        matQStdLabel: "Standard Quantity",
-        matPActualLabel: "Actual Unit Price",
-        matPStdLabel: "Standard Unit Price",
-        matQPurchasedLabel: "Quantity Purchased (optional - purchase vs usage)",
-        matQPurchasedPh: "Leave blank if same as quantity used",
-        calcMaterialsBtn: "Calculate Material Variances",
-        labHActualLabel: "Actual Hours",
-        labHStdLabel: "Standard Hours",
-        labRActualLabel: "Actual Hourly Rate",
-        labRStdLabel: "Standard Hourly Rate",
-        calcLaborBtn: "Calculate Labor Variances",
-        genActualLabel: "Actual Amount / Value",
-        genBudgetLabel: "Standard / Budget Amount",
-        genActActualLabel: "Actual Activity Level",
-        genActBudgetLabel: "Budgeted Activity Level",
-        calcGeneralBtn: "Calculate Variance & Activity",
-        resultsTitle: "Analysis Results & Diagnosis",
+        dir: "ltr", lang: "en",
+        title: "Complete Variance & Budget Analysis Suite + AI",
+        sub: "Materials • Labor • Fixed/Variable OH • Sales • Flexible budget • Built-in AI",
+        cfgTitle: "General & Currency Settings",
+        baseCurLbl: "Input Currency",
+        rateLbl: "Display Conversion Rate",
+        rateHint: "Ex.: 145 to convert EUR to DZD",
+        natureLbl: "Item Nature",
+        costOpt: "Cost / Expense",
+        revOpt: "Revenue / Sales",
+        jointRuleLbl: "Joint Variance Rule",
+        isolateOpt: "Isolate joint variance",
+        stdBaseOpt: "Standard base convention",
+        tabMat: "Materials & Purchases",
+        tabLab: "Direct Labor",
+        tabOvh: "Fixed & Var. Overhead",
+        tabSls: "Sales & Revenue",
+        tabBud: "Flexible Budget",
+        tabAi: "AI Assistant",
+        tabFixes: "Issues & Fixes",
+        tabHist: "History",
+        mqAct: "Actual Quantity Used",
+        mqStd: "Standard Quantity",
+        mpAct: "Actual Unit Price",
+        mpStd: "Standard Unit Price",
+        mqPur: "Quantity Purchased (optional)",
+        runMat: "Analyze Material Variances",
+        lhAct: "Actual Hours",
+        lhStd: "Standard Hours",
+        lrAct: "Actual Hourly Rate",
+        lrStd: "Standard Hourly Rate",
+        runLab: "Analyze Labor Variances",
+        ovVarAct: "Actual Variable OH",
+        ovVarBud: "Standard Variable OH (at actual level)",
+        ovFixAct: "Actual Fixed OH",
+        ovFixBud: "Planned Fixed OH",
+        runOvh: "Analyze Variable & Fixed OH",
+        sqAct: "Actual Units Sold",
+        sqBud: "Budgeted Units Sold",
+        spAct: "Actual Unit Selling Price",
+        spBud: "Budgeted Unit Selling Price",
+        runSls: "Analyze Sales & Revenue Variances",
+        bAct: "Actual Amount / Value",
+        bFixed: "Static / Planned Budget",
+        bActLvl: "Actual Activity Level",
+        bPlanLvl: "Planned Activity Level",
+        runBud: "Analyze Flexible Budget & Activity",
+        exBtn: "Load Example",
+        resTitle: "Results & Diagnosis",
         fav: "Favorable (F)",
         unfav: "Unfavorable (U)",
-        neutral: "Zero (0)",
-        totalVar: "Total Variance",
-        priceVar: "Price / Rate Variance",
-        qtyVar: "Quantity / Efficiency Variance",
-        activityRatio: "Activity Change",
-        issuesHeading: "Potential Issues & Accounting Alerts:",
-        issueJointTitle: "Joint / Mixed Variance",
-        issueJointDesc: "When both price and quantity change simultaneously, a mixed component appears. Define a clear allocation rule.",
-        issuePurchaseTitle: "Purchased vs. Consumed Quantity Mismatch",
-        issuePurchaseDesc: "Separate price variance on purchased units from usage variance on consumed units.",
-        issueActivityTitle: "Activity Level Shift",
-        issueActivityDesc: "Use flexible budgeting when actual activity differs from planned activity.",
-        issueFxTitle: "Foreign Exchange (FX) Impact",
-        issueFxDesc: "Separate currency rate shifts (EUR/USD/DZD) from operational variances.",
-        problemsGuide: [
-          "<strong>Joint Variance:</strong> use a consistent convention and document how mixed price-quantity effects are treated.",
-          "<strong>Purchased vs. Used:</strong> measure price variance at purchase and quantity variance at consumption.",
-          "<strong>Activity Shifts:</strong> adjust budgets to actual activity levels using flexible budget principles.",
-          "<strong>Hard Currencies & DZD:</strong> isolate FX rate movement from underlying operational performance."
+        zero: "Zero (0)",
+        vTotal: "Total Variance",
+        vPrice: "Price / Rate Variance",
+        vQty: "Quantity / Efficiency Variance",
+        vJoint: "Joint Variance",
+        vPurPrice: "Purchase Price Variance",
+        vVarSpend: "Variable OH Variance",
+        vFixSpend: "Fixed OH Variance",
+        vSalesPrice: "Selling Price Variance",
+        vSalesVol: "Sales Volume Variance",
+        vFlexBud: "Flexible Budget Adjusted",
+        vVol: "Activity / Volume Variance",
+        vSpend: "Spending / Operational Variance",
+        histInfo: "Saved calculations on this device",
+        clearHist: "Clear History",
+        noHist: "No saved calculations yet.",
+        aJoint: "Joint variance alert: price and quantity changed together.",
+        aPur: "Purchase vs. usage mismatch: separate purchase price variance from usage variance.",
+        aAct: "Activity shift detected: use a flexible budget at actual activity.",
+        aFx: "Currency conversion active: separate FX movement from operational variance.",
+        aiWelcome: "Welcome to the Built-in Accounting AI Assistant! Ask me about variance analysis, flexible budgets, joint variances, purchase vs. usage, fixed/variable overhead, or currency effects (DZD / EUR / USD).",
+        aiPh: "Ask your accounting question here...",
+        aiBtn: "Ask AI Assistant",
+        quickQs: [
+          "How do I handle joint price-quantity variance?",
+          "Static vs. flexible budget: when to use each?",
+          "Why separate purchase price from usage variance?",
+          "How to handle EUR / USD / DZD exchange shifts?"
+        ],
+        fixes: [
+          "<strong>1. Joint Variance:</strong> arises when price and quantity move together; isolate (ΔP × ΔQ) or apply a consistent rule.",
+          "<strong>2. Purchase vs. Usage:</strong> measure price variance on purchased units and usage variance on consumed units.",
+          "<strong>3. Static vs. Flexible Budget:</strong> flex the budget to actual activity to isolate volume vs. spending.",
+          "<strong>4. Variable & Fixed Overhead:</strong> separate activity-driven variable OH from fixed capacity/spending variances.",
+          "<strong>5. Currencies (DZD / EUR / USD):</strong> isolate FX rate shifts from underlying operational variances."
         ]
       }
     };
 
-    let currentLang = "ar";
-    let currentTab = "materials";
+    let lang = "ar";
+    let sec = "mat";
+    let historyItems = JSON.parse(localStorage.getItem("va_history_v3") || "[]");
+    let chatMessages = [];
 
-    function applyLanguage() {
-      const t = DICT[currentLang];
+    function setLang() {
+      const t = TXT[lang];
       document.documentElement.lang = t.lang;
       document.documentElement.dir = t.dir;
 
-      const ids = [
-        "appTitle", "appSubtitle", "fxCardTitle", "baseCurrencyLabel",
-        "fxRateLabel", "fxHint", "itemNatureLabel", "tabMaterials",
-        "tabLabor", "tabGeneral", "tabProblems", "matQActualLabel",
-        "matQStdLabel", "matPActualLabel", "matPStdLabel",
-        "matQPurchasedLabel", "calcMaterialsBtn", "labHActualLabel",
-        "labHStdLabel", "labRActualLabel", "labRStdLabel",
-        "calcLaborBtn", "genActualLabel", "genBudgetLabel",
-        "genActActualLabel", "genActBudgetLabel", "calcGeneralBtn",
-        "resultsTitle"
-      ];
-      ids.forEach(id => {
+      const map = {
+        t_title: t.title, t_sub: t.sub, t_cfgTitle: t.cfgTitle,
+        t_baseCurLbl: t.baseCurLbl, t_rateLbl: t.rateLbl, t_rateHint: t.rateHint,
+        t_natureLbl: t.natureLbl, t_jointRuleLbl: t.jointRuleLbl,
+        t_tabMat: t.tabMat, t_tabLab: t.tabLab, t_tabOvh: t.tabOvh,
+        t_tabSls: t.tabSls, t_tabBud: t.tabBud, t_tabAi: t.tabAi,
+        t_tabFixes: t.tabFixes, t_tabHist: t.tabHist,
+        t_mqAct: t.mqAct, t_mqStd: t.mqStd, t_mpAct: t.mpAct, t_mpStd: t.mpStd, t_mqPur: t.mqPur,
+        runMat: t.runMat, exMat: t.exBtn,
+        t_lhAct: t.lhAct, t_lhStd: t.lhStd, t_lrAct: t.lrAct, t_lrStd: t.lrStd,
+        runLab: t.runLab, exLab: t.exBtn,
+        t_ovVarAct: t.ovVarAct, t_ovVarBud: t.ovVarBud, t_ovFixAct: t.ovFixAct, t_ovFixBud: t.ovFixBud,
+        runOvh: t.runOvh, exOvh: t.exBtn,
+        t_sqAct: t.sqAct, t_sqBud: t.sqBud, t_spAct: t.spAct, t_spBud: t.spBud,
+        runSls: t.runSls, exSls: t.exBtn,
+        t_bAct: t.bAct, t_bFixed: t.bFixed, t_bActLvl: t.bActLvl, t_bPlanLvl: t.bPlanLvl,
+        runBud: t.runBud, exBud: t.exBtn,
+        t_resTitle: t.resTitle, t_histInfo: t.histInfo, clearHist: t.clearHist,
+        sendAiBtn: t.aiBtn
+      };
+      Object.entries(map).forEach(([id, val]) => {
         const el = document.getElementById(id);
-        if (el && t[id]) el.textContent = t[id];
+        if (el) el.textContent = val;
       });
 
-      document.getElementById("matQPurchased").placeholder = t.matQPurchasedPh;
+      document.getElementById("chatInput").placeholder = t.aiPh;
 
-      const natureEl = document.getElementById("itemNature");
-      natureEl.options[0].text = t.cost;
-      natureEl.options[1].text = t.revenue;
+      const nSel = document.getElementById("natureSel");
+      nSel.options[0].text = t.costOpt;
+      nSel.options[1].text = t.revOpt;
 
-      const guideList = document.getElementById("problemsGuideList");
-      guideList.innerHTML = t.problemsGuide.map(item => `<li>${item}</li>`).join("");
+      const jSel = document.getElementById("jointRule");
+      jSel.options[0].text = t.isolateOpt;
+      jSel.options[1].text = t.stdBaseOpt;
 
-      runCurrentCalc();
-    }
+      document.getElementById("fixesContainer").innerHTML =
+        t.fixes.map(item => `<div class="guide-box">${item}</div>`).join("");
 
-    function classifyVariance(rawDiff, nature) {
-      const t = DICT[currentLang];
-      if (Math.abs(rawDiff) < 1e-9) {
-        return { label: t.neutral, cls: "badge-neutral" };
+      const qBox = document.getElementById("quickQuestions");
+      qBox.innerHTML = t.quickQs.map(q => `<button type="button" class="q-chip">${q}</button>`).join("");
+      qBox.querySelectorAll(".q-chip").forEach(btn => {
+        btn.addEventListener("click", () => handleAiQuestion(btn.textContent));
+      });
+
+      if (!chatMessages.length) {
+        chatMessages.push({ role: "ai", text: t.aiWelcome });
       }
-      const isFav = nature === "cost" ? rawDiff < 0 : rawDiff > 0;
-      return isFav
-        ? { label: t.fav, cls: "badge-fav" }
-        : { label: t.unfav, cls: "badge-unfav" };
+      renderChat();
+      renderHistory();
+      runActive(false);
     }
 
-    function formatMoney(val) {
+    function renderChat() {
+      const box = document.getElementById("chatBox");
+      box.innerHTML = chatMessages.map(m =>
+        `<div class="msg ${m.role === "user" ? "msg-user" : "msg-ai"}">${m.text}</div>`
+      ).join("");
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function generateAiReply(q) {
+      const ql = q.toLowerCase();
+      const cur = document.getElementById("curSel").value;
       const rate = parseFloat(document.getElementById("fxRate").value) || 1;
-      const dispCur = document.getElementById("currencySelect").value;
-      const converted = val * rate;
-      const formatted = new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }).format(converted);
-      return `${formatted} ${dispCur}`;
+      const nature = document.getElementById("natureSel").value;
+
+      if (lang === "ar") {
+        if (ql.includes("تداخل") || ql.includes("مشترك") || ql.includes("joint")) {
+          return "مشكلة التداخل (ΔP × ΔQ) تظهر عندما يتغير السعر والكمية معاً في نفس الفترة.\n• الحل العملي: عزل الفارق المشترك لإظهار أثر التغير المتزامن بوضوح، أو اعتماد قاعدة موحدة (مثل المعيار الأساسي) وتوضيح ذلك في التقرير المحاسبي.";
+        }
+        if (ql.includes("مرنة") || ql.includes("ثابتة") || ql.includes("ميزانية")) {
+          return "الميزانية الثابتة تُبنى على مستوى نشاط مخطط واحد، بينما الميزانية المرنة تُحدّث حسب مستوى النشاط الفعلي.\n• القاعدة: لا تحكم على الأداء بمقارنة إنفاق نشاط 120 وحدة بميزانية 100 وحدة مباشرة؛ عدّل الميزانية أولاً لفصل فارق الحجم عن فارق الإنفاق.";
+        }
+        if (ql.includes("شراء") || ql.includes("استهلاك") || ql.includes("purchase")) {
+          return "الكمية المشتراة غالباً لا تساوي الكمية المستهلكة في الإنتاج خلال الفترة نفسها.\n• الحل: نحسب فارق السعر عند لحظة الشراء (على الكمية المشتراة) لتقييم المشتريات، ونحسب فارق الكمية على الكمية المستهلكة لتقييم كفاءة الإنتاج.";
+        }
+        if (ql.includes("عملة") || ql.includes("صرف") || ql.includes("eur") || ql.includes("usd") || ql.includes("dzd")) {
+          return `الإعداد الحالي للعرض هو (${cur}) بمعامل تحويل (${rate}) وطبيعة عنصر (${nature === "cost" ? "تكلفة" : "إيراد"}).\n• عند التعامل مع DZD و EUR و USD: افصل فارق السعر بالعملة الأصلية عن أثر تغير سعر الصرف حتى لا يختلط قرار التسعير مع حركة السوق النقدي.`;
+        }
+        if (ql.includes("ملائم") || ql.includes("غير ملائم") || ql.includes("favorable")) {
+          return "• في التكاليف والأعباء: الفعلي أقل من المعياري/الميزانية = ملائم (Favorable) لأن التكلفة انخفضت، والفعلي أعلى = غير ملائم (Unfavorable).\n• في الإيرادات والمبيعات: الفعلي أعلى من المخطط = ملائم (Favorable) لأن الإيراد زاد، والفعلي أقل = غير ملائم (Unfavorable).";
+        }
+        return `بناءً على إعداداتكِ الحالية (${cur} | معامل ${rate})، يمكنني مساعدتكِ في تفسير أي فارق (مواد، يد عاملة، أعباء ثابتة/متغيرة، مبيعات، أو ميزانية مرنة) وتشخيص أسبابه المحاسبية خطوة بخطوة.`;
+      }
+
+      if (lang === "fr") {
+        if (ql.includes("conjoint") || ql.includes("joint")) {
+          return "L'écart conjoint (ΔP × ΔQ) apparaît lorsque le prix et la quantité varient simultanément.\n• Solution : isolez l'effet conjoint ou appliquez une convention constante et documentée.";
+        }
+        if (ql.includes("flexible") || ql.includes("budget")) {
+          return "Le budget flexible s'ajuste au niveau d'activité réel afin de séparer l'écart de volume/activité de l'écart de dépenses ou de rendement.";
+        }
+        if (ql.includes("achat") || ql.includes("consommation")) {
+          return "Séparez l'écart de prix sur quantités achetées de l'écart de quantité sur quantités consommées pour évaluer distinctement achats et production.";
+        }
+        if (ql.includes("change") || ql.includes("eur") || ql.includes("usd") || ql.includes("dzd")) {
+          return `Devise d'affichage actuelle : ${cur} (taux : ${rate}). Isolez l'effet de change de la performance opérationnelle.`;
+        }
+        return `Je peux vous aider à interpréter vos écarts (matières, main-d'œuvre, charges fixes/variables, ventes, budget flexible) en ${cur}.`;
+      }
+
+      if (ql.includes("joint")) {
+        return "Joint variance (ΔP × ΔQ) happens when price and quantity shift together.\n• Fix: isolate the mixed component or follow a consistent standard convention.";
+      }
+      if (ql.includes("flexible") || ql.includes("budget")) {
+        return "A flexible budget adjusts to actual activity so volume/activity effects are separated from spending or efficiency variances.";
+      }
+      if (ql.includes("purchase") || ql.includes("usage")) {
+        return "Measure price variance on purchased units and usage variance on consumed units to evaluate purchasing and production separately.";
+      }
+      if (ql.includes("fx") || ql.includes("currency") || ql.includes("eur") || ql.includes("usd") || ql.includes("dzd")) {
+        return `Active display currency: ${cur} (rate: ${rate}). Separate currency exchange movements from operational variances.`;
+      }
+      return `I can help interpret your variances across materials, labor, fixed/variable overhead, sales, and flexible budgets in ${cur}.`;
     }
 
-    function renderCards(items, issues) {
-      const t = DICT[currentLang];
-      const grid = document.getElementById("resultsGrid");
-      grid.innerHTML = items.map(it => {
-        const badge = classifyVariance(it.value, it.nature);
+    function handleAiQuestion(text) {
+      const clean = (text || "").trim();
+      if (!clean) return;
+      chatMessages.push({ role: "user", text: clean });
+      chatMessages.push({ role: "ai", text: generateAiReply(clean) });
+      renderChat();
+      document.getElementById("chatInput").value = "";
+    }
+
+    function classify(val, nature) {
+      const t = TXT[lang];
+      if (Math.abs(val) < 1e-9) return { txt: t.zero, cls: "tag-zero", hero: "", bar: "#38bdf8" };
+      const fav = nature === "cost" ? val < 0 : val > 0;
+      return fav
+        ? { txt: t.fav, cls: "tag-fav", hero: "fav", bar: "#10b981" }
+        : { txt: t.unfav, cls: "tag-unfav", hero: "unfav", bar: "#f43f5e" };
+    }
+
+    function fmt(num) {
+      const rate = parseFloat(document.getElementById("fxRate").value) || 1;
+      const cur = document.getElementById("curSel").value;
+      const v = num * rate;
+      return `${new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v)} ${cur}`;
+    }
+
+    function saveHistory(label, totalVal, nature) {
+      const item = {
+        id: Date.now(),
+        label,
+        totalStr: fmt(totalVal),
+        cls: classify(totalVal, nature).cls,
+        badge: classify(totalVal, nature).txt
+      };
+      historyItems.unshift(item);
+      historyItems = historyItems.slice(0, 15);
+      localStorage.setItem("va_history_v3", JSON.stringify(historyItems));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const t = TXT[lang];
+      const box = document.getElementById("historyList");
+      if (!historyItems.length) {
+        box.innerHTML = `<div class="hint">${t.noHist}</div>`;
+        return;
+      }
+      box.innerHTML = historyItems.map(h => `
+        <div class="history-item">
+          <strong>${h.label}</strong>
+          <div>
+            <span style="margin-inline-end:8px;font-weight:800;">${h.totalStr}</span>
+            <span class="tag ${h.cls}">${h.badge}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function paintResults(title, totalVal, cards, alerts, nature, record) {
+      const hero = document.getElementById("heroBox");
+      const hMeta = classify(totalVal, nature);
+      hero.className = `hero-result ${hMeta.hero}`;
+      hero.innerHTML = `
+        <div>
+          <div class="stat-name">${title}</div>
+          <div style="font-size:1.35rem;font-weight:800;">${fmt(totalVal)}</div>
+        </div>
+        <span class="tag ${hMeta.cls}">${hMeta.txt}</span>
+      `;
+
+      const maxAbs = Math.max(...cards.map(c => Math.abs(c.val)), 1);
+      document.getElementById("cardsGrid").innerHTML = cards.map(c => {
+        const m = classify(c.val, nature);
+        const pct = Math.min(100, Math.round((Math.abs(c.val) / maxAbs) * 100));
         return `
-          <div class="res-box">
-            <div class="res-label">${it.label}</div>
-            <div class="res-val">${formatMoney(it.value)}</div>
-            <span class="badge ${badge.cls}">${badge.label}</span>
+          <div class="stat-card">
+            <div class="stat-name">${c.label}</div>
+            <div class="stat-num">${fmt(c.val)}</div>
+            <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${m.bar};"></div></div>
+            <span class="tag ${m.cls}">${m.txt}</span>
           </div>
         `;
       }).join("");
 
-      const issuesBox = document.getElementById("issuesBox");
-      if (!issues.length) {
-        issuesBox.innerHTML = "";
-        return;
-      }
-      issuesBox.innerHTML = `
-        <div class="res-label" style="margin-bottom:8px;">${t.issuesHeading}</div>
-        ${issues.map(iss => `
-          <div class="issue-item">
-            <strong>${iss.title}</strong>
-            <span>${iss.desc}</span>
-          </div>
-        `).join("")}
-      `;
+      document.getElementById("alertsArea").innerHTML = alerts.map(a => `
+        <div class="alert-box"><strong>!</strong>${a}</div>
+      `).join("");
+
+      if (record) saveHistory(title, totalVal, nature);
     }
 
-    function addCommonCurrencyAlert(issues) {
-      const t = DICT[currentLang];
-      const baseCur = document.getElementById("baseCurrency").value;
-      const dispCur = document.getElementById("currencySelect").value;
-      const rate = parseFloat(document.getElementById("fxRate").value) || 1;
-      if (baseCur !== dispCur || rate !== 1) {
-        issues.push({ title: t.issueFxTitle, desc: t.issueFxDesc });
-      }
+    function addFxAlert(alerts) {
+      const b = document.getElementById("baseCur").value;
+      const d = document.getElementById("curSel").value;
+      const r = parseFloat(document.getElementById("fxRate").value) || 1;
+      if (b !== d || r !== 1) alerts.push(TXT[lang].aFx);
     }
 
-    function calcMaterials() {
-      const t = DICT[currentLang];
-      const nature = document.getElementById("itemNature").value;
-      const qa = parseFloat(document.getElementById("matQActual").value) || 0;
-      const qs = parseFloat(document.getElementById("matQStd").value) || 0;
-      const pa = parseFloat(document.getElementById("matPActual").value) || 0;
-      const ps = parseFloat(document.getElementById("matPStd").value) || 0;
-      const qPurchRaw = document.getElementById("matQPurchased").value;
-      const qPurch = qPurchRaw !== "" ? parseFloat(qPurchRaw) : qa;
+    function calcMat(record = true) {
+      const t = TXT[lang];
+      const nature = document.getElementById("natureSel").value;
+      const rule = document.getElementById("jointRule").value;
+      const qa = parseFloat(document.getElementById("mqAct").value) || 0;
+      const qs = parseFloat(document.getElementById("mqStd").value) || 0;
+      const pa = parseFloat(document.getElementById("mpAct").value) || 0;
+      const ps = parseFloat(document.getElementById("mpStd").value) || 0;
+      const purRaw = document.getElementById("mqPur").value;
+      const qPur = purRaw !== "" ? parseFloat(purRaw) : qa;
 
-      const totalVar = (qa * pa) - (qs * ps);
-      const priceVar = (pa - ps) *
+      const total = (qa * pa) - (qs * ps);
+      const joint = (pa - ps) * (qa - qs);
+      const priceVar = rule === "isolate" ? (pa - ps) * qs : (pa - ps) * qa;
+      const qtyVar = (qa - qs) * ps;
+      const purPriceVar = (pa - ps) * qPur;
+
+      const alerts = [];
+      if (Math.abs(pa - ps) > 0 && Math.abs(qa - qs) > 0) alerts.push(t.aJoint);
+      if (Math.abs(qPur - qa) > 1e-9) alerts.push(t.aPur);
+      addFxAlert(alerts);
+
+      const cards = [
+        { label: t.vPrice, val: priceVar },
+        { label: t.vQty, val: qtyVar },
+        { label: t.vPurPrice, val: purPriceVar }
+      ];
+      if (rule === "isolate") cards.push({ label: t.vJoint, val: joint });
+
+      paintResults(`${t.tabMat} — ${t.vTotal}`, total, cards, alerts, nature, record);
+    }
+
+    function calcLab(record = true) {
+      const t = TXT[lang];
+      const nature = document.getElementById("natureSel").value;
+      const rule = document.getElementById("jointRule").value;
+      const ha = parseFloat(document.getElementById("lhAct").value) || 0;
+      const hs = parseFloat(document.getElementById("lhStd").value) || 0;
+      const ra = parseFloat(document.getElementById("lrAct").value) || 0;
+      const rs = parseFloat(document.getElementById("lrStd").value) || 0;
+
+      const total = (ha * ra) - (hs * rs);
+      const joint = (ra - rs) * (ha - hs);
+      const rateVar = rule === "isolate" ? (ra - rs) * hs : (ra - rs) * ha;
+      const timeVar = (ha - hs) * rs;
+
+      const alerts = [];
+      if (Math.abs(ra - rs) > 0 && Math.abs(ha - hs) > 0) alerts.push(t.aJoint);
+      addFxAlert(alerts);
+
+      const cards = [
+        { label: t.vPrice, val: rateVar },
+        { label: t.vQty, val: timeVar }
+      ];
+      if (rule === "isolate") cards.push({ label: t.vJoint, val: joint });
+
+      paintResults(`${t.tabLab} — ${t.vTotal}`, total, cards, alerts, nature, record);
+    }
+
+    function calcOvh(record = true) {
+      const t = TXT[lang];
+      const nature = document.getElementById("natureSel").value;
+      const va = parseFloat(document.getElementById("ovVarAct").value) || 0;
+      const vb = parseFloat(document.getElementById("ovVarBud").value) || 0;
+      const fa = parseFloat(document.getElementById("ovFixAct").value) || 0;
+      const fb = parseFloat(document.getElementById("ovFixBud").value) || 0;
+
+      const varDiff = va - vb;
+      const fixDiff = fa - fb;
+      const total = varDiff + fixDiff;
+
+      const alerts = [];
+      addFxAlert(alerts);
+
+      paintResults(`${t.tabOvh} — ${t.vTotal}`, total, [
+        { label: t.vVarSpend, val: varDiff },
+        { label: t.vFixSpend, val: fixDiff }
+      ], alerts, nature, record);
+    }
+
+    function calcSls(record = true) {
+      const t = TXT[lang];
+      const sqAct = parseFloat(document.getElementById("sqAct").value) || 0;
+      const sqBud = parseFloat(document.getElementById("sqBud").value) || 0;
+      const spAct = parseFloat(document.getElementById("spAct").value) || 0;
+      const spBud = parseFloat(document.getElementById("spBud").value) || 0;
+
+      const totalRevVar = (sqAct * spAct) - (sqBud * spBud);
+      const priceVar = (spAct - spBud) * sqAct;
+      const volVar = (sqAct - sqBud) * spBud;
+
+      const alerts = [];
+      addFxAlert(alerts);
+
+      paintResults(`${t.tabSls} — ${t.vTotal}`, totalRevVar, [
+        { label: t.vSalesPrice, val: priceVar },
+        { label: t.vSalesVol, val: volVar }
+      ], alerts, "revenue", record);
+    }
+
+    function calcBud(record = true) {
+      const t = TXT[lang];
+      const nature = document.getElementById("natureSel").value;
+      const act = parseFloat(document.getElementById("bAct").value) || 0;
+      const fixedBud = parseFloat(document.getElementById("bFixed").value) || 0;
+      const actLvl = parseFloat(document.getElementById("bActLvl").value) || 0;
+      const planLvl = parseFloat(document.getElementById("bPlanLvl").value) || 1;
+
+      const flexBud = fixedBud * (actLvl / planLvl);
+      const totalVar = act - flexBud;
+      const volVar = flexBud - fixedBud;
+
+      const alerts = [];
+      if (Math.abs(actLvl - planLvl) > 1e-9) alerts.push(t.aAct);
+      addFxAlert(alerts);
+
+      paintResults(`${t.tabBud} — ${t.vSpend}`, totalVar, [
+        { label: t.vFlexBud, val: flexBud },
+        { label: t.vVol, val: volVar }
+      ], alerts, nature, record);
+    }
+
+    function runActive(record = false) {
+      if (sec === "mat") calcMat(record);
+      else if (sec === "lab") calcLab(record);
+      else if (sec === "ovh") calcOvh(record);
+      else if (sec === "sls") calcSls(record);
+      else if (sec === "bud") calcBud(record);
+    }
+
+    document.querySelectorAll(".pill-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".pill-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        sec = btn.dataset.sec;
+
+        document.querySelectorAll(".sec-box").forEach(box => box.style.display = "none");
+        document.getElementById(`sec-${sec}`).style.display = "block";
+
+        const hideRes = ["ai", "fixes", "hist"].includes(sec);
+        document.getElementById("resultPanel").style.display = hideRes ? "none" : "block";
+        if (!hideRes) runActive(false);
+      });
+    });
+
+    document.getElementById("langSel").addEventListener("change", e => {
+      lang = e.target.value;
+      setLang();
+    });
+
+    ["curSel", "baseCur", "fxRate", "natureSel", "jointRule"].forEach(id => {
+      document.getElementById(id).addEventListener("change", () => runActive(false));
+      document.getElementById(id).addEventListener("input", () => runActive(false));
+    });
+
+    document.getElementById("runMat").addEventListener("click", () => calcMat(true));
+    document.getElementById("runLab").addEventListener("click", () => calcLab(true));
+    document.getElementById("runOvh").addEventListener("click", () => calcOvh(true));
+    document.getElementById("runSls").addEventListener("click", () => calcSls(true));
+    document.getElementById("runBud").addEventListener("click", () => calcBud(true));
+
+    document.getElementById("exMat").addEventListener("click", () => {
+      document.getElementById("mqAct").value = 115;
+      document.getElementById("mqStd").value = 100;
+      document.getElementById("mpAct").value = 470;
+      document.getElementById("mpStd").value = 500;
+      document.getElementById("mqPur").value = 140;
+      calcMat(true);
+    });
+
+    document.getElementById("exLab").addEventListener("click", () => {
+      document.getElementById("lhAct").value = 75;
+      document.getElementById("lhStd").value = 80;
+      document.getElementById("lrAct").value = 1200;
+      document.getElementById("lrStd").value = 1250;
+      calcLab(true);
+    });
+
+    document.getElementById("exOvh").addEventListener("click", () => {
+      document.getElementById("ovVarAct").value = 76000;
+      document.getElementById("ovVarBud").value = 80000;
+      document.getElementById("ovFixAct").value = 132000;
+      document.getElementById("ovFixBud").value = 120000;
+      calcOvh(true);
+    });
+
+    document.getElementById("exSls").addEventListener("click", () => {
+      document.getElementById("sqAct").value = 560;
+      document.getElementById("sqBud").value = 500;
+      document.getElementById("spAct").value = 2100;
+      document.getElementById("spBud").value = 2000;
+      calcSls(true);
+    });
+
+    document.getElementById("exBud").addEventListener("click", () => {
+      document.getElementById("bAct").value = 215000;
+      document.getElementById("bFixed").value = 200000;
+      document.getElementById("bActLvl").value = 110;
+      document.getElementById("bPlanLvl").value = 100;
+      calcBud(true);
+    });
+
+    document.getElementById("chatForm").addEventListener("submit", e => {
+      e.preventDefault();
+      handleAiQuestion(document.getElementById("chatInput").value);
+    });
+
+    document.getElementById("clearHist").addEventListener("click", () => {
+      historyItems = [];
+      localStorage.removeItem("va_history_v3");
+      renderHistory();
+    });
+
+    setLang();
+  </script>
+</body>
+</html>
