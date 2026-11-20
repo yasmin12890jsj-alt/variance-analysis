@@ -7,5 +7,13 @@
   "background_color": "#120926",
   "theme_color": "#140B29",
   "orientation": "portrait",
-  "description": "Variance analysis and cost calculation tool"
+  "description": "Variance analysis and cost calculation tool",
+  "icons": [
+    {
+      "src": "./da8978a981c6c31b16d3f5ef8915c68d.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
 }
