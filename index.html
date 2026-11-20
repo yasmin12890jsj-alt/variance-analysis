@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#140b29" />
-  <title>تحليل الفروقات — المحاسبة التحليلية</title>
+  <title>تحليل الفروقات</title>
   <style>
     :root {
       --bg: #120926;
@@ -41,62 +41,121 @@
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Kufi Arabic", sans-serif;
     }
 
-    /* Splash Screen */
-    #splash {
+    /* 1. Intro Screen */
+    #introScreen {
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: radial-gradient(circle at 50% 30%, #3b1d82 0%, #180c33 65%, #0e061f 100%);
+      background: radial-gradient(circle at 50% 45%, #3b1d82 0%, #170b33 65%, #0c051c 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 24px;
+      overflow: hidden;
     }
 
-    .splash-logo {
-      width: 84px;
-      height: 84px;
-      border-radius: 24px;
+    .intro-orb {
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(167, 139, 250, 0.35), rgba(91, 33, 182, 0.05) 70%);
+      animation: pulseOrb 2.6s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes pulseOrb {
+      0% { transform: scale(0.85); opacity: 0.65; }
+      100% { transform: scale(1.22); opacity: 1; }
+    }
+
+    .intro-logo {
+      position: relative;
+      width: 92px;
+      height: 92px;
+      border-radius: 26px;
       background: linear-gradient(135deg, var(--violet-deep), var(--violet-bright));
       display: grid;
       place-items: center;
-      font-size: 38px;
+      font-size: 42px;
       font-weight: 900;
       color: #fff;
-      box-shadow: 0 18px 40px rgba(139, 92, 246, 0.45);
+      box-shadow: 0 20px 45px rgba(139, 92, 246, 0.5);
       margin-bottom: 18px;
+      animation: logoZoom 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
-    .splash-title {
-      font-size: 26px;
+    @keyframes logoZoom {
+      0% { opacity: 0; transform: scale(0.55) translateY(16px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .intro-title {
+      position: relative;
+      font-size: 28px;
       font-weight: 900;
       margin: 0 0 8px 0;
+      opacity: 0;
+      animation: textReveal 0.85s ease 0.3s forwards;
     }
 
-    .splash-sub {
-      font-size: 14px;
+    .intro-tag {
+      position: relative;
+      font-size: 13.5px;
       color: var(--muted);
-      max-width: 340px;
-      line-height: 1.6;
       margin: 0 0 24px 0;
+      opacity: 0;
+      animation: textReveal 0.85s ease 0.6s forwards;
     }
 
-    .splash-btn {
-      background: linear-gradient(135deg, var(--violet), var(--violet-bright));
-      color: #fff;
-      border: none;
+    @keyframes textReveal {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .intro-skip {
+      position: relative;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      border: 1px solid var(--line-strong);
       border-radius: 999px;
-      padding: 13px 28px;
-      font-size: 15px;
-      font-weight: 800;
+      padding: 10px 22px;
+      font-size: 13px;
+      font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
     }
 
-    /* App Shell */
-    #appShell {
+    /* 2. Login Screen */
+    #loginScreen {
+      display: none;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: linear-gradient(180deg, rgba(39, 21, 82, 0.94), rgba(29, 16, 61, 0.98));
+      border: 1px solid var(--line-strong);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 18px 40px rgba(7, 3, 18, 0.6);
+    }
+
+    .login-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    /* 3. Main App */
+    #mainApp {
       display: none;
       padding-bottom: calc(var(--nav-h) + 24px);
     }
@@ -106,9 +165,9 @@
       top: 0;
       z-index: 40;
       backdrop-filter: blur(16px);
-      background: rgba(18, 9, 38, 0.86);
+      background: rgba(18, 9, 38, 0.88);
       border-bottom: 1px solid var(--line);
-      padding: 12px 14px;
+      padding: 10px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -119,12 +178,12 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
     }
 
     .brand-icon {
-      width: 36px;
-      height: 36px;
+      width: 35px;
+      height: 35px;
       border-radius: 11px;
       background: linear-gradient(135deg, var(--violet-deep), var(--violet-bright));
       display: grid;
@@ -134,24 +193,25 @@
     }
 
     .brand h1 {
-      font-size: 15px;
+      font-size: 14.5px;
       margin: 0;
       font-weight: 800;
     }
 
     .brand small {
       display: block;
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--muted);
     }
 
-    .period-bar {
+    .controls-row {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      flex-wrap: wrap;
     }
 
-    select, input, textarea {
+    select, input {
       font-family: inherit;
     }
 
@@ -160,8 +220,8 @@
       color: var(--text);
       border: 1px solid var(--line-strong);
       border-radius: 10px;
-      padding: 6px 9px;
-      font-size: 12px;
+      padding: 6px 8px;
+      font-size: 11.5px;
       font-weight: 700;
       outline: none;
     }
@@ -284,6 +344,7 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
+      margin-bottom: 10px;
     }
 
     .field label {
@@ -311,7 +372,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 9px;
-      margin-top: 13px;
+      margin-top: 12px;
     }
 
     .btn {
@@ -366,10 +427,7 @@
       border-right: 3px solid var(--violet-bright);
     }
 
-    .chart-row {
-      margin-bottom: 12px;
-    }
-
+    .chart-row { margin-bottom: 12px; }
     .chart-label {
       display: flex;
       justify-content: space-between;
@@ -402,1384 +460,4 @@
       border: 1px solid var(--line);
       border-radius: 12px;
       padding: 11px 12px;
-      margin-bottom: 9px;
-      font-size: 12.5px;
-      line-height: 1.65;
-    }
-
-    .rec-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
-
-    /* Bottom Nav */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: var(--nav-h);
-      background: rgba(20, 10, 44, 0.96);
-      backdrop-filter: blur(18px);
-      border-top: 1px solid var(--line-strong);
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      z-index: 100;
-      padding: 4px 4px env(safe-area-inset-bottom, 4px);
-    }
-
-    .nav-btn {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      cursor: pointer;
-      border-radius: 12px;
-      padding: 4px 2px;
-    }
-
-    .nav-btn svg {
-      width: 21px;
-      height: 21px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-    }
-
-    .nav-btn span {
-      font-size: 10.5px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .nav-btn.active {
-      background: rgba(167, 139, 250, 0.16);
-      color: var(--text);
-    }
-
-    .nav-btn.active svg,
-    .nav-btn.active span {
-      color: var(--violet-bright);
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Splash Screen -->
-  <div id="splash">
-    <div class="splash-logo">Δ</div>
-    <h2 class="splash-title">تحليل الفروقات</h2>
-    <p class="splash-sub">منصة المحاسبة التحليلية لحساب الفروقات، كشف الأسباب، واقتراح الحلول الإدارية للمؤسسة</p>
-    <button type="button" class="splash-btn" onclick="enterApp()">الدخول إلى الواجهة الرئيسية</button>
-  </div>
-
-  <div id="appShell">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-icon">Δ</div>
-        <div>
-          <h1>تحليل الفروقات</h1>
-          <small>حساب • تشخيص • معالجة</small>
-        </div>
-      </div>
-
-      <div class="period-bar">
-        <select id="monthSel" class="sel" onchange="renderAll()">
-          <option value="01">جانفي (01)</option>
-          <option value="02">فيفري (02)</option>
-          <option value="03">مارس (03)</option>
-          <option value="04">أفريل (04)</option>
-          <option value="05">ماي (05)</option>
-          <option value="06">جوان (06)</option>
-          <option value="07">جويلية (07)</option>
-          <option value="08">أوت (08)</option>
-          <option value="09">سبتمبر (09)</option>
-          <option value="10">أكتوبر (10)</option>
-          <option value="11" selected>نوفمبر (11)</option>
-          <option value="12">ديسمبر (12)</option>
-        </select>
-        <select id="yearSel" class="sel" onchange="renderAll()">
-          <option value="2025">2025</option>
-          <option value="2026" selected>2026</option>
-          <option value="2027">2027</option>
-        </select>
-      </div>
-    </header>
-
-    <main class="container">
-
-      <!-- 1. الرئيسية -->
-      <section id="page-home" class="page active">
-        <div class="kpi-grid">
-          <div class="kpi">
-            <div class="kpi-lbl">عدد التحليلات</div>
-            <div class="kpi-val vtext" id="kCount">0</div>
-            <div class="kpi-sub" id="kPeriod">11/2026</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-lbl">فروقات ملائمة (Favorable)</div>
-            <div class="kpi-val fav" id="kFav">0</div>
-            <div class="kpi-sub">أداء إيجابي</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-lbl">فروقات غير ملائمة (Défavorable)</div>
-            <div class="kpi-val defav" id="kDefav">0</div>
-            <div class="kpi-sub">تحتاج معالجة</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-lbl">متوسط نسبة الفرق (%)</div>
-            <div class="kpi-val" style="color:var(--warn)" id="kPct">0.0%</div>
-            <div class="kpi-sub">مقارنة بالمعيار/التقدير</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-head">
-            <h3 class="card-title">📊 رسوم بيانية للمقارنة</h3>
-            <span class="pill">تقديري / معياري مقابل فعلي</span>
-          </div>
-          <div id="chartBox">
-            <div class="chart-row">
-              <div class="chart-label"><span>المعياري / التقديري</span><span id="lblStd">0.00</span></div>
-              <div class="bar-track"><div class="bar-fill" id="barStd" style="width:0%"></div></div>
-            </div>
-            <div class="chart-row">
-              <div class="chart-label"><span>الفعلي</span><span id="lblAct">0.00</span></div>
-              <div class="bar-track"><div class="bar-fill fav-bg" id="barAct" style="width:0%"></div></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-head">
-            <h3 class="card-title">🧠 لماذا وقع الفرق وكيف تعالجه المؤسسة؟</h3>
-            <span class="pill">تشخيص إداري</span>
-          </div>
-          <div id="homeDiagBox" class="note-text">أدخلي عملية من تبويب «إدخال» ليقوم التطبيق بحساب الفرق، تحديد نوعه (Favorable أو Défavorable)، ذكر أسبابه، واقتراح الحلول العملية.</div>
-        </div>
-      </section>
-
-      <!-- 2. إدخال -->
-      <section id="page-input" class="page">
-        <div class="subtabs">
-          <button type="button" class="subtab active" onclick="openSub('mat', this)">🧱 المواد</button>
-          <button type="button" class="subtab" onclick="openSub('lab', this)">👷 اليد والمصاريف غير المباشرة</button>
-          <button type="button" class="subtab" onclick="openSub('sales', this)">📈 المبيعات (Ventes)</button>
-          <button type="button" class="subtab" onclick="openSub('budget', this)">💼 الميزانية (Budget)</button>
-        </div>
-
-        <div id="sub-mat" class="card sub-panel">
-          <div class="card-head">
-            <h3 class="card-title">الفرق الإجمالي للمواد (Écart global sur matières)</h3>
-            <span class="pill">سعر + كمية</span>
-          </div>
-          <div class="grid-2">
-            <div class="field"><label>الكمية الفعلية (Qréelle)</label><input type="text" inputmode="decimal" id="mQr" placeholder="مثال: 1200" /></div>
-            <div class="field"><label>الكمية المعيارية (Qprévue)</label><input type="text" inputmode="decimal" id="mQp" placeholder="مثال: 1000" /></div>
-            <div class="field"><label>السعر الفعلي (Préel)</label><input type="text" inputmode="decimal" id="mPr" placeholder="مثال: 55" /></div>
-            <div class="field"><label>السعر المعياري (Pprévu)</label><input type="text" inputmode="decimal" id="mPp" placeholder="مثال: 50" /></div>
-          </div>
-          <div class="btn-row">
-            <button type="button" class="btn btn-primary" onclick="calcMat()">حساب وتشخيص المواد</button>
-            <button type="button" class="btn btn-sec" onclick="mQr.value=1200;mQp.value=1000;mPr.value=55;mPp.value=50;">مثال</button>
-          </div>
-          <div id="out-mat" class="res-box" style="display:none;"></div>
-        </div>
-
-        <div id="sub-lab" class="card sub-panel" style="display:none;">
-          <div class="card-head">
-            <h3 class="card-title">اليد العاملة والمصاريف غير المباشرة</h3>
-            <span class="pill">ساعات + تكاليف</span>
-          </div>
-          <div class="grid-2">
-            <div class="field"><label>الساعات الفعلية (Hréelle)</label><input type="text" inputmode="decimal" id="lHr" placeholder="مثال: 420" /></div>
-            <div class="field"><label>الساعات المعيارية (Hprévue)</label><input type="text" inputmode="decimal" id="lHp" placeholder="مثال: 400" /></div>
-            <div class="field"><label>تكلفة الساعة الفعلية (Tréel)</label><input type="text" inputmode="decimal" id="lTr" placeholder="مثال: 320" /></div>
-            <div class="field"><label>تكلفة الساعة المعيارية (Tprévu)</label><input type="text" inputmode="decimal" id="lTp" placeholder="مثال: 300" /></div>
-            <div class="field"><label>المصاريف غير المباشرة الفعلية</label><input type="text" inputmode="decimal" id="lOvhR" placeholder="مثال: 185000" /></div>
-            <div class="field"><label>المصاريف غير المباشرة المعيارية</label><input type="text" inputmode="decimal" id="lOvhP" placeholder="مثال: 170000" /></div>
-          </div>
-          <div class="btn-row">
-            <button type="button" class="btn btn-primary" onclick="calcLabOvh()">حساب وتشخيص اليد والأعباء</button>
-            <button type="button" class="btn btn-sec" onclick="lHr.value=420;lHp.value=400;lTr.value=320;lTp.value=300;lOvhR.value=185000;lOvhP.value=170000;">مثال</button>
-          </div>
-          <div id="out-lab" class="res-box" style="display:none;"></div>
-        </div>
-
-        <div id="sub-sales" class="card sub-panel" style="display:none;">
-          <div class="card-head">
-            <h3 class="card-title">المبيعات (Ventes) — رقم الأعمال، الكمية، السعر</h3>
-            <span class="pill">إيرادات</span>
-          </div>
-          <div class="grid-2">
-            <div class="field"><label>الكمية المباعة الفعلية</label><input type="text" inputmode="decimal" id="sQr" placeholder="مثال: 950" /></div>
-            <div class="field"><label>الكمية المباعة المخططة</label><input type="text" inputmode="decimal" id="sQp" placeholder="مثال: 1000" /></div>
-            <div class="field"><label>سعر البيع الفعلي</label><input type="text" inputmode="decimal" id="sPr" placeholder="مثال: 1300" /></div>
-            <div class="field"><label>سعر البيع المخطط</label><input type="text" inputmode="decimal" id="sPp" placeholder="مثال: 1200" /></div>
-          </div>
-          <div class="btn-row">
-            <button type="button" class="btn btn-primary" onclick="calcSales()">حساب وتشخيص المبيعات</button>
-            <button type="button" class="btn btn-sec" onclick="sQr.value=950;sQp.value=1000;sPr.value=1300;sPp.value=1200;">مثال</button>
-          </div>
-          <div id="out-sales" class="res-box" style="display:none;"></div>
-        </div>
-
-        <div id="sub-budget" class="card sub-panel" style="display:none;">
-          <div class="card-head">
-            <h3 class="card-title">الميزانية (Budget) — تقديرية مقابل فعلية</h3>
-            <span class="pill">مقارنة شاملة</span>
-          </div>
-          <div class="grid-2">
-            <div class="field"><label>الميزانية التقديرية (Budget Prévu)</label><input type="text" inputmode="decimal" id="bPrevu" placeholder="مثال: 900000" /></div>
-            <div class="field"><label>الميزانية الفعلية (Budget Réel)</label><input type="text" inputmode="decimal" id="bReel" placeholder="مثال: 945000" /></div>
-          </div>
-          <div class="btn-row">
-            <button type="button" class="btn btn-primary" onclick="calcBudget()">مقارنة وتشخيص الميزانية</button>
-            <button type="button" class="btn btn-sec" onclick="bPrevu.value=900000;bReel.value=945000;">مثال</button>
-          </div>
-          <div id="out-budget" class="res-box" style="display:none;"></div>
-        </div>
-      </section>
-
-      <!-- 3. القوانين والشرح -->
-      <section id="page-laws" class="page">
-        <div class="card">
-          <div class="card-head">
-            <h3 class="card-title">📘 القوانين الحسابية وشرحها</h3>
-            <span class="pill">مرجع محاسبي</span>
-          </div>
-          <div class="rec-card">
-            <div class="rec-head"><span>1. الفرق الإجمالي للمواد (Écart global)</span></div>
-            E/G = (الكمية الفعلية × السعر الفعلي) − (الكمية المعيارية × السعر المعياري).<br>
-            • فرق السعر = (السعر الفعلي − السعر المعياري) × الكمية الفعلية.<br>
-            • فرق الكمية = (الكمية الفعلية − الكمية المعيارية) × السعر المعياري.
-          </div>
-          <div class="rec-card">
-            <div class="rec-head"><span>2. اليد العاملة والمصاريف غير المباشرة</span></div>
-            E/G = (الساعات الفعلية × التكلفة الفعلية) − (الساعات المعيارية × التكلفة المعيارية).<br>
-            • فرق المصاريف غير المباشرة = المصاريف الفعلية − المصاريف المعيارية.
-          </div>
-          <div class="rec-card">
-            <div class="rec-head"><span>3. المبيعات (Ventes)</span></div>
-            • فرق رقم الأعمال = رقم الأعمال الفعلي − رقم الأعمال المخطط.<br>
-            • فرق السعر = (السعر الفعلي − السعر المخطط) × الكمية الفعلية.<br>
-            • فرق الكمية = (الكمية الفعلية − الكمية المخططة) × السعر المخطط.
-          </div>
-          <div class="rec-card">
-            <div class="rec-head"><span>4. الميزانية (Budget) ونسبة الفرق (%)</span></div>
-            • الفرق = الفعلي − التقديري (في التكاليف: موجب = Défavorable، سالب = Favorable).<br>
-            • نسبة الفرق (%) = (الفرق ÷ القيمة المرجعية) × 100.
-          </div>
-        </div>
-      </section>
-
-      <!-- 4. الأسباب والحلول -->
-      <section id="page-solutions" class="page">
-        <div class="card">
-          <div class="card-head">
-            <h3 class="card-title">🛠️ أسباب الفروقات والحلول المقترحة</h3>
-            <span class="pill">معالجة المؤسسة</span>
-          </div>
-          <div class="rec-card">
-            <div class="rec-head"><span class="defav">ارتفاع تكلفة المواد / السعر (Défavorable)</span></div>
-            <strong>الأسباب:</strong> تضخم أسعار السوق، الاعتماد على مورد واحد، أو شحن عاجل بتكلفة مرتفعة.<br>
-            <strong>الحلول:</strong> تنويع الموردين، إبرام عقود طويلة الأجل، وتجميع الطلبيات للحصول على تخفيضات.
-          </div>
-          <div class="rec-card">
-            <div class="rec-head"><span class="defav">تجاوز ساعات العمل أو المصاريف غير المباشرة</span></div>
-            <strong>الأسباب:</strong> أعطال الآلات، نقص تكوين العمال، أو سوء جدولة الورشات.<br>
-            <strong>الحلول:</strong> برنامج صيانة وقائية، تحسين تنظيم العمل، ومراقبة استهلاك الطاقة واللوازم.
-          </div>
-          <div class="rec-card">
-            <div class="rec-head"><span class="defav">انخفاض المبيعات أو تجاوز الميزانية</span></div>
-            <strong>الأسباب:</strong> منافسة سعرية، ضعف الترويج، أو ضعف الرقابة على بنود الإنفاق.<br>
-            <strong>الحلول:</strong> مراجعة العروض التجارية، تحسين جودة الخدمة، ووضع سقف إنفاق شهري لكل قسم.
-          </div>
-        </div>
-      </section>
-
-      <!-- 5. السجل والتصدير والتعديل -->
-      <section id="page-history" class="page">
-        <div class="card">
-          <div class="card-head">
-            <h3 class="card-title">🗂️ السجل وتصدير النتائج</h3>
-            <div style="display:flex; gap:6px;">
-              <button type="button" class="btn btn-sec" style="padding:6px 10px; font-size:11.5px;" onclick="exportCSV()">تصدير CSV</button>
-              <button type="button" class="btn btn-del" onclick="clearAll()">مسح الكل</button>
-            </div>
-          </div>
-          <div id="historyContainer">
-            <p class="note-text">لا توجد عمليات محفوظة بعد.</p>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <nav class="bottom-nav">
-      <button type="button" class="nav-btn active" onclick="goPage('page-home', 0)">
-        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
-        <span>الرئيسية</span>
-      </button>
-      <button type="button" class="nav-btn" onclick="goPage('page-input', 1)">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>
-        <span>إدخال</span>
-      </button>
-      <button type="button" class="nav-btn" onclick="goPage('page-laws', 2)">
-        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <span>القوانين</span>
-      </button>
-      <button type="button" class="nav-btn" onclick="goPage('page-solutions', 3)">
-        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-        <span>الحلول</span>
-      </button>
-      <button type="button" class="nav-btn" onclick="goPage('page-history', 4)">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-        <span>السجل</span>
-      </button>
-    </nav>
-  </div>
-
-  <script>
-    const DB_KEY = 'va_violet_pro_v2';
-    let items = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
-
-    function enterApp() {
-      const sp = document.getElementById('splash');
-      const shell = document.getElementById('appShell');
-      if (sp) sp.style.display = 'none';
-      if (shell) shell.style.display = 'block';
-      renderAll();
-    }
-
-    setTimeout(() => {
-      const sp = document.getElementById('splash');
-      if (sp && sp.style.display !== 'none') {
-        enterApp();
-      }
-    }, 1800);
-
-    function goPage(pageId, idx) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      const target = document.getElementById(pageId);
-      if (target) target.classList.add('active');
-      document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function openSub(sub, btn) {
-      document.querySelectorAll('.sub-panel').forEach(p => p.style.display = 'none');
-      document.getElementById('sub-' + sub).style.display = 'block';
-      document.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-    }
-
-    function val(id) {
-      const raw = document.getElementById(id).value.replace(',', '.').trim();
-      const n = parseFloat(raw);
-      return isNaN(n) ? 0 : n;
-    }
-
-    function fmt(n) {
-      return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
-    function saveEntry(entry) {
-      const month = document.getElementById('monthSel').value;
-      const year = document.getElementById('yearSel').value;
-      items.unshift({
-        id: Date.now() + Math.random(),
-        period: `${month}/${year}`,
-        ...entry
-      });
-      localStorage.setItem(DB_KEY, JSON.stringify(items));
-      renderAll();
-    }
-
-    function deleteEntry(id) {
-      items = items.filter(x => x.id !== id);
-      localStorage.setItem(DB_KEY, JSON.stringify(items));
-      renderAll();
-    }
-
-    function editEntry(id) {
-      const target = items.find(x => x.id === id);
-      if (!target) return;
-      const newNote = prompt('تعديل ملاحظة أو تشخيص التحليل:', target.cause);
-      if (newNote !== null && newNote.trim() !== '') {
-        target.cause = newNote.trim();
-        localStorage.setItem(DB_KEY, JSON.stringify(items));
-        renderAll();
-      }
-    }
-
-    function clearAll() {
-      items = [];
-      localStorage.removeItem(DB_KEY);
-      renderAll();
-    }
-
-    function buildDiagnosis(kind, isFav) {
-      if (kind === 'mat') {
-        return isFav
-          ? { cause: 'انخفاض التكلفة الفعلية للمواد مقارنة بالمعيار نتيجة شروط شراء جيدة أو كفاءة استهلاك.', fix: 'تثبيت معايير الشراء وتوثيق سياسة المورد المعتمدة.' }
-          : { cause: 'ارتفاع تكلفة المواد نتيجة زيادة سعر الوحدة أو ارتفاع الكمية المستهلكة/الهدر.', fix: 'مراجعة أسعار الموردين، فرض رقابة على الهدر، وتحسين جودة المواد.' };
-      }
-      if (kind === 'lab') {
-        return isFav
-          ? { cause: 'إنجاز الإنتاج بساعات أقل أو تكلفة ساعة ومصاريف غير مباشرة أقل من المعيار.', fix: 'تعميم أساليب العمل الفعالة وتحفيز الفرق التشغيلية.' }
-          : { cause: 'تجاوز ساعات العمل أو ارتفاع المصاريف غير المباشرة بسبب تعطل أو بطء الأداء.', fix: 'برمجة الصيانة الوقائية، تدريب العمال، وضبط الأعباء غير المباشرة.' };
-      }
-      if (kind === 'sales') {
-        return isFav
-          ? { cause: 'تحقيق رقم أعمال أعلى من المخطط بفضل تحسن السعر أو زيادة حجم المبيعات.', fix: 'دعم المنتجات الأكثر ربحية والحفاظ على رضا العملاء.' }
-          : { cause: 'تراجع رقم الأعمال بسبب انخفاض الكمية المباعة أو ضغط الأسعار في السوق.', fix: 'تنشيط التسويق، دراسة عروض المنافسين، وتحسين قنوات البيع.' };
-      }
-      return isFav
-        ? { cause: 'الالتزام بالميزانية التقديرية وتحقيق وفورات فعلية.', fix: 'الاستمرار في الرقابة الدورية وتخصيص الفائض لمشاريع التطوير.' }
-        : { cause: 'تجاوز الميزانية الفعلية للتقديرية نتيجة نفقات غير متوقعة أو ضعف ضبط البنود.', fix: 'إعادة جدولة المصاريف غير الضرورية وتفعيل صلاحيات الصرف.' };
-    }
-
-    function renderResultBox(boxId, title, baseVal, actVal, diffVal, isFav, kind) {
-      const pct = baseVal !== 0 ? ((Math.abs(diffVal) / Math.abs(baseVal)) * 100) : 0;
-      const diag = buildDiagnosis(kind, isFav);
-      const statusText = isFav ? 'ملائم (Favorable)' : 'غير ملائم (Défavorable)';
-      const statusCls = isFav ? 'fav' : 'defav';
-
-      const box = document.getElementById(boxId);
-      box.style.display = 'block';
-      box.innerHTML = `
-        <div><strong>${title}</strong></div>
-        <div>قيمة الفرق: <strong class="${statusCls}">${fmt(Math.abs(diffVal))}</strong></div>
-        <div>نسبة الفرق (%): <strong>${pct.toFixed(2)}%</strong></div>
-        <div>الحالة: <strong class="${statusCls}">${statusText}</strong></div>
-        <div class="diag-box">
-          <div><strong>السبب المحتمل:</strong> ${diag.cause}</div>
-          <div><strong>الحل المقترح:</strong> ${diag.fix}</div>
-        </div>
-      `;
-
-      saveEntry({
-        kind,
-        title,
-        baseVal,
-        actVal,
-        diffVal: Math.abs(diffVal),
-        pct,
-        isFav,
-        cause: diag.cause,
-        fix: diag.fix
-      });
-    }
-
-    function calcMat() {
-      const qr = val('mQr'), qp = val('mQp'), pr = val('mPr'), pp = val('mPp');
-      const baseCost = qp * pp;
-      const actCost = qr * pr;
-      const diff = actCost - baseCost;
-      renderResultBox('out-mat', 'الفرق الإجمالي للمواد (Écart global sur matières)', baseCost, actCost, diff, diff <= 0, 'mat');
-    }
-
-    function calcLabOvh() {
-      const hr = val('lHr'), hp = val('lHp'), tr = val('lTr'), tp = val('lTp'), ovhr = val('lOvhR'), ovhp = val('lOvhP');
-      const baseTotal = (hp * tp) + ovhp;
-      const actTotal = (hr * tr) + ovhr;
-      const diff = actTotal - baseTotal;
-      renderResultBox('out-lab', 'اليد العاملة والمصاريف غير المباشرة', baseTotal, actTotal, diff, diff <= 0, 'lab');
-    }
-
-    function calcSales() {
-      const qr = val('sQr'), qp = val('sQp'), pr = val('sPr'), pp = val('sPp');
-      const baseRev = qp * pp;
-      const actRev = qr * pr;
-      const diff = actRev - baseRev;
-      renderResultBox('out-sales', 'تحليل المبيعات (Ventes)', baseRev, actRev, diff, diff >= 0, 'sales');
-    }
-
-    function calcBudget() {
-      const bp = val('bPrevu'), br = val('bReel');
-      const diff = br - bp;
-      renderResultBox('out-budget', 'مقارنة الميزانية التقديرية بالفعلية', bp, br, diff, diff <= 0, 'budget');
-    }
-
-    function renderAll() {
-      const m = document.getElementById('monthSel').value;
-      const y = document.getElementById('yearSel').value;
-      const periodStr = `${m}/${y}`;
-      document.getElementById('kPeriod').textContent = periodStr;
-
-      const filtered = items.filter(x => x.period === periodStr);
-      const count = filtered.length;
-      const favCount = filtered.filter(x => x.isFav).length;
-      const defavCount = count - favCount;
-      const avgPct = count ? (filtered.reduce((a, b) => a + b.pct, 0) / count) : 0;
-
-      document.getElementById('kCount').textContent = count;
-      document.getElementById('kFav').textContent = favCount;
-      document.getElementById('kDefav').textContent = defavCount;
-      document.getElementById('kPct').textContent = avgPct.toFixed(1) + '%';
-
-      const sumBase = filtered.reduce((a, b) => a + Math.abs(b.baseVal), 0);
-      const sumAct = filtered.reduce((a, b) => a + Math.abs(b.actVal), 0);
-      const maxVal = Math.max(sumBase, sumAct, 1);
-
-      document.getElementById('lblStd').textContent = fmt(sumBase);
-      document.getElementById('lblAct').textContent = fmt(sumAct);
-      document.getElementById('barStd').style.width = ((sumBase / maxVal) * 100).toFixed(1) + '%';
-      document.getElementById('barAct').style.width = ((sumAct / maxVal) * 100).toFixed(1) + '%';
-
-      const diagBox = document.getElementById('homeDiagBox');
-      if (count > 0) {
-        const latest = filtered[0];
-        diagBox.innerHTML = `
-          <div class="rec-card" style="margin:0;">
-            <div class="rec-head">
-              <span>${latest.title} (${latest.period})</span>
-              <span class="${latest.isFav ? 'fav' : 'defav'}">${latest.isFav ? 'Favorable' : 'Défavorable'} • ${latest.pct.toFixed(1)}%</span>
-            </div>
-            <div><strong>السبب:</strong> ${latest.cause}</div>
-            <div><strong>الحل:</strong> ${latest.fix}</div>
-          </div>
-        `;
-      } else {
-        diagBox.textContent = `لا توجد تحليلات مسجلة للفترة ${periodStr}. اختاري تبويب «إدخال» لحساب الفروقات وعرض التشخيص والحلول.`;
-      }
-
-      const histBox = document.getElementById('historyContainer');
-      if (!items.length) {
-        histBox.innerHTML = '<p class="note-text">لا توجد عمليات محفوظة بعد.</p>';
-      } else {
-        histBox.innerHTML = items.map(it => `
-          <div class="rec-card">
-            <div class="rec-head">
-              <span>${it.title} <small style="color:var(--muted)">(${it.period})</small></span>
-              <span class="${it.isFav ? 'fav' : 'defav'}">${it.isFav ? 'Favorable' : 'Défavorable'}</span>
-            </div>
-            <div>الفرق: <strong>${fmt(it.diffVal)}</strong> | النسبة: <strong>${it.pct.toFixed(2)}%</strong></div>
-            <div>السبب: ${it.cause}</div>
-            <div>الحل: ${it.fix}</div>
-            <div style="margin-top:8px; display:flex; gap:6px;">
-              <button type="button" class="btn btn-sec" style="padding:5px 10px; font-size:11.5px;" onclick="editEntry(${it.id})">تعديل</button>
-              <button type="button" class="btn btn-del" onclick="deleteEntry(${it.id})">حذف</button>
-            </div>
-          </div>
-        `).join('');
-      }
-    }
-
-    function exportCSV() {
-      if (!items.length) return;
-      const header = 'Period,Title,Diff,Percent,Status,Cause,Solution\n';
-      const rows = items.map(x => [
-        x.period,
-        `"${x.title}"`,
-        x.diffVal.toFixed(2),
-        x.pct.toFixed(2) + '%',
-        x.isFav ? 'Favorable' : 'Défavorable',
-        `"${x.cause.replace(/"/g, '""')}"`,
-        `"${x.fix.replace(/"/g, '""')}"`
-      ].join(',')).join('\n');
-
-      const blob = new Blob(['\ufeff' + header + rows], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'variance-analysis.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    renderAll();
-  </script>
-</body>
-</html>
-
-
-/* ==========================================
-   VARIANCE PRO
-   إضافة تطويرية للتطبيق الأصلي
-   ========================================== */
-
-(() => {
-"use strict";
-
-if (window.__varianceProLoaded) return;
-window.__varianceProLoaded = true;
-
-const LANGS = ["ar", "en", "fr"];
-
-const CURRENCIES = [
-"DZD", "EUR", "USD", "GBP",
-"SAR", "AED", "TND", "MAD"
-];
-
-const RATES = {
-DZD: 1,
-EUR: 145,
-USD: 134,
-GBP: 170,
-SAR: 35.7,
-AED: 36.5,
-TND: 43,
-MAD: 13.4
-};
-
-const TEXT = {
-ar: {
-brand:"VARIANCE PRO",
-tagline:"منصة ذكية لتحليل الفروقات وإدارة الأداء",
-welcome:"مرحباً بك",
-login:"تسجيل الدخول",
-username:"اسم المستخدم أو البريد الإلكتروني",
-password:"كلمة المرور",
-start:"ابدأ الآن",
-enter:"الدخول إلى التطبيق",
-skip:"متابعة",
-language:"اللغة",
-currency:"العملة",
-tools:"الأدوات المتقدمة",
-close:"إغلاق",
-calculator:"حاسبة الفروقات",
-standard:"القيمة المعيارية",
-actual:"القيمة الفعلية",
-variance:"قيمة الفرق",
-percent:"نسبة الفرق",
-calculate:"احسب الفرق",
-favorable:"فرق ملائم",
-unfavorable:"فرق غير ملائم",
-neutral:"لا يوجد فرق",
-diagnose:"التشخيص وتحليل الأسباب",
-solutions:"الحلول التصحيحية",
-forecast:"التوقعات المستقبلية",
-reports:"التقارير والإحصائيات",
-history:"سجل التحليلات",
-settings:"الإعدادات",
-export:"تصدير Excel/CSV",
-clear:"مسح السجل",
-cost:"التكاليف",
-production:"الإنتاج والإيرادات",
-note:"زيادة التكلفة غالباً غير ملائمة، وزيادة الإنتاج قد تكون ملائمة.",
-notice:"هذه واجهة دخول تجريبية وليست نظام حماية حسابات حقيقياً.",
-currencyNote:"أسعار الصرف تقريبية ويجب تحديثها قبل استخدامها محاسبياً."
-},
-
-en: {
-brand:"VARIANCE PRO",
-tagline:"Intelligent Variance Analysis & Performance Management",
-welcome:"Welcome",
-login:"Sign In",
-username:"Username or Email",
-password:"Password",
-start:"Get Started",
-enter:"Enter Application",
-skip:"Continue",
-language:"Language",
-currency:"Currency",
-tools:"Advanced Tools",
-close:"Close",
-calculator:"Variance Calculator",
-standard:"Standard Value",
-actual:"Actual Value",
-variance:"Variance",
-percent:"Variance Percentage",
-calculate:"Calculate",
-favorable:"Favorable",
-unfavorable:"Unfavorable",
-neutral:"No Variance",
-diagnose:"Diagnosis & Root Causes",
-solutions:"Corrective Actions",
-forecast:"Forecasts",
-reports:"Reports & Statistics",
-history:"Analysis History",
-settings:"Settings",
-export:"Export CSV",
-clear:"Clear History",
-cost:"Costs",
-production:"Production & Revenue",
-note:"Higher costs are usually unfavorable, while higher production may be favorable.",
-notice:"Demo login only. This is not real account authentication.",
-currencyNote:"Exchange rates are indicative and must be updated before accounting use."
-},
-
-fr: {
-brand:"VARIANCE PRO",
-tagline:"Analyse intelligente des écarts et gestion de la performance",
-welcome:"Bienvenue",
-login:"Connexion",
-username:"Nom d'utilisateur ou e-mail",
-password:"Mot de passe",
-start:"Commencer",
-enter:"Entrer dans l'application",
-skip:"Continuer",
-language:"Langue",
-currency:"Devise",
-tools:"Outils avancés",
-close:"Fermer",
-calculator:"Calculateur des écarts",
-standard:"Valeur standard",
-actual:"Valeur réelle",
-variance:"Valeur de l'écart",
-percent:"Pourcentage de l'écart",
-calculate:"Calculer",
-favorable:"Écart favorable",
-unfavorable:"Écart défavorable",
-neutral:"Aucun écart",
-diagnose:"Diagnostic et analyse des causes",
-solutions:"Actions correctives",
-forecast:"Prévisions",
-reports:"Rapports et statistiques",
-history:"Historique des analyses",
-settings:"Paramètres",
-export:"Exporter CSV",
-clear:"Effacer l'historique",
-cost:"Coûts",
-production:"Production et revenus",
-note:"Une hausse des coûts est généralement défavorable.",
-notice:"Connexion de démonstration uniquement.",
-currencyNote:"Taux indicatifs à actualiser avant toute utilisation comptable."
-}
-};
-
-let lang = localStorage.getItem("vp_lang") || "ar";
-let currency = localStorage.getItem("vp_currency") || "DZD";
-
-if (!LANGS.includes(lang)) lang = "ar";
-if (!CURRENCIES.includes(currency)) currency = "DZD";
-
-const t = key => TEXT[lang][key] || key;
-const direction = lang === "ar" ? "rtl" : "ltr";
-
-const format = n => new Intl.NumberFormat(
-lang === "ar" ? "ar-DZ" : lang === "fr" ? "fr-FR" : "en-US",
-{maximumFractionDigits:2}
-).format(n);
-
-/* التصميم */
-
-const css = document.createElement("style");
-
-css.textContent = `
-#vp-overlay {
-position:fixed;
-inset:0;
-z-index:999999;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
-background:radial-gradient(circle,#392064,#170d2d 55%,#090513);
-color:white;
-font-family:Arial,sans-serif;
-}
-
-#vp-overlay[hidden] {display:none}
-
-.vp-card {
-width:min(460px,100%);
-padding:28px;
-border-radius:26px;
-border:1px solid #7653a8;
-background:#201239;
-box-shadow:0 20px 80px #0009;
-}
-
-.vp-logo {
-width:80px;
-height:80px;
-margin:auto auto 18px;
-border-radius:25px;
-display:grid;
-place-items:center;
-font-size:38px;
-font-weight:bold;
-background:linear-gradient(135deg,#b58aff,#6732bc);
-box-shadow:0 0 40px #9b5cff88;
-}
-
-.vp-title {
-text-align:center;
-font-size:28px;
-font-weight:900;
-}
-
-.vp-sub {
-text-align:center;
-color:#c7b6e3;
-margin:12px 0 25px;
-}
-
-.vp-field {
-display:grid;
-gap:8px;
-margin:14px 0;
-color:#d9c9f3;
-}
-
-.vp-field input,
-.vp-field select {
-width:100%;
-box-sizing:border-box;
-padding:14px;
-border:1px solid #62458a;
-border-radius:13px;
-background:#160d29;
-color:white;
-font-size:15px;
-}
-
-.vp-btn {
-width:100%;
-padding:14px;
-border:0;
-border-radius:14px;
-margin-top:10px;
-background:linear-gradient(110deg,#a56af4,#6733c4);
-color:white;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-}
-
-.vp-secondary {
-background:#30204c;
-border:1px solid #694b91;
-}
-
-.vp-bars {
-display:flex;
-justify-content:center;
-align-items:end;
-gap:7px;
-height:55px;
-margin:25px;
-}
-
-.vp-bars i {
-width:9px;
-border-radius:8px;
-background:#c19aff;
-animation:vpBounce .8s infinite alternate;
-}
-
-.vp-bars i:nth-child(1){height:18px}
-.vp-bars i:nth-child(2){height:31px;animation-delay:.15s}
-.vp-bars i:nth-child(3){height:43px;animation-delay:.3s}
-.vp-bars i:nth-child(4){height:26px;animation-delay:.45s}
-.vp-bars i:nth-child(5){height:36px;animation-delay:.6s}
-
-@keyframes vpBounce {
-to {transform:scaleY(.35);opacity:.5}
-}
-
-#vp-toolbar {
-position:fixed;
-z-index:99998;
-top:12px;
-right:12px;
-display:flex;
-gap:8px;
-}
-
-#vp-toolbar[hidden]{display:none}
-
-#vp-toolbar button {
-background:#25153d;
-color:white;
-border:1px solid #7653a8;
-padding:10px;
-border-radius:12px;
-}
-
-#vp-panel {
-display:none;
-position:fixed;
-inset:0;
-z-index:999997;
-overflow:auto;
-background:#0e081b;
-color:white;
-padding:20px;
-font-family:Arial,sans-serif;
-}
-
-#vp-panel.open {display:block}
-
-.vp-grid {
-max-width:1100px;
-margin:25px auto;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:15px;
-}
-
-.vp-module {
-padding:20px;
-border-radius:18px;
-border:1px solid #503575;
-background:linear-gradient(145deg,#281748,#1b1030);
-}
-
-.vp-module h3 {color:#c9a6ff}
-
-.vp-module p {
-color:#c2b3d8;
-line-height:1.8;
-}
-
-.vp-result {
-background:#160d29;
-padding:14px;
-border-radius:12px;
-margin-top:12px;
-line-height:2;
-}
-
-.vp-good {color:#75e0b1}
-.vp-bad {color:#ff879b}
-
-.vp-header {
-max-width:1100px;
-margin:20px auto;
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:12px;
-}
-
-@media(max-width:600px){
-.vp-card{padding:20px}
-.vp-header{flex-direction:column;align-items:stretch}
-}
-`;
-
-document.head.appendChild(css);
-
-/* إنشاء الواجهة */
-
-const root = document.createElement("div");
-root.id = "vp-root";
-
-root.innerHTML = `
-<div id="vp-overlay" dir="${direction}">
-
-<div class="vp-card" id="vp-splash">
-
-<div class="vp-logo">Δ</div>
-
-<h1 class="vp-title">${t("brand")}</h1>
-
-<p class="vp-sub">${t("tagline")}</p>
-
-<div class="vp-bars">
-<i></i><i></i><i></i><i></i><i></i>
-</div>
-
-<button class="vp-btn" id="vp-start">
-${t("start")}
-</button>
-
-</div>
-
-<div class="vp-card" id="vp-login" hidden>
-
-<div class="vp-logo">Δ</div>
-
-<h2 class="vp-title">${t("welcome")}</h2>
-
-<p class="vp-sub">${t("login")}</p>
-
-<label class="vp-field">
-${t("language")}
-<select id="vp-lang">
-<option value="ar">العربية</option>
-<option value="en">English</option>
-<option value="fr">Français</option>
-</select>
-</label>
-
-<label class="vp-field">
-${t("currency")}
-<select id="vp-currency">
-${CURRENCIES.map(c=>`<option value="${c}">${c}</option>`).join("")}
-</select>
-</label>
-
-<label class="vp-field">
-${t("username")}
-<input id="vp-user" autocomplete="username">
-</label>
-
-<label class="vp-field">
-${t("password")}
-<input id="vp-pass" type="password" autocomplete="current-password">
-</label>
-
-<button class="vp-btn" id="vp-enter">
-${t("enter")}
-</button>
-
-<button class="vp-btn vp-secondary" id="vp-skip">
-${t("skip")}
-</button>
-
-<p class="vp-sub">${t("notice")}</p>
-
-</div>
-</div>
-
-<div id="vp-toolbar" hidden>
-<button id="vp-open">${t("tools")}</button>
-<button id="vp-language">${lang.toUpperCase()}</button>
-</div>
-
-<section id="vp-panel" dir="${direction}">
-
-<div class="vp-header">
-<h1>${t("brand")}</h1>
-<button class="vp-btn" id="vp-close" style="width:auto">
-${t("close")} ✕
-</button>
-</div>
-
-<div class="vp-grid">
-
-<article class="vp-module">
-<h3>📊 ${t("calculator")}</h3>
-
-<label class="vp-field">
-${t("standard")}
-<input type="number" id="vp-standard" value="100">
-</label>
-
-<label class="vp-field">
-${t("actual")}
-<input type="number" id="vp-actual" value="120">
-</label>
-
-<label class="vp-field">
-${t("direction")}
-<select id="vp-type">
-<option value="cost">${t("cost")}</option>
-<option value="production">${t("production")}</option>
-</select>
-</label>
-
-<button class="vp-btn" id="vp-calculate">
-${t("calculate")}
-</button>
-
-<div class="vp-result" id="vp-result">
-${t("note")}
-</div>
-</article>
-
-<article class="vp-module">
-<h3>🧠 ${t("diagnose")}</h3>
-<p>${t("note")}</p>
-<p>تحليل الأسباب المحتملة ومراجعة البيانات وتحديد مصدر الانحراف.</p>
-</article>
-
-<article class="vp-module">
-<h3>🛠 ${t("solutions")}</h3>
-<p>تحديد الإجراء التصحيحي والمسؤول عن التنفيذ والأجل والنتيجة.</p>
-</article>
-
-<article class="vp-module">
-<h3>📈 ${t("forecast")}</h3>
-<p>توقع النتائج المستقبلية اعتماداً على بيانات تاريخية كافية.</p>
-</article>
-
-<article class="vp-module">
-<h3>📄 ${t("reports")}</h3>
-<p>تصدير سجل التحليلات بصيغة CSV المتوافقة مع Excel.</p>
-<button class="vp-btn" id="vp-export">${t("export")}</button>
-</article>
-
-<article class="vp-module">
-<h3>🕘 ${t("history")}</h3>
-<div id="vp-history" class="vp-result">—</div>
-<button class="vp-btn vp-secondary" id="vp-clear">${t("clear")}</button>
-</article>
-
-<article class="vp-module">
-<h3>⚙️ ${t("settings")}</h3>
-
-<label class="vp-field">
-${t("language")}
-<select id="vp-lang-settings">
-<option value="ar">العربية</option>
-<option value="en">English</option>
-<option value="fr">Français</option>
-</select>
-</label>
-
-<label class="vp-field">
-${t("currency")}
-<select id="vp-currency-settings">
-${CURRENCIES.map(c=>`<option>${c}</option>`).join("")}
-</select>
-</label>
-
-<p>${t("currencyNote")}</p>
-</article>
-
-</div>
-</section>
-`;
-
-document.body.appendChild(root);
-
-const $ = id => document.getElementById(id);
-
-/* الإعدادات */
-
-$("vp-lang").value = lang;
-$("vp-currency").value = currency;
-$("vp-lang-settings").value = lang;
-$("vp-currency-settings").value = currency;
-
-/* التنقل */
-
-function showLogin(){
-$("vp-splash").hidden = true;
-$("vp-login").hidden = false;
-}
-
-function enterApp(){
-$("vp-overlay").hidden = true;
-$("vp-toolbar").hidden = false;
-document.documentElement.lang = lang;
-document.documentElement.dir = direction;
-updateHistory();
-}
-
-$("vp-start").onclick = showLogin;
-$("vp-enter").onclick = enterApp;
-$("vp-skip").onclick = enterApp;
-
-$("vp-lang").onchange = e => {
-localStorage.setItem("vp_lang",e.target.value);
-location.reload();
-};
-
-$("vp-lang-settings").onchange = e => {
-localStorage.setItem("vp_lang",e.target.value);
-location.reload();
-};
-
-$("vp-language").onclick = () => {
-const i = LANGS.indexOf(lang);
-localStorage.setItem("vp_lang",LANGS[(i+1)%3]);
-location.reload();
-};
-
-$("vp-currency").onchange = e => {
-currency = e.target.value;
-localStorage.setItem("vp_currency",currency);
-};
-
-$("vp-currency-settings").onchange = e => {
-currency = e.target.value;
-localStorage.setItem("vp_currency",currency);
-$("vp-currency").value = currency;
-};
-
-/* فتح وإغلاق الأدوات */
-
-$("vp-open").onclick = () => {
-$("vp-panel").classList.add("open");
-updateHistory();
-};
-
-$("vp-close").onclick = () => {
-$("vp-panel").classList.remove("open");
-};
-
-/* سجل التحليلات */
-
-function getHistory(){
-try{
-return JSON.parse(localStorage.getItem("vp_history") || "[]");
-}catch{
-return [];
-}
-}
-
-function updateHistory(){
-const arr = getHistory();
-
-$("vp-history").innerHTML = arr.length
-? arr.slice(-10).reverse().map(x =>
-`<div style="border-bottom:1px solid #493363;padding:7px">
-${x.date} — ${format(x.diff)} ${x.currency}
-(${format(x.pct)}%)
-</div>`
-).join("")
-: "لا توجد تحليلات مسجلة";
-}
-
-/* حساب الفروقات */
-
-$("vp-calculate").onclick = () => {
-
-const standard = Number($("vp-standard").value);
-const actual = Number($("vp-actual").value);
-const type = $("vp-type").value;
-
-if(!Number.isFinite(standard) ||
-!Number.isFinite(actual) ||
-standard === 0){
-
-$("vp-result").textContent =
-"أدخل قيماً صحيحة، ولا تجعل القيمة المعيارية صفراً.";
-
-return;
-}
-
-const diff = actual - standard;
-const pct = diff / Math.abs(standard) * 100;
-
-const favorable =
-type === "production" ? diff >= 0 : diff <= 0;
-
-const status = diff === 0
-? t("neutral")
-: favorable
-? t("favorable")
-: t("unfavorable");
-
-const sign = diff > 0 ? "+" : "";
-
-$("vp-result").innerHTML = `
-${t("variance")}:
-<b>${sign}${format(diff)} ${currency}</b>
-<br>
-${t("percent")}:
-<b>${sign}${format(pct)}%</b>
-<br>
-<span class="${favorable?"vp-good":"vp-bad"}">
-${status}
-</span>
-`;
-
-const history = getHistory();
-
-history.push({
-date:new Date().toLocaleString(),
-standard,
-actual,
-diff,
-pct,
-currency,
-status
-});
-
-localStorage.setItem("vp_history",JSON.stringify(history));
-
-updateHistory();
-
-};
-
-/* تصدير CSV */
-
-$("vp-export").onclick = () => {
-
-const history = getHistory();
-
-const rows = [
-["Date","Standard","Actual","Variance","Percentage","Currency","Status"],
-...history.map(x=>[
-x.date,
-x.standard,
-x.actual,
-x.diff,
-x.pct,
-x.currency,
-x.status
-])
-];
-
-const csv = "\uFEFF" +
-rows.map(row =>
-row.map(v =>
-`"${String(v ?? "").replace(/"/g,'""')}"`
-).join(",")
-).join("\n");
-
-const blob = new Blob([csv],{
-type:"text/csv;charset=utf-8"
-});
-
-const url = URL.createObjectURL(blob);
-const a = document.createElement("a");
-
-a.href = url;
-a.download = "variance-pro-report.csv";
-a.click();
-
-URL.revokeObjectURL(url);
-
-};
-
-/* مسح السجل */
-
-$("vp-clear").onclick = () => {
-
-if(confirm("هل تريد مسح سجل التحليلات المحلي؟")){
-
-localStorage.removeItem("vp_history");
-updateHistory();
-
-}
-
-};
-
-/* تحويل العملات */
-
-window.VariancePro = {
-
-get language(){return lang},
-
-get currency(){return currency},
-
-rates:RATES,
-
-convert(amount,from,to){
-
-if(!RATES[from] || !RATES[to]){
-throw new Error("عملة غير مدعومة");
-}
-
-return amount * RATES[from] / RATES[to];
-
-},
-
-open(){
-$("vp-panel").classList.add("open");
-},
-
-close(){
-$("vp-panel").classList.remove("open");
-}
-
-};
-
-/* بداية العرض */
-
-if(sessionStorage.getItem("vp_seen") === "1"){
-showLogin();
-}
-
-$("vp-start").addEventListener("click",()=>{
-sessionStorage.setItem("vp_seen","1");
-},{once:true});
-
-})();
+      margin-bottom: 9px
