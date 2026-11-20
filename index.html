@@ -2,1527 +2,265 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#070d19" />
-  <title>تحليل الانحرافات — Analyse des Écarts</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تحليل الفروقات</title>
   <style>
-    :root {
-      --bg: #070d19;
-      --panel: #0f172a;
-      --panel-2: #162033;
-      --panel-3: #1e293b;
-      --line: rgba(148, 163, 184, 0.16);
-      --line-strong: rgba(148, 163, 184, 0.28);
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --accent-2: #6366f1;
-      --fav: #10b981;
-      --fav-bg: rgba(16, 185, 129, 0.14);
-      --unfav: #f43f5e;
-      --unfav-bg: rgba(244, 63, 94, 0.14);
-      --warn: #f59e0b;
-      --warn-bg: rgba(245, 158, 11, 0.14);
-      --radius: 16px;
-      --radius-sm: 11px;
-      --nav-h: 68px;
-    }
-
     * {
       box-sizing: border-box;
+    }
+
+    body {
       margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
+      padding: 16px 16px 90px 16px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
     }
 
-    html, body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-      padding-bottom: calc(var(--nav-h) + 22px);
+    h1 {
+      font-size: 20px;
+      margin: 0 0 14px 0;
     }
 
-    /* Top Header */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      background: rgba(7, 13, 25, 0.88);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--line);
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .brand-logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 11px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      color: #fff;
-      font-size: 15px;
-      flex-shrink: 0;
-    }
-
-    .brand-title {
-      font-size: 14px;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .brand-sub {
-      font-size: 11px;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .top-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    select, input, textarea, button {
-      font-family: inherit;
-      color: var(--text);
-    }
-
-    select.ctrl-select {
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      border-radius: 9px;
-      padding: 6px 8px;
-      font-size: 12px;
-      font-weight: 600;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .user-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 5px 10px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .user-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--fav);
-    }
-
-    /* Main Container */
-    .container {
-      max-width: 1120px;
-      margin: 0 auto;
+    .box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
       padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 5px;
+      color: #cbd5e1;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 11px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #64748b;
+      background: #0f172a;
+      color: #ffffff;
+      display: block;
+    }
+
+    button.action-btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: #ffffff;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    .result {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #0f172a;
+      border: 1px solid #475569;
+      font-size: 14px;
+      line-height: 1.7;
     }
 
     .page {
       display: none;
-      animation: fadeIn 0.2s ease;
     }
 
     .page.active {
       display: block;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Alert Banner */
-    .alert-banner {
-      background: var(--unfav-bg);
-      border: 1px solid rgba(244, 63, 94, 0.35);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 12.5px;
-    }
-
-    .alert-banner.show {
-      display: flex;
-    }
-
-    /* KPI Grid */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .kpi-card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px;
-    }
-
-    .kpi-label {
-      font-size: 11.5px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .kpi-val {
-      font-size: 20px;
-      font-weight: 800;
-    }
-
-    .kpi-sub {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .text-fav { color: var(--fav); }
-    .text-unfav { color: var(--unfav); }
-    .text-warn { color: var(--warn); }
-    .text-accent { color: var(--accent); }
-
-    /* Cards & Layout */
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .card-title {
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 14px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 12px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .field label {
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .field input, .field select, .field textarea {
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-sm);
-      padding: 10px 12px;
-      font-size: 13px;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
-    .field input:focus, .field select:focus, .field textarea:focus {
-      border-color: var(--accent);
-    }
-
-    /* Live Calculation Preview */
-    .calc-preview {
-      background: var(--panel-2);
-      border: 1px solid var(--line-strong);
-      border-radius: var(--radius-sm);
-      padding: 12px;
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 10px;
-    }
-
-    .calc-item-label {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .calc-item-val {
-      font-size: 15px;
-      font-weight: 700;
-      margin-top: 2px;
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 9px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.1s, opacity 0.15s;
-    }
-
-    .btn:active { transform: scale(0.98); }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #fff;
-    }
-
-    .btn-ghost {
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      color: var(--text);
-    }
-
-    .btn-danger {
-      background: var(--unfav-bg);
-      border: 1px solid rgba(244, 63, 94, 0.35);
-      color: var(--unfav);
-    }
-
-    .btn-sm {
-      padding: 6px 10px;
-      font-size: 11.5px;
-      border-radius: 8px;
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
-
-    /* Tags & Chips */
-    .chip-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 6px;
-    }
-
-    .chip {
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 6px 11px;
-      font-size: 12px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .chip.selected {
-      background: rgba(56, 189, 248, 0.18);
-      border-color: var(--accent);
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .badge-fav {
-      background: var(--fav-bg);
-      color: var(--fav);
-    }
-
-    .badge-unfav {
-      background: var(--unfav-bg);
-      color: var(--unfav);
-    }
-
-    .badge-neutral {
-      background: var(--panel-3);
-      color: var(--muted);
-    }
-
-    /* Table */
-    .table-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-sm);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12.5px;
-    }
-
-    th, td {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--line);
-      text-align: start;
-      white-space: nowrap;
-    }
-
-    th {
-      background: var(--panel-2);
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 11.5px;
-    }
-
-    tr:last-child td { border-bottom: none; }
-
-    /* AI Chat */
-    .chat-box {
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 12px;
-      height: 360px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .msg {
-      max-width: 86%;
-      padding: 10px 13px;
-      border-radius: 14px;
-      font-size: 13px;
-      line-height: 1.55;
-      white-space: pre-line;
-    }
-
-    .msg-ai {
-      align-self: flex-start;
-      background: var(--panel-3);
-      border: 1px solid var(--line);
-    }
-
-    .msg-user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #fff;
-    }
-
-    .chat-input-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    .chat-input-row input {
-      flex: 1;
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-sm);
-      padding: 10px 12px;
-      font-size: 13px;
-      outline: none;
-    }
-
-    /* Instagram-style Bottom Navigation Bar */
-    .bottom-nav {
+    .bottom-bar {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: var(--nav-h);
-      background: rgba(10, 17, 32, 0.94);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid var(--line-strong);
+      background: #1e293b;
+      border-top: 1px solid #334155;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      align-items: center;
-      z-index: 40;
-      padding: 0 4px;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 6px;
+      gap: 4px;
     }
 
-    .nav-btn {
+    .nav-item {
       background: transparent;
       border: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      color: var(--muted);
-      font-size: 10.5px;
-      font-weight: 600;
+      color: #cbd5e1;
+      padding: 8px 4px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: bold;
       cursor: pointer;
-      height: 100%;
-      transition: color 0.15s;
     }
 
-    .nav-btn svg {
-      width: 22px;
-      height: 22px;
-      stroke-width: 2;
-    }
-
-    .nav-btn.active {
-      color: var(--text);
-    }
-
-    .nav-btn.active svg {
-      stroke: var(--accent);
-    }
-
-    .nav-ai-pill {
-      width: 38px;
-      height: 32px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      display: grid;
-      place-items: center;
-      color: #fff;
-      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.28);
-    }
-
-    .nav-btn.active .nav-ai-pill {
-      transform: scale(1.06);
-    }
-
-    /* Modal */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.65);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 60;
-      padding: 16px;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal-card {
-      width: 100%;
-      max-width: 440px;
-      background: var(--panel);
-      border: 1px solid var(--line-strong);
-      border-radius: var(--radius);
-      padding: 18px;
-    }
-
-    .summary-box {
-      background: var(--panel-2);
-      border-radius: var(--radius-sm);
-      padding: 12px;
-      font-size: 13px;
-      line-height: 1.65;
-      color: var(--text);
-    }
-
-    @media print {
-      .topbar, .bottom-nav, .no-print { display: none !important; }
-      body { background: #fff; color: #000; padding: 0; }
-      .card { border: 1px solid #ccc; background: #fff; color: #000; break-inside: avoid; }
+    .nav-item.active {
+      background: #2563eb;
+      color: #ffffff;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Bar -->
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-logo">Δ</div>
-      <div>
-        <div class="brand-title" id="t-appTitle">تحليل الانحرافات</div>
-        <div class="brand-sub" id="t-appSub">متابعة الأداء والانحرافات المالية والتشغيلية</div>
+  <h1>تحليل الفروقات</h1>
+
+  <!-- 1. المواد -->
+  <div id="p-mat" class="page active">
+    <div class="box">
+      <div class="field">
+        <label>الكمية الفعلية (AQ)</label>
+        <input type="text" inputmode="decimal" id="aq" placeholder="مثال: 1200" />
       </div>
-    </div>
-
-    <div class="top-controls no-print">
-      <select id="langSelect" class="ctrl-select" aria-label="Language">
-        <option value="ar">العربية</option>
-        <option value="fr">Français</option>
-        <option value="en">English</option>
-        <option value="es">Español</option>
-      </select>
-
-      <select id="currencySelect" class="ctrl-select" aria-label="Currency">
-        <option value="DZD">DZD (د.ج)</option>
-        <option value="EUR">EUR (€)</option>
-        <option value="USD">USD ($)</option>
-        <option value="GBP">GBP (£)</option>
-        <option value="SAR">SAR (ر.س)</option>
-      </select>
-
-      <button type="button" class="user-chip" id="userBtn">
-        <span class="user-dot"></span>
-        <span id="currentUserLabel">مراقب التسيير</span>
-      </button>
-    </div>
-  </header>
-
-  <main class="container">
-    <!-- Alert Banner for Large Variances -->
-    <div class="alert-banner no-print" id="alertBanner">
-      <span id="alertText"></span>
-      <button type="button" class="btn btn-sm btn-danger" id="dismissAlertBtn">×</button>
-    </div>
-
-    <!-- 1. DASHBOARD PAGE -->
-    <section class="page active" id="page-dashboard">
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label" id="k-totalLabel">إجمالي الانحرافات</div>
-          <div class="kpi-val text-accent" id="kpiTotal">0</div>
-          <div class="kpi-sub" id="k-totalSub">جميع السجلات</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label" id="k-favLabel">انحرافات إيجابية (ملائمة)</div>
-          <div class="kpi-val text-fav" id="kpiFav">0</div>
-          <div class="kpi-sub" id="k-favSub">أداء أفضل من المتوقع</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label" id="k-unfavLabel">انحرافات سلبية (غير ملائمة)</div>
-          <div class="kpi-val text-unfav" id="kpiUnfav">0</div>
-          <div class="kpi-sub" id="k-unfavSub">تحتاج تدخلاً سريعاً</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label" id="k-achLabel">نسبة تحقيق الأهداف</div>
-          <div class="kpi-val text-warn" id="kpiAch">0%</div>
-          <div class="kpi-sub" id="k-achSub">المتوسط العام للإنجاز</div>
-        </div>
+      <div class="field">
+        <label>الكمية المعيارية (SQ)</label>
+        <input type="text" inputmode="decimal" id="sq" placeholder="مثال: 1000" />
       </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title" id="t-execSummaryTitle">الملخص المالي والتشغيلي</div>
-          <button type="button" class="btn btn-sm btn-ghost no-print" id="goEntryBtn">+ إدخال انحراف جديد</button>
-        </div>
-        <div class="summary-box" id="execSummaryText"></div>
+      <div class="field">
+        <label>السعر الفعلي (AP)</label>
+        <input type="text" inputmode="decimal" id="ap" placeholder="مثال: 55" />
       </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title" id="t-chartCompTitle">التوقعات مقابل الإنجازات</div>
-          </div>
-          <canvas id="chartComparison" height="210"></canvas>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title" id="t-chartTrendTitle">تطور الانحرافات حسب الفترة</div>
-          </div>
-          <canvas id="chartTrend" height="210"></canvas>
-        </div>
+      <div class="field">
+        <label>السعر المعياري (SP)</label>
+        <input type="text" inputmode="decimal" id="sp" placeholder="مثال: 50" />
       </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title" id="t-chartDeptTitle">مقارنة الأقسام والمصالح</div>
-          </div>
-          <canvas id="chartDept" height="210"></canvas>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title" id="t-chartCausesTitle">ترتيب المشاكل الأكثر تكراراً</div>
-          </div>
-          <canvas id="chartCauses" height="210"></canvas>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. DATA ENTRY & AUTOMATIC CALCULATION PAGE -->
-    <section class="page" id="page-entry">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title" id="t-entryTitle">إدخال البيانات والحساب الآلي للانحراف</div>
-          <button type="button" class="btn btn-sm btn-ghost" id="resetFormBtn">تفريغ الحقول</button>
-        </div>
-
-        <form id="varianceForm">
-          <input type="hidden" id="editId" />
-          <div class="form-grid">
-            <div class="field">
-              <label id="l-company">اسم المؤسسة</label>
-              <input type="text" id="company" required placeholder="مثال: مؤسسة الأمل الصناعية" />
-            </div>
-            <div class="field">
-              <label id="l-dept">القسم أو المصلحة</label>
-              <select id="department">
-                <option value="الإنتاج">الإنتاج / Production</option>
-                <option value="المبيعات والتسويق">المبيعات والتسويق / Ventes</option>
-                <option value="المالية والمحاسبة">المالية والمحاسبة / Finance</option>
-                <option value="الموارد البشرية">الموارد البشرية / RH</option>
-                <option value="المخزون واللوجستيك">المخزون واللوجستيك / Stocks</option>
-              </select>
-            </div>
-            <div class="field">
-              <label id="l-periodType">نوع الفترة</label>
-              <select id="periodType">
-                <option value="month">شهر / Mois</option>
-                <option value="quarter">فصل / Trimestre</option>
-                <option value="year">سنة / Année</option>
-              </select>
-            </div>
-            <div class="field">
-              <label id="l-periodLabel">الفترة الزمنية</label>
-              <input type="text" id="periodLabel" required placeholder="مثال: 2026-11 أو T4-2026" />
-            </div>
-            <div class="field">
-              <label id="l-entryDate">تاريخ الإدخال</label>
-              <input type="date" id="entryDate" required />
-            </div>
-            <div class="field">
-              <label id="l-type">نوع الانحراف</label>
-              <select id="varianceType">
-                <option value="sales">انحراف المبيعات / Écart sur les ventes</option>
-                <option value="production">انحراف الإنتاج / Écart sur la production</option>
-                <option value="costs">انحراف التكاليف / Écart sur les coûts</option>
-                <option value="budget">انحراف الميزانية / Écart budgétaire</option>
-                <option value="labor">انحراف اليد العاملة / Écart sur la main-d'œuvre</option>
-                <option value="materials">انحراف المواد الأولية / Écart sur les matières premières</option>
-                <option value="yield">انحراف المردودية / Écart de rendement</option>
-                <option value="charges">انحراف الأعباء / Écart sur les charges</option>
-                <option value="stocks">انحراف المخزون / Écart sur les stocks</option>
-                <option value="profit">انحراف الأرباح / Écart sur les bénéfices</option>
-              </select>
-            </div>
-            <div class="field">
-              <label id="l-forecast">القيمة التقديرية (Prévision)</label>
-              <input type="number" step="any" id="forecastVal" required placeholder="0" />
-            </div>
-            <div class="field">
-              <label id="l-actual">القيمة الفعلية (Réalisation)</label>
-              <input type="number" step="any" id="actualVal" required placeholder="0" />
-            </div>
-            <div class="field">
-              <label id="l-target">الهدف المسطر (Objectif)</label>
-              <input type="number" step="any" id="targetVal" placeholder="0" />
-            </div>
-          </div>
-
-          <!-- Live Calculation Box -->
-          <div class="calc-preview">
-            <div>
-              <div class="calc-item-label" id="c-varLabel">الانحراف (فعلي - تقديري)</div>
-              <div class="calc-item-val" id="liveVar">0.00</div>
-            </div>
-            <div>
-              <div class="calc-item-label" id="c-rateLabel">نسبة الانحراف (%)</div>
-              <div class="calc-item-val" id="liveRate">0.00%</div>
-            </div>
-            <div>
-              <div class="calc-item-label" id="c-achLabel">نسبة الإنجاز (%)</div>
-              <div class="calc-item-val" id="liveAch">0.00%</div>
-            </div>
-            <div>
-              <div class="calc-item-label" id="c-statusLabel">التقييم</div>
-              <div class="calc-item-val" id="liveStatus">—</div>
-            </div>
-          </div>
-
-          <div class="btn-row">
-            <button type="submit" class="btn btn-primary" id="saveVarianceBtn">حفظ التحليل</button>
-            <button type="button" class="btn btn-ghost" id="analyzeWithAiBtn">تحليل بالمساعد الذكي</button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- 3. AI ASSISTANT PAGE (CENTER PIECE IN BOTTOM NAV) -->
-    <section class="page" id="page-ai">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title" id="t-aiTitle">المساعد الذكي لتحليل الانحرافات</div>
-          <button type="button" class="btn btn-sm btn-ghost" id="clearChatBtn">مسح المحادثة</button>
-        </div>
-
-        <div class="chip-group no-print" id="aiQuickPrompts">
-          <span class="chip" data-prompt="لخص وضع الانحرافات الحالي وأهم المخاطر">ملخص الوضع الحالي</span>
-          <span class="chip" data-prompt="ما هي أبرز أسباب انحراف التكاليف والمواد وكيف نعالجها؟">أسباب التكاليف وحلولها</span>
-          <span class="chip" data-prompt="اشرح قوانين حساب الانحراف ونسبة الإنجاز مع مثال">قوانين الحساب ومثال</span>
-          <span class="chip" data-prompt="اقترح خطة تصحيحية لتحسين الأداء والربحية">خطة تصحيحية</span>
-        </div>
-
-        <div class="chat-box" id="chatBox" style="margin-top:10px;"></div>
-
-        <form class="chat-input-row no-print" id="chatForm">
-          <input type="text" id="chatInput" placeholder="اكتب سؤالك حول الانحرافات، الأسباب، أو الحلول..." required />
-          <button type="submit" class="btn btn-primary" id="sendChatBtn">إرسال</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- 4. CAUSES, SOLUTIONS & FOLLOW-UP PAGE -->
-    <section class="page" id="page-diagnosis">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title" id="t-diagTitle">تشخيص الأسباب والحلول المقترحة</div>
-          <select id="diagRecordSelect" class="ctrl-select"></select>
-        </div>
-
-        <div class="grid-2">
-          <div>
-            <div class="field">
-              <label id="l-causesGroup">الأسباب المحتملة للانحراف</label>
-              <div class="chip-group" id="causesChips"></div>
-            </div>
-            <div class="field" style="margin-top:10px;">
-              <label id="l-customCause">ملاحظات إضافية حول السبب</label>
-              <textarea id="causeNotes" rows="2" placeholder="أضف تفاصيل السبب إن وجدت..."></textarea>
-            </div>
-          </div>
-
-          <div>
-            <div class="field">
-              <label id="l-solutionsGroup">الحلول والإجراءات التصحيحية المقترحة</label>
-              <div class="chip-group" id="solutionsChips"></div>
-            </div>
-            <div class="field" style="margin-top:10px;">
-              <label id="l-effLabel">تقييم فاعلية الإجراء المطبق (%)</label>
-              <input type="number" min="0" max="100" id="effectivenessVal" placeholder="مثال: 85" />
-            </div>
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button type="button" class="btn btn-primary" id="saveDiagBtn">حفظ التشخيص والحلول</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. HISTORY, USERS & REPORTS PAGE -->
-    <section class="page" id="page-history">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title" id="t-histTitle">السجل، الفلترة، والتقارير</div>
-          <div class="btn-row no-print" style="margin-top:0;">
-            <button type="button" class="btn btn-sm btn-ghost" id="exportCsvBtn">تصدير CSV</button>
-            <button type="button" class="btn btn-sm btn-primary" id="printReportBtn">طباعة / PDF</button>
-          </div>
-        </div>
-
-        <div class="form-grid no-print" style="margin-bottom:12px;">
-          <div class="field">
-            <label id="l-search">بحث سريع</label>
-            <input type="text" id="searchInput" placeholder="مؤسسة، فترة، نوع..." />
-          </div>
-          <div class="field">
-            <label id="l-filterDept">تصفية حسب القسم</label>
-            <select id="filterDept">
-              <option value="ALL">الكل / Tous</option>
-              <option value="الإنتاج">الإنتاج</option>
-              <option value="المبيعات والتسويق">المبيعات والتسويق</option>
-              <option value="المالية والمحاسبة">المالية والمحاسبة</option>
-              <option value="الموارد البشرية">الموارد البشرية</option>
-              <option value="المخزون واللوجستيك">المخزون واللوجستيك</option>
-            </select>
-          </div>
-          <div class="field">
-            <label id="l-filterPeriod">تصفية حسب الفترة</label>
-            <input type="text" id="filterPeriod" placeholder="مثال: 2026-11" />
-          </div>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th id="th-company">المؤسسة</th>
-                <th id="th-dept">القسم</th>
-                <th id="th-period">الفترة</th>
-                <th id="th-type">النوع</th>
-                <th id="th-forecast">التقديري</th>
-                <th id="th-actual">الفعلي</th>
-                <th id="th-var">الانحراف</th>
-                <th id="th-rate">النسبة</th>
-                <th id="th-status">الحالة</th>
-                <th id="th-actions" class="no-print">إجراءات</th>
-              </tr>
-            </thead>
-            <tbody id="recordsTbody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Detailed Report Summary Card -->
-      <div class="card" id="detailedReportCard">
-        <div class="card-header">
-          <div class="card-title" id="t-repSummaryTitle">التقرير التفصيلي للأسباب والحلول</div>
-        </div>
-        <div class="summary-box" id="detailedReportContent"></div>
-      </div>
-    </section>
-  </main>
-
-  <!-- User Profile & Permissions Modal -->
-  <div class="modal-backdrop no-print" id="userModal">
-    <div class="modal-card">
-      <div class="card-header">
-        <div class="card-title" id="t-userModalTitle">إدارة المستخدم والصلاحيات</div>
-        <button type="button" class="btn btn-sm btn-ghost" id="closeUserModal">×</button>
-      </div>
-      <div class="form-grid">
-        <div class="field">
-          <label id="l-userName">اسم المستخدم</label>
-          <input type="text" id="userNameInput" />
-        </div>
-        <div class="field">
-          <label id="l-userRole">الدور والصلاحية</label>
-          <select id="userRoleInput">
-            <option value="contrôleur">مراقب التسيير (إدخال + تعديل + تقارير)</option>
-            <option value="manager">مدير القسم (مراجعة + تشخيص + تقارير)</option>
-            <option value="viewer">مطالع (عرض وتصدير فقط)</option>
-          </select>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button type="button" class="btn btn-primary" id="saveUserBtn">حفظ الملف الشخصي</button>
-      </div>
+      <button class="action-btn" onclick="calcMat()">احسب فروقات المواد</button>
+      <div id="resMat" class="result">أدخلي الأرقام ثم اضغطي على زر الحساب.</div>
     </div>
   </div>
 
-  <!-- Instagram-style Bottom Navigation Bar -->
-  <nav class="bottom-nav no-print" aria-label="Bottom Navigation">
-    <button type="button" class="nav-btn active" data-page="page-dashboard">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z" />
-      </svg>
-      <span id="nav-dash">الرئيسية</span>
-    </button>
+  <!-- 2. اليد العاملة -->
+  <div id="p-lab" class="page">
+    <div class="box">
+      <div class="field">
+        <label>الساعات الفعلية (AH)</label>
+        <input type="text" inputmode="decimal" id="ah" placeholder="مثال: 420" />
+      </div>
+      <div class="field">
+        <label>الساعات المعيارية (SH)</label>
+        <input type="text" inputmode="decimal" id="sh" placeholder="مثال: 400" />
+      </div>
+      <div class="field">
+        <label>الأجر الفعلي للساعة (AR)</label>
+        <input type="text" inputmode="decimal" id="ar" placeholder="مثال: 320" />
+      </div>
+      <div class="field">
+        <label>الأجر المعياري للساعة (SR)</label>
+        <input type="text" inputmode="decimal" id="sr" placeholder="مثال: 300" />
+      </div>
+      <button class="action-btn" onclick="calcLab()">احسب فروقات اليد العاملة</button>
+      <div id="resLab" class="result">أدخلي الأرقام ثم اضغطي على زر الحساب.</div>
+    </div>
+  </div>
 
-    <button type="button" class="nav-btn" data-page="page-entry">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <rect x="3" y="3" width="18" height="18" rx="4" />
-        <path d="M12 8v8M8 12h8" />
-      </svg>
-      <span id="nav-entry">إدخال</span>
-    </button>
+  <!-- 3. المساعد -->
+  <div id="p-ai" class="page">
+    <div class="box">
+      <div class="field">
+        <label>اكتبي سؤالك هنا</label>
+        <input type="text" id="qInput" placeholder="مثال: ما الفرق بين F و U؟" />
+      </div>
+      <button class="action-btn" onclick="answerQ()">إجابة</button>
+      <div id="resAI" class="result">اسألي عن الفروقات أو القوانين.</div>
+    </div>
+  </div>
 
-    <button type="button" class="nav-btn" data-page="page-ai">
-      <span class="nav-ai-pill">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:18px;height:18px;">
-          <path d="M12 3v3m0 12v3M4.9 4.9l2.1 2.1m10 10 2.1 2.1M3 12h3m12 0h3M4.9 19.1l2.1-2.1m10-10 2.1-2.1" />
-        </svg>
-      </span>
-      <span id="nav-ai">الذكاء</span>
-    </button>
+  <!-- 4. السجل -->
+  <div id="p-hist" class="page">
+    <div class="box">
+      <div id="resHist" class="result">لا توجد عمليات محفوظة بعد.</div>
+      <button class="action-btn" onclick="clearHist()">مسح السجل</button>
+    </div>
+  </div>
 
-    <button type="button" class="nav-btn" data-page="page-diagnosis">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M9 11l3 3L22 4" />
-        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-      </svg>
-      <span id="nav-diag">الحلول</span>
-    </button>
-
-    <button type="button" class="nav-btn" data-page="page-history">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <path d="M14 2v6h6M8 13h8M8 17h5" />
-      </svg>
-      <span id="nav-hist">السجل</span>
-    </button>
-  </nav>
+  <div class="bottom-bar">
+    <button class="nav-item active" onclick="openPage('p-mat', this)">المواد</button>
+    <button class="nav-item" onclick="openPage('p-lab', this)">اليد العاملة</button>
+    <button class="nav-item" onclick="openPage('p-ai', this)">المساعد</button>
+    <button class="nav-item" onclick="openPage('p-hist', this)">السجل</button>
+  </div>
 
   <script>
-    (function () {
-      const STORAGE_KEY = "variance_suite_v4_data";
-      const CURRENCY_RATES = {
-        DZD: { symbol: "د.ج", rate: 1 },
-        EUR: { symbol: "€", rate: 0.0068 },
-        USD: { symbol: "$", rate: 0.0074 },
-        GBP: { symbol: "£", rate: 0.0058 },
-        SAR: { symbol: "ر.س", rate: 0.0278 }
-      };
+    let hist = JSON.parse(localStorage.getItem('simple_va_hist') || '[]');
 
-      const I18N = {
-        ar: {
-          appTitle: "تحليل الانحرافات",
-          appSub: "متابعة الأداء والانحرافات المالية والتشغيلية",
-          navDash: "الرئيسية", navEntry: "إدخال", navAi: "الذكاء", navDiag: "الحلول", navHist: "السجل",
-          totalLabel: "إجمالي الانحرافات", favLabel: "انحرافات إيجابية (ملائمة)",
-          unfavLabel: "انحرافات سلبية (غير ملائمة)", achLabel: "نسبة تحقيق الأهداف",
-          fav: "ملائم", unfav: "غير ملائم", neutral: "متعادل",
-          alertMsg: (n, pct) => `تنبيه: يوجد ${n} انحراف يتجاوز عتبة التنبيه (${pct}%).`
-        },
-        fr: {
-          appTitle: "Analyse des Écarts",
-          appSub: "Suivi financier, opérationnel et aide à la décision",
-          navDash: "Tableau", navEntry: "Saisie", navAi: "IA", navDiag: "Causes", navHist: "Historique",
-          totalLabel: "Total des écarts", favLabel: "Écarts favorables",
-          unfavLabel: "Écarts défavorables", achLabel: "Taux de réalisation",
-          fav: "Favorable", unfav: "Défavorable", neutral: "Neutre",
-          alertMsg: (n, pct) => `Alerte : ${n} écart(s) dépassent le seuil (${pct}%).`
-        },
-        en: {
-          appTitle: "Variance Analysis",
-          appSub: "Financial & operational performance tracking",
-          navDash: "Dashboard", navEntry: "Entry", navAi: "AI", navDiag: "Solutions", navHist: "History",
-          totalLabel: "Total Variances", favLabel: "Favorable Variances",
-          unfavLabel: "Unfavorable Variances", achLabel: "Goal Achievement Rate",
-          fav: "Favorable", unfav: "Unfavorable", neutral: "Neutral",
-          alertMsg: (n, pct) => `Alert: ${n} variance(s) exceed threshold (${pct}%).`
-        },
-        es: {
-          appTitle: "Análisis de Desviaciones",
-          appSub: "Seguimiento financiero y operativo",
-          navDash: "Panel", navEntry: "Entrada", navAi: "IA", navDiag: "Causas", navHist: "Historial",
-          totalLabel: "Total desviaciones", favLabel: "Desviaciones favorables",
-          unfavLabel: "Desviaciones desfavorables", achLabel: "Tasa de cumplimiento",
-          fav: "Favorable", unfav: "Desfavorable", neutral: "Neutral",
-          alertMsg: (n, pct) => `Alerta: ${n} desviación(es) superan el umbral (${pct}%).`
-        }
-      };
+    function openPage(id, btn) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      showHist();
+    }
 
-      const TYPE_LABELS = {
-        sales: { ar: "انحراف المبيعات", fr: "Écart sur les ventes", en: "Sales Variance", es: "Desviación de ventas", favorableWhenPositive: true },
-        production: { ar: "انحراف الإنتاج", fr: "Écart sur la production", en: "Production Variance", es: "Desviación de producción", favorableWhenPositive: true },
-        costs: { ar: "انحراف التكاليف", fr: "Écart sur les coûts", en: "Costs Variance", es: "Desviación de costes", favorableWhenPositive: false },
-        budget: { ar: "انحراف الميزانية", fr: "Écart budgétaire", en: "Budget Variance", es: "Desviación presupuestaria", favorableWhenPositive: false },
-        labor: { ar: "انحراف اليد العاملة", fr: "Écart sur la main-d'œuvre", en: "Labor Variance", es: "Desviación de mano de obra", favorableWhenPositive: false },
-        materials: { ar: "انحراف المواد الأولية", fr: "Écart sur les matières premières", en: "Materials Variance", es: "Desviación de materias primas", favorableWhenPositive: false },
-        yield: { ar: "انحراف المردودية", fr: "Écart de rendement", en: "Yield Variance", es: "Desviación de rendimiento", favorableWhenPositive: true },
-        charges: { ar: "انحراف الأعباء", fr: "Écart sur les charges", en: "Charges Variance", es: "Desviación de cargas", favorableWhenPositive: false },
-        stocks: { ar: "انحراف المخزون", fr: "Écart sur les stocks", en: "Stocks Variance", es: "Desviación de existencias", favorableWhenPositive: true },
-        profit: { ar: "انحراف الأرباح", fr: "Écart sur les bénéfices", en: "Profit Variance", es: "Desviación de beneficios", favorableWhenPositive: true }
-      };
+    function num(id) {
+      const val = document.getElementById(id).value.replace(',', '.');
+      return parseFloat(val) || 0;
+    }
 
-      const CAUSES_LIST = [
-        { id: "c1", label: "انخفاض المبيعات / Baisse des ventes" },
-        { id: "c2", label: "تناقص العملاء أو ضعف الإشهار / Clients & pub" },
-        { id: "c3", label: "عطل الآلات أو تأخر الإنتاج / Panne & retard" },
-        { id: "c4", label: "نقص المواد الأولية / Manque matières" },
-        { id: "c5", label: "تجاوز الميزانية أو ارتفاع الأعباء / Dépassement budget" },
-        { id: "c6", label: "ضعف مردودية العمال أو نقص التكوين / RH & rendement" },
-        { id: "c7", label: "نفاد المخزون أو سوء إدارته / Rupture de stock" }
-      ];
+    function saveItem(text) {
+      hist.unshift(text);
+      hist = hist.slice(0, 20);
+      localStorage.setItem('simple_va_hist', JSON.stringify(hist));
+      showHist();
+    }
 
-      const SOLUTIONS_LIST = [
-        { id: "s1", label: "تقليص النفقات غير الضرورية / Réduire dépenses" },
-        { id: "s2", label: "تحسين الإنتاجية والمردودية / Améliorer productivité" },
-        { id: "s3", label: "تعزيز الاستراتيجية التجارية / Stratégie commerciale" },
-        { id: "s4", label: "تكوين الموظفين / Former employés" },
-        { id: "s5", label: "تحسين إدارة المخزون / Gestion des stocks" },
-        { id: "s6", label: "صيانة دورية للآلات / Maintenance machines" },
-        { id: "s7", label: "مراجعة التقديرات ومراقبة التسيير / Réviser prévisions" }
-      ];
+    function showHist() {
+      const box = document.getElementById('resHist');
+      box.innerHTML = hist.length ? hist.map(x => '• ' + x).join('<br>') : 'لا توجد عمليات محفوظة بعد.';
+    }
 
-      const DEFAULT_RECORDS = [
-        {
-          id: "rec-1",
-          company: "مؤسسة الأمل الصناعية",
-          department: "الإنتاج",
-          periodType: "month",
-          periodLabel: "2026-10",
-          entryDate: "2026-10-31",
-          type: "materials",
-          forecast: 450000,
-          actual: 517500,
-          target: 450000,
-          causes: ["c4", "c5"],
-          causeNotes: "ارتفاع أسعار المواد الأولية في السوق.",
-          solutions: ["s5", "s7"],
-          effectiveness: 75
-        },
-        {
-          id: "rec-2",
-          company: "مؤسسة الأمل الصناعية",
-          department: "المبيعات والتسويق",
-          periodType: "month",
-          periodLabel: "2026-11",
-          entryDate: "2026-11-18",
-          type: "sales",
-          forecast: 800000,
-          actual: 920000,
-          target: 900000,
-          causes: [],
-          causeNotes: "تحسن الطلب الموسمي.",
-          solutions: ["s3"],
-          effectiveness: 90
-        },
-        {
-          id: "rec-3",
-          company: "مؤسسة الأمل الصناعية",
-          department: "الموارد البشرية",
-          periodType: "month",
-          periodLabel: "2026-11",
-          entryDate: "2026-11-19",
-          type: "labor",
-          forecast: 300000,
-          actual: 345000,
-          target: 300000,
-          causes: ["c6", "c3"],
-          causeNotes: "ساعات إضافية لتعويض تأخر خط التعبئة.",
-          solutions: ["s4", "s6"],
-          effectiveness: 80
-        }
-      ];
+    function clearHist() {
+      hist = [];
+      localStorage.removeItem('simple_va_hist');
+      showHist();
+    }
 
-      let state = {
-        lang: "ar",
-        currency: "DZD",
-        user: { name: "مراقب التسيير", role: "contrôleur" },
-        records: DEFAULT_RECORDS,
-        chat: [
-          {
-            role: "ai",
-            text: "مرحباً بكِ في المساعد الذكي لتحليل الانحرافات. يمكنكِ سؤالي عن أي انحراف، سبب، حل، أو قانون حساب (الفرق، النسبة، ونسبة الإنجاز)."
-          }
-        ]
-      };
+    function calcMat() {
+      const aq = num('aq'), sq = num('sq'), ap = num('ap'), sp = num('sp');
+      const pv = (ap - sp) * aq;
+      const qv = (aq - sq) * sp;
+      const tv = (ap * aq) - (sp * sq);
+      const msg = `انحراف السعر: ${pv.toFixed(2)} | انحراف الكمية: ${qv.toFixed(2)} | الإجمالي: ${tv.toFixed(2)}`;
+      document.getElementById('resMat').innerHTML = msg;
+      saveItem('مواد: ' + msg);
+    }
 
-      function loadState() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            state = { ...state, ...parsed, user: { ...state.user, ...(parsed.user || {}) } };
-          }
-        } catch (e) {
-          console.error(e);
-        }
+    function calcLab() {
+      const ah = num('ah'), sh = num('sh'), ar = num('ar'), sr = num('sr');
+      const rv = (ar - sr) * ah;
+      const ev = (ah - sh) * sr;
+      const tv = (ar * ah) - (sr * sh);
+      const msg = `انحراف المعدل: ${rv.toFixed(2)} | انحراف الكفاءة: ${ev.toFixed(2)} | الإجمالي: ${tv.toFixed(2)}`;
+      document.getElementById('resLab').innerHTML = msg;
+      saveItem('يد عاملة: ' + msg);
+    }
+
+    function answerQ() {
+      const q = document.getElementById('qInput').value.trim();
+      const box = document.getElementById('resAI');
+      if (!q) {
+        box.innerHTML = 'اكتبي سؤالك أولاً.';
+        return;
       }
-
-      function saveState() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      if (q.includes('F') || q.includes('U') || q.includes('ملائم')) {
+        box.innerHTML = 'F (ملائم): أفضل من المعيار. U (غير ملائم): أسوأ من المعيار.';
+      } else {
+        box.innerHTML = 'قانون السعر/المعدل = (الفعلي - المعياري) × الفعلي. قانون الكمية/الكفاءة = (الفعلي - المعياري) × المعياري.';
       }
+    }
 
-      function computeMetrics(rec) {
-        const forecast = Number(rec.forecast) || 0;
-        const actual = Number(rec.actual) || 0;
-        const diff = actual - forecast;
-        const rate = forecast !== 0 ? (diff / Math.abs(forecast)) * 100 : 0;
-        const achievement = forecast !== 0 ? (actual / forecast) * 100 : 0;
-
-        const meta = TYPE_LABELS[rec.type] || { favorableWhenPositive: true };
-        let status = "neutral";
-        if (diff > 0) {
-          status = meta.favorableWhenPositive ? "fav" : "unfav";
-        } else if (diff < 0) {
-          status = meta.favorableWhenPositive ? "unfav" : "fav";
-        }
-        return { diff, rate, achievement, status };
-      }
-
-      function formatMoney(val) {
-        const c = CURRENCY_RATES[state.currency] || CURRENCY_RATES.DZD;
-        const converted = (Number(val) || 0) * c.rate;
-        return `${converted.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${c.symbol}`;
-      }
-
-      // Navigation
-      const navButtons = document.querySelectorAll(".nav-btn");
-      const pages = document.querySelectorAll(".page");
-
-      function switchPage(pageId) {
-        pages.forEach((p) => p.classList.toggle("active", p.id === pageId));
-        navButtons.forEach((b) => b.classList.toggle("active", b.dataset.page === pageId));
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        if (pageId === "page-dashboard") renderCharts();
-        if (pageId === "page-diagnosis") populateDiagnosisSelector();
-        if (pageId === "page-history") {
-          renderTable();
-          renderDetailedReport();
-        }
-      }
-
-      navButtons.forEach((btn) => {
-        btn.addEventListener("click", () => switchPage(btn.dataset.page));
-      });
-
-      document.getElementById("goEntryBtn").addEventListener("click", () => switchPage("page-entry"));
-
-      // Live Entry Form Calculation
-      const forecastInput = document.getElementById("forecastVal");
-      const actualInput = document.getElementById("actualVal");
-      const typeInput = document.getElementById("varianceType");
-
-      function updateLiveCalc() {
-        const m = computeMetrics({
-          forecast: forecastInput.value,
-          actual: actualInput.value,
-          type: typeInput.value
-        });
-        const t = I18N[state.lang] || I18N.ar;
-        const liveVar = document.getElementById("liveVar");
-        const liveRate = document.getElementById("liveRate");
-        const liveAch = document.getElementById("liveAch");
-        const liveStatus = document.getElementById("liveStatus");
-
-        liveVar.textContent = formatMoney(m.diff);
-        liveRate.textContent = `${m.rate.toFixed(2)}%`;
-        liveAch.textContent = `${m.achievement.toFixed(2)}%`;
-
-        liveVar.className = "calc-item-val " + (m.status === "fav" ? "text-fav" : m.status === "unfav" ? "text-unfav" : "");
-        liveStatus.textContent = m.status === "fav" ? t.fav : m.status === "unfav" ? t.unfav : t.neutral;
-        liveStatus.className = "calc-item-val " + (m.status === "fav" ? "text-fav" : m.status === "unfav" ? "text-unfav" : "");
-      }
-
-      [forecastInput, actualInput, typeInput].forEach((el) => el.addEventListener("input", updateLiveCalc));
-
-      // Save / Edit Record
-      document.getElementById("varianceForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (state.user.role === "viewer") {
-          alert("صلاحية المطالع لا تسمح بالإضافة أو التعديل.");
-          return;
-        }
-        const editId = document.getElementById("editId").value;
-        const recData = {
-          id: editId || "rec-" + Date.now(),
-          company: document.getElementById("company").value.trim(),
-          department: document.getElementById("department").value,
-          periodType: document.getElementById("periodType").value,
-          periodLabel: document.getElementById("periodLabel").value.trim(),
-          entryDate: document.getElementById("entryDate").value,
-          type: document.getElementById("varianceType").value,
-          forecast: Number(document.getElementById("forecastVal").value) || 0,
-          actual: Number(document.getElementById("actualVal").value) || 0,
-          target: Number(document.getElementById("targetVal").value) || 0,
-          causes: [],
-          causeNotes: "",
-          solutions: [],
-          effectiveness: 0
-        };
-
-        if (editId) {
-          const idx = state.records.findIndex((r) => r.id === editId);
-          if (idx > -1) {
-            state.records[idx] = {
-              ...state.records[idx],
-              ...recData,
-              causes: state.records[idx].causes,
-              causeNotes: state.records[idx].causeNotes,
-              solutions: state.records[idx].solutions,
-              effectiveness: state.records[idx].effectiveness
-            };
-          }
-        } else {
-          state.records.unshift(recData);
-        }
-
-        saveState();
-        resetEntryForm();
-        renderAll();
-        switchPage("page-dashboard");
-      });
-
-      function resetEntryForm() {
-        document.getElementById("editId").value = "";
-        document.getElementById("varianceForm").reset();
-        document.getElementById("entryDate").value = new Date().toISOString().slice(0, 10);
-        updateLiveCalc();
-      }
-
-      document.getElementById("resetFormBtn").addEventListener("click", resetEntryForm);
-
-      document.getElementById("analyzeWithAiBtn").addEventListener("click", () => {
-        const m = computeMetrics({
-          forecast: forecastInput.value,
-          actual: actualInput.value,
-          type: typeInput.value
-        });
-        const q = `حلل هذا الانحراف (${typeInput.value}): التقديري ${forecastInput.value}، الفعلي ${actualInput.value}، الانحراف ${m.diff.toFixed(2)}، النسبة ${m.rate.toFixed(2)}%، ونسبة الإنجاز ${m.achievement.toFixed(2)}%.`;
-        switchPage("page-ai");
-        handleAiMessage(q);
-      });
-
-      // KPIs, Alert & Summary
-      function renderDashboard() {
-        const t = I18N[state.lang] || I18N.ar;
-        document.getElementById("t-appTitle").textContent = t.appTitle;
-        document.getElementById("t-appSub").textContent = t.appSub;
-        document.getElementById("nav-dash").textContent = t.navDash;
-        document.getElementById("nav-entry").textContent = t.navEntry;
-        document.getElementById("nav-ai").textContent = t.navAi;
-        document.getElementById("nav-diag").textContent = t.navDiag;
-        document.getElementById("nav-hist").textContent = t.navHist;
-        document.getElementById("k-totalLabel").textContent = t.totalLabel;
-        document.getElementById("k-favLabel").textContent = t.favLabel;
-        document.getElementById("k-unfavLabel").textContent = t.unfavLabel;
-        document.getElementById("k-achLabel").textContent = t.achLabel;
-
-        let favCount = 0;
-        let unfavCount = 0;
-        let achSum = 0;
-        let largeAlerts = 0;
-
-        state.records.forEach((r) => {
-          const m = computeMetrics(r);
-          if (m.status === "fav") favCount++;
-          if (m.status === "unfav") unfavCount++;
-          achSum += m.achievement;
-          if (Math.abs(m.rate) >= 15 && m.status === "unfav") largeAlerts++;
-        });
-
-        const total = state.records.length;
-        const avgAch = total ? (achSum / total).toFixed(1) : "0.0";
-
-        document.getElementById("kpiTotal").textContent = total;
-        document.getElementById("kpiFav").textContent = favCount;
-        document.getElementById("kpiUnfav").textContent = unfavCount;
-        document.getElementById("kpiAch").textContent = `${avgAch}%`;
-
-        const banner = document.getElementById("alertBanner");
-        if (largeAlerts > 0) {
-          document.getElementById("alertText").textContent = t.alertMsg(largeAlerts, 15);
-          banner.classList.add("show");
-        } else {
-          banner.classList.remove("show");
-        }
-
-        const totalForecast = state.records.reduce((s, r) => s + (Number(r.forecast) || 0), 0);
-        const totalActual = state.records.reduce((s, r) => s + (Number(r.actual) || 0), 0);
-        const netDiff = totalActual - totalForecast;
-
-        document.getElementById("execSummaryText").textContent =
-          `إجمالي التقديرات: ${formatMoney(totalForecast)} | إجمالي الإنجازات: ${formatMoney(totalActual)} | صافي الفرق: ${formatMoney(netDiff)} | ملائم: ${favCount} | غير ملائم: ${unfavCount} | متوسط الإنجاز: ${avgAch}%.`;
-      }
-
-      document.getElementById("dismissAlertBtn").addEventListener("click", () => {
-        document.getElementById("alertBanner").classList.remove("show");
-      });
-
-      // Charts
-      let charts = {};
-
-      function renderCharts() {
-        if (typeof Chart === "undefined") return;
-        Object.values(charts).forEach((ch) => ch && ch.destroy());
-
-        const labels = state.records.map((r) => `${r.periodLabel} (${r.department.split(" ")[0]})`);
-        const forecasts = state.records.map((r) => Number(r.forecast) || 0);
-        const actuals = state.records.map((r) => Number(r.actual) || 0);
-        const diffs = state.records.map((r) => computeMetrics(r).diff);
-
-        const ctxComp = document.getElementById("chartComparison");
-        if (ctxComp) {
-          charts.comp = new Chart(ctxComp, {
-            type: "bar",
-            data: {
-              labels,
-              datasets: [
-                { label: "Prévision", data: forecasts, backgroundColor: "rgba(56, 189, 248, 0.7)" },
-                { label: "Réalisation", data: actuals, backgroundColor: "rgba(99, 102, 241, 0.75)" }
-              ]
-            },
-            options: { responsive: true, plugins: { legend: { labels: { color: "#cbd5e1" } } }, scales: { x: { ticks: { color: "#94a3b8" } }, y: { ticks: { color: "#94a3b8" } } } }
-          });
-        }
-
-        const ctxTrend = document.getElementById("chartTrend");
-        if (ctxTrend) {
-          charts.trend = new Chart(ctxTrend, {
-            type: "line",
-            data: {
-              labels,
-              datasets: [{
-                label: "Écart",
-                data: diffs,
-                borderColor: "#10b981",
-                backgroundColor: "rgba(16, 185, 129, 0.15)",
-                fill: true,
-                tension: 0.3
-              }]
-            },
-            options: { responsive: true, plugins: { legend: { labels: { color: "#cbd5e1" } } }, scales: { x: { ticks: { color: "#94a3b8" } }, y: { ticks: { color: "#94a3b8" } } } }
-          });
-        }
-
-        const deptMap = {};
-        state.records.forEach((r) => {
-          deptMap[r.department] = (deptMap[r.department] || 0) + Math.abs(computeMetrics(r).diff);
-        });
-
-        const ctxDept = document.getElementById("chartDept");
-        if (ctxDept) {
-          charts.dept = new Chart(ctxDept, {
-            type: "doughnut",
-            data: {
-              labels: Object.keys(deptMap),
-              datasets: [{
-                data: Object.values(deptMap),
-                backgroundColor: ["#38bdf8", "#6366f1", "#10b981", "#f59e0b", "#f43f5e"]
-              }]
-            },
-            options: { responsive: true, plugins: { legend: { labels: { color: "#cbd5e1" } } } }
-          });
-        }
-
-        const causeCounts = {};
-        state.records.forEach((r) => {
-          (r.causes || []).forEach((cid) => {
-            const found = CAUSES_LIST.find((c) => c.id === cid);
-            const name = found ? found.label.split("/")[0].trim() : cid;
-            causeCounts[name] = (causeCounts[name] || 0) + 1;
-          });
-        });
-
-        const ctxCauses = document.getElementById("chartCauses");
-        if (ctxCauses) {
-          charts.causes = new Chart(ctxCauses, {
-            type: "bar",
-            data: {
-              labels: Object.keys(causeCounts),
-              datasets: [{
-                label: "Occurrences",
-                data: Object.values(causeCounts),
-                backgroundColor: "rgba(244, 63, 94, 0.72)"
-              }]
-            },
-            options: { indexAxis: "y", responsive: true, plugins: { legend: { labels: { color: "#cbd5e1" } } }, scales: { x: { ticks: { color: "#94a3b8" } }, y: { ticks: { color: "#94a3b8" } } } }
-          });
-        }
-      }
-
-      // Diagnosis (Causes & Solutions)
-      const diagSelect = document.getElementById("diagRecordSelect");
-      const causesChipsEl = document.getElementById("causesChips");
-      const solutionsChipsEl = document.getElementById("solutionsChips");
-      let selectedCauses = new Set();
-      let selectedSolutions = new Set();
-
-      function buildChips() {
-        causesChipsEl.innerHTML = "";
-        CAUSES_LIST.forEach((c) => {
-          const el = document.createElement("span");
-          el.className = "chip" + (selectedCauses.has(c.id) ? " selected" : "");
-          el.textContent = c.label;
-          el.addEventListener("click", () => {
-            if (selectedCauses.has(c.id)) selectedCauses.delete(c.id);
-            else selectedCauses.add(c.id);
-            el.classList.toggle("selected");
-          });
-          causesChipsEl.appendChild(el);
-        });
-
-        solutionsChipsEl.innerHTML = "";
-        SOLUTIONS_LIST.forEach((s) => {
-          const el = document.createElement("span");
-          el.className = "chip" + (selectedSolutions.has(s.id) ? " selected" : "");
-          el.textContent = s.label;
-          el.addEventListener("click", () => {
-            if (selectedSolutions.has(s.id)) selectedSolutions.delete(s.id);
-            else selectedSolutions.add(s.id);
-            el.classList.toggle("selected");
-          });
-          solutionsChipsEl.appendChild(el);
-        });
-      }
-
-      function populateDiagnosisSelector() {
-        diagSelect.innerHTML = "";
-        state.records.forEach((r) => {
-          const opt = document.createElement("option");
-          opt.value = r.id;
-          opt.textContent = `${r.periodLabel} — ${r.department} (${r.company})`;
-          diagSelect.appendChild(opt);
-        });
-        loadDiagnosisForSelected();
-      }
-
-      function loadDiagnosisForSelected() {
-        const rec = state.records.find((r) => r.id === diagSelect.value);
-        selectedCauses = new Set((rec && rec.causes) || []);
-        selectedSolutions = new Set((rec && rec.solutions) || []);
-        document.getElementById("causeNotes").value = (rec && rec.causeNotes) || "";
-        document.getElementById("effectivenessVal").value = (rec && rec.effectiveness) || "";
-        buildChips();
-      }
-
-      diagSelect.addEventListener("change", loadDiagnosisForSelected);
-
-      document.getElementById("saveDiagBtn").addEventListener("click", () => {
-        if (state.user.role === "viewer") {
-          alert("صلاحية المطالع لا تسمح بالحفظ.");
-          return;
-        }
-        const rec = state.records.find((r) => r.id === diagSelect.value);
-        if (!rec) return;
-        rec.causes = Array.from(selectedCauses);
-        rec.solutions = Array.from(selectedSolutions);
-        rec.causeNotes = document.getElementById("causeNotes").value.trim();
-        rec.effectiveness = Number(document.getElementById("effectivenessVal").value) || 0;
-        saveState();
-        renderDetailedReport();
-        alert("تم حفظ التشخيص والحلول بنجاح.");
-      });
-
-      // Table, Search, Filter & Detailed Report
-      function renderTable() {
-        const q = document.getElementById("searchInput").value.trim().toLowerCase();
-        const dept = document.getElementById("filterDept").value;
-        const period = document.getElementById("filterPeriod").value.trim().toLowerCase();
-        const t = I18N[state.lang] || I18N.ar;
-
-        const tbody = document.getElementById("recordsTbody");
-        tbody.innerHTML = "";
-
-        const filtered = state.records.filter((r) => {
-          const matchDept = dept === "ALL" || r.department === dept;
-          const matchPeriod = !period || r.periodLabel.toLowerCase().includes(period);
-          const typeName = (TYPE_LABELS[r.type] && TYPE_LABELS[r.type][state.lang]) || r.type;
-          const matchQ = !q ||
-            r.company.toLowerCase().includes(q) ||
-            r.department.toLowerCase().includes(q) ||
-            r.periodLabel.toLowerCase().includes(q) ||
-            typeName.toLowerCase().includes(q);
-          return matchDept && matchPeriod && matchQ;
-        });
-
-        filtered.forEach((r) => {
-          const m = computeMetrics(r);
-          const typeName = (TYPE_LABELS[r.type] &&
+    showHist();
+  </script>
+</body>
+</html>
