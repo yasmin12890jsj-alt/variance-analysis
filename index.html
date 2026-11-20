@@ -41,7 +41,7 @@
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Kufi Arabic", sans-serif;
     }
 
-    /* 1. Intro Screen - شاشة افتتاحية شبيهة بالفيديو */
+    /* 1. Intro Screen */
     #introScreen {
       position: fixed;
       inset: 0;
@@ -77,6 +77,7 @@
 
     .intro-logo {
       position: relative;
+      z-index: 2;
       width: 96px;
       height: 96px;
       border-radius: 28px;
@@ -98,24 +99,19 @@
 
     .intro-title {
       position: relative;
+      z-index: 2;
       font-size: 30px;
       font-weight: 900;
       margin: 0 0 8px 0;
       letter-spacing: 0.6px;
-      animation: textFade 1s ease forwards;
     }
 
     .intro-tag {
       position: relative;
+      z-index: 2;
       font-size: 13.5px;
       color: var(--muted);
       margin: 0 0 26px 0;
-      animation: textFade 1.4s ease forwards;
-    }
-
-    @keyframes textFade {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .intro-skip {
@@ -123,13 +119,14 @@
       z-index: 10000;
       background: linear-gradient(135deg, var(--violet-deep), var(--violet));
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.25);
       border-radius: 999px;
-      padding: 13px 32px;
-      font-size: 15px;
+      padding: 14px 36px;
+      font-size: 16px;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(109, 40, 217, 0.5);
+      touch-action: manipulation;
+      box-shadow: 0 10px 25px rgba(109, 40, 217, 0.55);
     }
 
     /* 2. Login Screen */
@@ -402,6 +399,7 @@
       font-size: 13px;
       font-weight: 800;
       cursor: pointer;
+      touch-action: manipulation;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -640,14 +638,19 @@
 </head>
 <body>
 
-  <!-- 1. Intro Screen (شاشة أولى متحركة شبيهة بمقدمة الفيديو) -->
+  <!-- 1. Intro Screen -->
   <div id="introScreen">
     <div class="intro-ring"></div>
     <div class="intro-ring r2"></div>
     <div class="intro-logo">Δ</div>
     <h1 class="intro-title">VARIANCE PRO</h1>
     <p class="intro-tag">تحليل الفروقات • Variance Analysis • Analyse des Écarts</p>
-    <button type="button" class="intro-skip" id="btnIntroContinue" onclick="goToLoginFromIntro()">متابعة</button>
+    <button
+      type="button"
+      class="intro-skip"
+      id="btnIntroContinue"
+      onclick="document.getElementById('introScreen').style.display='none'; document.getElementById('loginScreen').style.display='flex'; document.getElementById('mainApp').style.display='none';"
+    >متابعة</button>
   </div>
 
   <!-- 2. Login Screen -->
@@ -690,9 +693,18 @@
         <button type="button" class="btn btn-sec" onclick="handleRegisterUser()" id="btnRegister">إنشاء حساب</button>
       </div>
 
+      <div class="btn-row" style="margin-top:8px;">
+        <button
+          type="button"
+          class="btn btn-sec"
+          style="width:100%;"
+          onclick="if(typeof openMainApp==='function'){openMainApp();}else{document.getElementById('introScreen').style.display='none';document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';}"
+        >دخول مباشر للتطبيق</button>
+      </div>
+
       <div id="authMessage" class="auth-msg"></div>
       <div class="note-text" style="margin-top:10px; font-size:11.5px;" id="authHint">
-        اضغطي على <strong>دخول</strong> للانتقال مباشرة إلى التطبيق بأي اسم أو بالصلاحية المختارة.
+        اضغطي على <strong>دخول</strong> أو <strong>دخول مباشر للتطبيق</strong> للانتقال فوراً.
       </div>
     </div>
   </div>
@@ -1153,10 +1165,10 @@
   </div>
 
   <script>
-    const DB_KEY = 'variance_pro_db_v7';
-    const USERS_KEY = 'variance_pro_users_v7';
-    const RATES_KEY = 'variance_pro_rates_v7';
-    const ORG_KEY = 'variance_pro_org_v7';
+    const DB_KEY = 'variance_pro_db_v8';
+    const USERS_KEY = 'variance_pro_users_v8';
+    const RATES_KEY = 'variance_pro_rates_v8';
+    const ORG_KEY = 'variance_pro_org_v8';
 
     let items = [];
     let users = [];
@@ -1200,12 +1212,6 @@
       }
     }
 
-    function goToLoginFromIntro() {
-      document.getElementById('introScreen').style.display = 'none';
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('mainApp').style.display = 'none';
-    }
-
     function showAuthMsg(text, ok) {
       const box = document.getElementById('authMessage');
       box.style.display = 'block';
@@ -1215,29 +1221,33 @@
     }
 
     function handleRegisterUser() {
-      ensureDefaultAdmin();
-      const u = (document.getElementById('userInput').value.trim().toLowerCase()) || 'member';
-      const p = document.getElementById('passInput').value || '1234';
-      const role = document.getElementById('roleInput').value;
-      if (!users.some(x => x.username === u)) {
-        users.push({ username: u, passHash: simpleHash(p), role });
-        try { localStorage.setItem(USERS_KEY, JSON.stringify(users)); } catch (e) {}
-      }
-      currentUser = { username: u, role };
-      showAuthMsg('تم إنشاء الحساب والدخول بنجاح.', true);
-      setTimeout(openMainApp, 250);
+      try {
+        ensureDefaultAdmin();
+        const u = (document.getElementById('userInput').value.trim().toLowerCase()) || 'member';
+        const p = document.getElementById('passInput').value || '1234';
+        const role = document.getElementById('roleInput').value;
+        if (!users.some(x => x.username === u)) {
+          users.push({ username: u, passHash: simpleHash(p), role });
+          try { localStorage.setItem(USERS_KEY, JSON.stringify(users)); } catch (e) {}
+        }
+        currentUser = { username: u, role };
+        showAuthMsg('تم إنشاء الحساب والدخول بنجاح.', true);
+      } catch (e) {}
+      openMainApp();
     }
 
     function handleAuthLogin() {
-      ensureDefaultAdmin();
-      const rawU = document.getElementById('userInput').value.trim().toLowerCase();
-      const role = document.getElementById('roleInput').value;
-      const username = rawU || 'admin';
-      const found = users.find(x => x.username === username);
-      currentUser = {
-        username,
-        role: found ? found.role : role
-      };
+      try {
+        ensureDefaultAdmin();
+        const rawU = document.getElementById('userInput').value.trim().toLowerCase();
+        const role = document.getElementById('roleInput').value;
+        const username = rawU || 'admin';
+        const found = users.find(x => x.username === username);
+        currentUser = {
+          username,
+          role: found ? found.role : role
+        };
+      } catch (e) {}
       openMainApp();
     }
 
@@ -1251,14 +1261,16 @@
       document.getElementById('introScreen').style.display = 'none';
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
-      document.getElementById('orgNameInput').value = orgName;
-      document.getElementById('setRoleSelect').value = currentUser.role || 'admin';
-      goPage('page-home', 0);
-      const roleLabel = currentUser ? `${currentUser.username} (${currentUser.role.toUpperCase()})` : 'ADMIN';
-      document.getElementById('userBadge').textContent = roleLabel;
-      document.getElementById('rolePill').textContent = (currentUser ? currentUser.role : 'admin').toUpperCase();
-      renderCurrenciesUI();
-      renderAll();
+      try {
+        document.getElementById('orgNameInput').value = orgName;
+        document.getElementById('setRoleSelect').value = currentUser.role || 'admin';
+        goPage('page-home', 0);
+        const roleLabel = currentUser ? `${currentUser.username} (${currentUser.role.toUpperCase()})` : 'ADMIN';
+        document.getElementById('userBadge').textContent = roleLabel;
+        document.getElementById('rolePill').textContent = (currentUser ? currentUser.role : 'admin').toUpperCase();
+        renderCurrenciesUI();
+        renderAll();
+      } catch (e) {}
     }
 
     const i18n = {
@@ -1270,4 +1282,632 @@
         lblUser: 'اسم المستخدم',
         lblPass: 'كلمة المرور',
         lblRole: 'الصلاحية',
-        btnLogin
+        btnLogin: 'دخول',
+        btnRegister: 'إنشاء حساب',
+        btnLogout: 'خروج',
+        navHome: 'الرئيسية',
+        navInput: 'إدخال',
+        navLaws: 'القوانين',
+        navSol: 'الحلول',
+        navHist: 'السجل',
+        navCmp: 'المقارنة',
+        navAn: 'التحليلات',
+        navRep: 'التقارير',
+        navSet: 'الإعدادات',
+        navMore: 'المزيد'
+      },
+      fr: {
+        dir: 'ltr',
+        appTitle: 'VARIANCE PRO',
+        loginTitle: 'Connexion — VARIANCE PRO',
+        loginSub: 'Gestion des écarts, budgets et rôles',
+        lblUser: 'Nom d’utilisateur',
+        lblPass: 'Mot de passe',
+        lblRole: 'Rôle',
+        btnLogin: 'Connexion',
+        btnRegister: 'Créer un compte',
+        btnLogout: 'Quitter',
+        navHome: 'Accueil',
+        navInput: 'Saisie',
+        navLaws: 'Formules',
+        navSol: 'Actions',
+        navHist: 'Historique',
+        navCmp: 'Comparaison',
+        navAn: 'Analytique',
+        navRep: 'Rapports',
+        navSet: 'Paramètres',
+        navMore: 'Plus'
+      },
+      en: {
+        dir: 'ltr',
+        appTitle: 'VARIANCE PRO',
+        loginTitle: 'Sign In — VARIANCE PRO',
+        loginSub: 'Variance management, budgets and permissions',
+        lblUser: 'Username',
+        lblPass: 'Password',
+        lblRole: 'Role',
+        btnLogin: 'Sign In',
+        btnRegister: 'Register',
+        btnLogout: 'Logout',
+        navHome: 'Home',
+        navInput: 'Input',
+        navLaws: 'Formulas',
+        navSol: 'Actions',
+        navHist: 'History',
+        navCmp: 'Compare',
+        navAn: 'Analytics',
+        navRep: 'Reports',
+        navSet: 'Settings',
+        navMore: 'More'
+      }
+    };
+
+    function syncLang(lang) {
+      const cfg = i18n[lang] || i18n.ar;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = cfg.dir;
+      ['loginLang', 'appLang', 'setLangSelect'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = lang;
+      });
+      document.getElementById('appNameHdr').textContent = cfg.appTitle;
+      document.getElementById('loginTitle').textContent = cfg.loginTitle;
+      document.getElementById('loginSub').textContent = cfg.loginSub;
+      document.getElementById('lblUser').textContent = cfg.lblUser;
+      document.getElementById('lblPass').textContent = cfg.lblPass;
+      document.getElementById('lblRole').textContent = cfg.lblRole;
+      document.getElementById('btnLogin').textContent = cfg.btnLogin;
+      document.getElementById('btnRegister').textContent = cfg.btnRegister;
+      document.getElementById('btnLogout').textContent = cfg.btnLogout;
+      document.getElementById('navHome').textContent = cfg.navHome;
+      document.getElementById('navInput').textContent = cfg.navInput;
+      document.getElementById('navLaws').textContent = cfg.navLaws;
+      document.getElementById('navSol').textContent = cfg.navSol;
+      document.getElementById('navHist').textContent = cfg.navHist;
+      document.getElementById('navCmp').textContent = cfg.navCmp;
+      document.getElementById('navAn').textContent = cfg.navAn;
+      document.getElementById('navRep').textContent = cfg.navRep;
+      document.getElementById('navSet').textContent = cfg.navSet;
+      document.getElementById('navMore').textContent = cfg.navMore;
+    }
+
+    function goPage(pageId, idx) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(pageId);
+      if (target) target.classList.add('active');
+      const btns = document.querySelectorAll('#bottomNav10 .nav-btn');
+      btns.forEach((b, i) => {
+        const active = i === idx;
+        b.classList.toggle('active', active);
+        if (active && b.scrollIntoView) {
+          b.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      });
+      if (pageId === 'page-compare') renderComparison();
+      if (pageId === 'page-analytics') renderAnalytics();
+      if (pageId === 'page-reports') generateReportPreview();
+      if (pageId === 'page-more') renderArchive();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openSub(sub, btn) {
+      document.querySelectorAll('.sub-panel').forEach(p => p.style.display = 'none');
+      document.getElementById('sub-' + sub).style.display = 'block';
+      document.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    }
+
+    function val(id) {
+      const raw = document.getElementById(id).value.replace(',', '.').trim();
+      const n = parseFloat(raw);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function getCurr() {
+      return document.getElementById('currSel').value;
+    }
+
+    function convertAmount(baseAmount) {
+      const c = getCurr();
+      const r = parseFloat(rates[c]) || 1;
+      return baseAmount * r;
+    }
+
+    function fmt(baseAmount) {
+      const v = convertAmount(baseAmount);
+      return Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + getCurr();
+    }
+
+    function renderCurrenciesUI() {
+      const sel = document.getElementById('currSel');
+      const prev = sel.value;
+      sel.innerHTML = Object.keys(rates).map(code => `<option value="${code}">${code}</option>`).join('');
+      sel.value = rates[prev] ? prev : 'DZD';
+
+      const list = document.getElementById('ratesList');
+      list.innerHTML = Object.keys(rates).map(code => `
+        <div class="rate-item">
+          <strong>${code}</strong>
+          <input type="text" inputmode="decimal" value="${rates[code]}" onchange="updateRate('${code}', this.value)" />
+        </div>
+      `).join('');
+    }
+
+    function updateRate(code, v) {
+      const num = parseFloat(String(v).replace(',', '.'));
+      if (!isNaN(num) && num > 0) {
+        rates[code] = num;
+        try { localStorage.setItem(RATES_KEY, JSON.stringify(rates)); } catch (e) {}
+        renderAll();
+      }
+    }
+
+    function addCustomCurrency() {
+      const code = document.getElementById('newCurrCode').value.trim().toUpperCase();
+      const rVal = parseFloat(document.getElementById('newCurrRate').value.replace(',', '.'));
+      if (!code || code.length < 2) return;
+      rates[code] = (!isNaN(rVal) && rVal > 0) ? rVal : 1;
+      try { localStorage.setItem(RATES_KEY, JSON.stringify(rates)); } catch (e) {}
+      document.getElementById('newCurrCode').value = '';
+      document.getElementById('newCurrRate').value = '';
+      renderCurrenciesUI();
+      renderAll();
+    }
+
+    function canModify() {
+      const role = currentUser ? currentUser.role : 'admin';
+      return role === 'admin' || role === 'accountant' || role === 'analyst';
+    }
+
+    function changeActiveRole(role) {
+      currentUser.role = role;
+      document.getElementById('userBadge').textContent = `${currentUser.username} (${role.toUpperCase()})`;
+      document.getElementById('rolePill').textContent = role.toUpperCase();
+    }
+
+    function saveEntry(entry) {
+      const month = document.getElementById('monthSel').value;
+      const year = document.getElementById('yearSel').value;
+      items.unshift({
+        id: Date.now() + Math.random(),
+        period: `${month}/${year}`,
+        ...entry
+      });
+      try { localStorage.setItem(DB_KEY, JSON.stringify(items)); } catch (e) {}
+      renderAll();
+    }
+
+    function deleteEntry(id) {
+      if (!canModify()) {
+        alert('صلاحية المستخدم الحالي للعرض فقط (User).');
+        return;
+      }
+      items = items.filter(x => x.id !== id);
+      try { localStorage.setItem(DB_KEY, JSON.stringify(items)); } catch (e) {}
+      renderAll();
+    }
+
+    function editEntry(id) {
+      if (!canModify()) {
+        alert('صلاحية المستخدم الحالي للعرض فقط (User).');
+        return;
+      }
+      const target = items.find(x => x.id === id);
+      if (!target) return;
+      const updated = prompt('تعديل السبب أو الملاحظة:', target.cause);
+      if (updated !== null && updated.trim() !== '') {
+        target.cause = updated.trim();
+        try { localStorage.setItem(DB_KEY, JSON.stringify(items)); } catch (e) {}
+        renderAll();
+      }
+    }
+
+    function clearAll() {
+      if (!canModify()) {
+        alert('صلاحية المستخدم الحالي للعرض فقط (User).');
+        return;
+      }
+      items = [];
+      try { localStorage.removeItem(DB_KEY); } catch (e) {}
+      renderAll();
+    }
+
+    function calcMatEngine(qrId, qpId, prId, ppId, outId) {
+      const qr = val(qrId), qp = val(qpId), pr = val(prId), pp = val(ppId);
+      const baseCost = qp * pp;
+      const actCost = qr * pr;
+
+      const priceDiff = (pr - pp) * qr;
+      const qtyDiff = (qr - qp) * pp;
+      const globalDiff = actCost - baseCost;
+      const sumCheck = priceDiff + qtyDiff;
+
+      const priceFav = priceDiff <= 0;
+      const qtyFav = qtyDiff <= 0;
+      const globalFav = globalDiff <= 0;
+
+      const pricePct = baseCost !== 0 ? (Math.abs(priceDiff) / Math.abs(baseCost)) * 100 : 0;
+      const qtyPct = baseCost !== 0 ? (Math.abs(qtyDiff) / Math.abs(baseCost)) * 100 : 0;
+      const globalPct = baseCost !== 0 ? (Math.abs(globalDiff) / Math.abs(baseCost)) * 100 : 0;
+
+      const absSum = Math.abs(priceDiff) + Math.abs(qtyDiff);
+      const priceShare = absSum > 0 ? (Math.abs(priceDiff) / absSum) * 100 : 0;
+      const qtyShare = absSum > 0 ? (Math.abs(qtyDiff) / absSum) * 100 : 0;
+
+      const priceCause = priceFav
+        ? 'السعر الفعلي أقل من السعر المعياري (شروط شراء أفضل أو تراجع أسعار السوق).'
+        : 'السعر الفعلي أعلى من السعر المعياري (ارتفاع أسعار الموردين أو شراء عاجل بتكلفة أعلى).';
+      const priceFix = priceFav
+        ? 'تثبيت التعاقد مع المورد والحفاظ على نفس شروط السعر والجودة.'
+        : 'مقارنة عروض عدة موردين، التفاوض على الأسعار، وتجميع الطلبيات لتقليل الكلفة.';
+
+      const qtyCause = qtyFav
+        ? 'الكمية الفعلية أقل من الكمية المعيارية (كفاءة عالية في الاستخدام وتقليل الفاقد).'
+        : 'الكمية الفعلية أعلى من الكمية المعيارية (هدر أو تلف أثناء الإنتاج أو استهلاك زائد).';
+      const qtyFix = qtyFav
+        ? 'تعميم إجراءات التشغيل القياسية الجيدة على بقية خطوط الإنتاج.'
+        : 'مراقبة نقاط الهدر، تدريب العمال، وضبط معايير الاستهلاك وفحص الجودة.';
+
+      const combinedCause = `فرق السعر: ${priceCause} | فرق الكمية: ${qtyCause}`;
+      const combinedFix = `حل فرق السعر: ${priceFix} | حل فرق الكمية: ${qtyFix}`;
+
+      const box = document.getElementById(outId);
+      box.style.display = 'block';
+      box.innerHTML = `
+        <div class="grid-3" style="margin-bottom:10px;">
+          <div class="sub-metric-card">
+            <div class="kpi-lbl">فرق السعر (Écart sur prix)</div>
+            <div class="kpi-val ${priceFav ? 'fav' : 'defav'}">${fmt(Math.abs(priceDiff))}</div>
+            <div class="kpi-sub">النسبة: <strong>${pricePct.toFixed(2)}%</strong> • <strong class="${priceFav ? 'fav' : 'defav'}">${priceFav ? 'ملائم (Favorable)' : 'غير ملائم (Défavorable)'}</strong></div>
+          </div>
+          <div class="sub-metric-card">
+            <div class="kpi-lbl">فرق الكمية (Écart sur quantité)</div>
+            <div class="kpi-val ${qtyFav ? 'fav' : 'defav'}">${fmt(Math.abs(qtyDiff))}</div>
+            <div class="kpi-sub">النسبة: <strong>${qtyPct.toFixed(2)}%</strong> • <strong class="${qtyFav ? 'fav' : 'defav'}">${qtyFav ? 'ملائم (Favorable)' : 'غير ملائم (Défavorable)'}</strong></div>
+          </div>
+          <div class="sub-metric-card">
+            <div class="kpi-lbl">الفرق الإجمالي (Écart global)</div>
+            <div class="kpi-val ${globalFav ? 'fav' : 'defav'}">${fmt(Math.abs(globalDiff))}</div>
+            <div class="kpi-sub">النسبة: <strong>${globalPct.toFixed(2)}%</strong> • <strong class="${globalFav ? 'fav' : 'defav'}">${globalFav ? 'ملائم (Favorable)' : 'غير ملائم (Défavorable)'}</strong></div>
+          </div>
+        </div>
+
+        <div class="chart-row">
+          <div class="chart-label"><span>مساهمة فرق السعر في إجمالي الفروقات</span><span>${priceShare.toFixed(1)}%</span></div>
+          <div class="bar-track"><div class="bar-fill ${priceFav ? 'fav-bg' : 'defav-bg'}" style="width:${priceShare.toFixed(1)}%"></div></div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-label"><span>مساهمة فرق الكمية في إجمالي الفروقات</span><span>${qtyShare.toFixed(1)}%</span></div>
+          <div class="bar-track"><div class="bar-fill ${qtyFav ? 'fav-bg' : 'defav-bg'}" style="width:${qtyShare.toFixed(1)}%"></div></div>
+        </div>
+
+        <div class="steps-box">
+          <strong>المعادلات الحسابية والنتائج خطوة بخطوة:</strong><br>
+          1) فرق السعر = (السعر الفعلي − السعر المعياري) × الكمية الفعلية = (${pr} − ${pp}) × ${qr} = <strong>${priceDiff.toFixed(2)}</strong><br>
+          2) فرق الكمية = (الكمية الفعلية − الكمية المعيارية) × السعر المعياري = (${qr} − ${qp}) × ${pp} = <strong>${qtyDiff.toFixed(2)}</strong><br>
+          3) الفرق الإجمالي = (الكمية الفعلية × السعر الفعلي) − (الكمية المعيارية × السعر المعياري) = (${qr} × ${pr}) − (${qp} × ${pp}) = <strong>${globalDiff.toFixed(2)}</strong><br>
+          4) تحقق التوازن: مجموع فرق السعر وفرق الكمية = ${priceDiff.toFixed(2)} + ${qtyDiff.toFixed(2)} = <strong>${sumCheck.toFixed(2)}</strong> (يساوي الفرق الإجمالي).
+        </div>
+
+        <div class="diag-box">
+          <div><strong>تشخيص وشرح فرق السعر:</strong> ${priceCause}</div>
+          <div><strong>الحل المقترح لفرق السعر:</strong> ${priceFix}</div>
+          <hr style="border:0; border-top:1px solid var(--line); margin:8px 0;" />
+          <div><strong>تشخيص وشرح فرق الكمية:</strong> ${qtyCause}</div>
+          <div><strong>الحل المقترح لفرق الكمية:</strong> ${qtyFix}</div>
+        </div>
+      `;
+
+      saveEntry({
+        kind: 'mat',
+        title: 'تحليل المواد التفصيلي',
+        baseVal: baseCost,
+        actVal: actCost,
+        diffVal: Math.abs(globalDiff),
+        pct: globalPct,
+        isFav: globalFav,
+        cause: combinedCause,
+        fix: combinedFix
+      });
+    }
+
+    function diagnose(kind, isFav) {
+      if (kind === 'lab') {
+        return isFav
+          ? { cause: 'إنجاز العمل بوقت أو أعباء أقل من المعيار.', fix: 'تعميم أساليب العمل الفعالة.' }
+          : { cause: 'تجاوز الساعات أو ارتفاع المصاريف غير المباشرة.', fix: 'صيانة المعدات، تحسين التنظيم، وضبط الأعباء.' };
+      }
+      if (kind === 'sales') {
+        return isFav
+          ? { cause: 'تحسن رقم الأعمال بفضل ارتفاع السعر أو زيادة الكمية المباعة.', fix: 'دعم المنتجات الأعلى هامشاً وتوسيع التوزيع.' }
+          : { cause: 'تراجع المبيعات بسبب انخفاض الكمية أو ضغط الأسعار.', fix: 'تنشيط التسويق وتحسين العروض التجارية.' };
+      }
+      return isFav
+        ? { cause: 'التزام بالميزانية التقديرية وتحقيق وفورات.', fix: 'الاستمرار في المراقبة الدورية.' }
+        : { cause: 'تجاوز الميزانية الفعلية للتقديرية.', fix: 'إعادة ضبط بنود الإنفاق وتحديد أولويات الصرف.' };
+    }
+
+    function showResult(boxId, title, baseVal, actVal, diffVal, isFav, kind) {
+      const pct = baseVal !== 0 ? ((Math.abs(diffVal) / Math.abs(baseVal)) * 100) : 0;
+      const d = diagnose(kind, isFav);
+      const cls = isFav ? 'fav' : 'defav';
+      const label = isFav ? 'ملائم (Favorable)' : 'غير ملائم (Défavorable)';
+
+      const box = document.getElementById(boxId);
+      box.style.display = 'block';
+      box.innerHTML = `
+        <div><strong>${title}</strong></div>
+        <div>الفرق: <strong class="${cls}">${fmt(Math.abs(diffVal))}</strong></div>
+        <div>نسبة الفرق (%): <strong>${pct.toFixed(2)}%</strong></div>
+        <div>الحالة: <strong class="${cls}">${label}</strong></div>
+        <div class="diag-box">
+          <div><strong>السبب:</strong> ${d.cause}</div>
+          <div><strong>الحل:</strong> ${d.fix}</div>
+        </div>
+      `;
+
+      saveEntry({
+        kind, title, baseVal, actVal,
+        diffVal: Math.abs(diffVal),
+        pct, isFav,
+        cause: d.cause, fix: d.fix
+      });
+    }
+
+    function calcLabOvh() {
+      const hr = val('lHr'), hp = val('lHp'), tr = val('lTr'), tp = val('lTp'), ovhr = val('lOvhR'), ovhp = val('lOvhP');
+      const baseTotal = (hp * tp) + ovhp, actTotal = (hr * tr) + ovhr, diff = actTotal - baseTotal;
+      showResult('out-lab', 'اليد العاملة والمصاريف غير المباشرة', baseTotal, actTotal, diff, diff <= 0, 'lab');
+    }
+
+    function calcSales() {
+      const qr = val('sQr'), qp = val('sQp'), pr = val('sPr'), pp = val('sPp');
+      const baseRev = qp * pp, actRev = qr * pr, diff = actRev - baseRev;
+      showResult('out-sales', 'تحليل المبيعات (Ventes)', baseRev, actRev, diff, diff >= 0, 'sales');
+    }
+
+    function calcBudget() {
+      const bp = val('bPrevu'), br = val('bReel'), diff = br - bp;
+      showResult('out-budget', 'مقارنة الميزانية التقديرية بالفعلية', bp, br, diff, diff <= 0, 'budget');
+    }
+
+    function syncCompareWithCurrent() {
+      const m = document.getElementById('monthSel').value;
+      const y = document.getElementById('yearSel').value;
+      document.getElementById('cmpPeriodB').value = `${m}/${y}`;
+      renderComparison();
+    }
+
+    function renderComparison() {
+      const pA = (document.getElementById('cmpPeriodA').value || '').trim();
+      const pB = (document.getElementById('cmpPeriodB').value || '').trim();
+      const listA = items.filter(x => x.period === pA);
+      const listB = items.filter(x => x.period === pB);
+      const sumA = listA.reduce((s, x) => s + x.diffVal, 0);
+      const sumB = listB.reduce((s, x) => s + x.diffVal, 0);
+      const delta = sumB - sumA;
+      const box = document.getElementById('compareResultBox');
+      box.innerHTML = `
+        <div><strong>نتيجة المقارنة بين (${pA || '—'}) و (${pB || '—'}):</strong></div>
+        <div>• عدد عمليات ${pA}: <strong>${listA.length}</strong> | مجموع الفروقات: <strong>${fmt(sumA)}</strong></div>
+        <div>• عدد عمليات ${pB}: <strong>${listB.length}</strong> | مجموع الفروقات: <strong>${fmt(sumB)}</strong></div>
+        <div>• صافي التغير بين الفترتين: <strong class="${delta <= 0 ? 'fav' : 'defav'}">${fmt(Math.abs(delta))} (${delta <= 0 ? 'انخفاض/تحسن' : 'ارتفاع'})</strong></div>
+      `;
+    }
+
+    function renderAnalytics() {
+      const m = document.getElementById('monthSel').value;
+      const y = document.getElementById('yearSel').value;
+      const period = `${m}/${y}`;
+      document.getElementById('anPeriodPill').textContent = period;
+      const filtered = items.filter(x => x.period === period);
+      const totalDiff = filtered.reduce((a, b) => a + b.diffVal, 0);
+      const favCount = filtered.filter(x => x.isFav).length;
+      const favRate = filtered.length ? (favCount / filtered.length) * 100 : 0;
+
+      document.getElementById('anTotalDiff').textContent = fmt(totalDiff);
+      document.getElementById('anFavRate').textContent = favRate.toFixed(1) + '%';
+
+      const kinds = [
+        { k: 'mat', lbl: 'المواد' },
+        { k: 'lab', lbl: 'اليد والأعباء' },
+        { k: 'sales', lbl: 'المبيعات' },
+        { k: 'budget', lbl: 'الميزانية' }
+      ];
+      const maxK = Math.max(...kinds.map(x => filtered.filter(i => i.kind === x.k).reduce((s, i) => s + i.diffVal, 0)), 1);
+
+      document.getElementById('analyticsBreakdown').innerHTML = kinds.map(x => {
+        const v = filtered.filter(i => i.kind === x.k).reduce((s, i) => s + i.diffVal, 0);
+        const pct = ((v / maxK) * 100).toFixed(1);
+        return `
+          <div class="chart-row">
+            <div class="chart-label"><span>${x.lbl}</span><span>${fmt(v)}</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function generateReportPreview() {
+      const m = document.getElementById('monthSel').value;
+      const y = document.getElementById('yearSel').value;
+      const period = `${m}/${y}`;
+      const filtered = items.filter(x => x.period === period);
+      const total = filtered.reduce((s, x) => s + x.diffVal, 0);
+      document.getElementById('reportPreviewBox').innerHTML = `
+        <div><strong>تقرير VARIANCE PRO — ${orgName}</strong></div>
+        <div>الفترة: <strong>${period}</strong> | العملة: <strong>${getCurr()}</strong> | عدد السجلات: <strong>${filtered.length}</strong></div>
+        <div>إجمالي الفروقات للفترة: <strong>${fmt(total)}</strong></div>
+        <hr style="border:0; border-top:1px solid var(--line); margin:8px 0;" />
+        ${filtered.length ? filtered.map(it => `<div>• ${it.title}: <strong>${fmt(it.diffVal)}</strong> (${it.pct.toFixed(2)}%) — ${it.isFav ? 'ملائم' : 'غير ملائم'}</div>`).join('') : '<div class="note-text">لا توجد بيانات مسجلة في هذه الفترة.</div>'}
+      `;
+    }
+
+    function exportExcelCompatible() {
+      if (!items.length) return;
+      const header = 'Period\tTitle\tDiff\tCurrency\tPercent\tStatus\n';
+      const rows = items.map(x => [
+        x.period,
+        x.title,
+        convertAmount(x.diffVal).toFixed(2),
+        getCurr(),
+        x.pct.toFixed(2) + '%',
+        x.isFav ? 'Favorable' : 'Défavorable'
+      ].join('\t')).join('\n');
+      const blob = new Blob(['\ufeff' + header + rows], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'variance-pro-report.xls';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function createJsonBackup() {
+      const payload = JSON.stringify({ items, rates, orgName }, null, 2);
+      document.getElementById('backupJsonArea').value = payload;
+    }
+
+    function restoreJsonBackup() {
+      try {
+        const raw = document.getElementById('backupJsonArea').value;
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.items)) {
+          items = parsed.items;
+          localStorage.setItem(DB_KEY, JSON.stringify(items));
+        }
+        if (parsed.rates && typeof parsed.rates === 'object') {
+          rates = Object.assign(rates, parsed.rates);
+          localStorage.setItem(RATES_KEY, JSON.stringify(rates));
+        }
+        if (typeof parsed.orgName === 'string') {
+          orgName = parsed.orgName;
+          localStorage.setItem(ORG_KEY, orgName);
+        }
+        renderCurrenciesUI();
+        renderAll();
+        alert('تمت استعادة النسخة الاحتياطية بنجاح.');
+      } catch (e) {
+        alert('صيغة JSON غير صالحة.');
+      }
+    }
+
+    function saveOrgMeta() {
+      orgName = document.getElementById('orgNameInput').value;
+      try { localStorage.setItem(ORG_KEY, orgName); } catch (e) {}
+    }
+
+    function renderArchive() {
+      const q = (document.getElementById('archiveSearchInput').value || '').trim().toLowerCase();
+      const matches = items.filter(x =>
+        !q ||
+        (x.title && x.title.toLowerCase().includes(q)) ||
+        (x.cause && x.cause.toLowerCase().includes(q)) ||
+        (x.period && x.period.toLowerCase().includes(q))
+      );
+      const box = document.getElementById('archiveListBox');
+      if (!matches.length) {
+        box.innerHTML = '<div class="note-text">لا توجد عناصر مطابقة في الأرشيف.</div>';
+        return;
+      }
+      box.innerHTML = matches.map(it => `
+        <div class="rec-card">
+          <div class="rec-head"><span>${it.title} (${it.period})</span><strong>${fmt(it.diffVal)}</strong></div>
+          <div class="note-text">${it.cause}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderAll() {
+      const m = document.getElementById('monthSel').value;
+      const y = document.getElementById('yearSel').value;
+      const period = `${m}/${y}`;
+      document.getElementById('kPeriod').textContent = period;
+      document.getElementById('currPill').textContent = getCurr();
+
+      const filtered = items.filter(x => x.period === period);
+      const count = filtered.length;
+      const fav = filtered.filter(x => x.isFav).length;
+      const defav = count - fav;
+      const avgPct = count ? (filtered.reduce((a, b) => a + b.pct, 0) / count) : 0;
+
+      document.getElementById('kCount').textContent = count;
+      document.getElementById('kFav').textContent = fav;
+      document.getElementById('kDefav').textContent = defav;
+      document.getElementById('kPct').textContent = avgPct.toFixed(1) + '%';
+
+      const sumBase = filtered.reduce((a, b) => a + Math.abs(b.baseVal), 0);
+      const sumAct = filtered.reduce((a, b) => a + Math.abs(b.actVal), 0);
+      const maxV = Math.max(sumBase, sumAct, 1);
+
+      document.getElementById('lblStd').textContent = fmt(sumBase);
+      document.getElementById('lblAct').textContent = fmt(sumAct);
+      document.getElementById('barStd').style.width = ((sumBase / maxV) * 100).toFixed(1) + '%';
+      document.getElementById('barAct').style.width = ((sumAct / maxV) * 100).toFixed(1) + '%';
+
+      const diagBox = document.getElementById('homeDiagBox');
+      if (count > 0) {
+        const latest = filtered[0];
+        diagBox.innerHTML = `
+          <div class="rec-card" style="margin:0;">
+            <div class="rec-head">
+              <span>${latest.title} (${latest.period})</span>
+              <span class="${latest.isFav ? 'fav' : 'defav'}">${latest.isFav ? 'Favorable' : 'Défavorable'} • ${latest.pct.toFixed(1)}%</span>
+            </div>
+            <div><strong>السبب:</strong> ${latest.cause}</div>
+            <div><strong>الحل:</strong> ${latest.fix}</div>
+          </div>
+        `;
+      } else {
+        diagBox.textContent = `لا توجد تحليلات مسجلة للفترة ${period}. أدخلي بيانات المواد أعلاه أو اختاري تبويب «إدخال» لحساب الفروقات وعرض التشخيص والحلول.`;
+      }
+
+      const histBox = document.getElementById('historyContainer');
+      if (!items.length) {
+        histBox.innerHTML = '<p class="note-text">لا توجد عمليات محفوظة بعد.</p>';
+      } else {
+        histBox.innerHTML = items.map(it => `
+          <div class="rec-card">
+            <div class="rec-head">
+              <span>${it.title} <small style="color:var(--muted)">(${it.period})</small></span>
+              <span class="${it.isFav ? 'fav' : 'defav'}">${it.isFav ? 'Favorable' : 'Défavorable'}</span>
+            </div>
+            <div>الفرق: <strong>${fmt(it.diffVal)}</strong> | النسبة: <strong>${it.pct.toFixed(2)}%</strong></div>
+            <div>السبب: ${it.cause}</div>
+            <div>الحل: ${it.fix}</div>
+            <div style="margin-top:8px; display:flex; gap:6px;">
+              <button type="button" class="btn btn-sec" style="padding:5px 10px; font-size:11.5px;" onclick="editEntry(${it.id})">تعديل</button>
+              <button type="button" class="btn btn-del" onclick="deleteEntry(${it.id})">حذف</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function exportCSV() {
+      if (!items.length) return;
+      const header = 'Period,Title,Diff,Currency,Percent,Status,Cause,Solution\n';
+      const rows = items.map(x => [
+        x.period,
+        `"${x.title}"`,
+        convertAmount(x.diffVal).toFixed(2),
+        getCurr(),
+        x.pct.toFixed(2) + '%',
+        x.isFav ? 'Favorable' : 'Défavorable',
+        `"${x.cause.replace(/"/g, '""')}"`,
+        `"${x.fix.replace(/"/g, '""')}"`
+      ].join(',')).join('\n');
+
+      const blob = new Blob(['\ufeff' + header + rows], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'variance-pro.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    ensureDefaultAdmin();
+  </script>
+</body>
+</html>
