@@ -45,7 +45,7 @@
     #splash {
       position: fixed;
       inset: 0;
-      z-index: 999;
+      z-index: 9999;
       background: radial-gradient(circle at 50% 30%, #3b1d82 0%, #180c33 65%, #0e061f 100%);
       display: flex;
       flex-direction: column;
@@ -53,13 +53,6 @@
       justify-content: center;
       text-align: center;
       padding: 24px;
-      transition: opacity 0.45s ease, visibility 0.45s ease;
-    }
-
-    #splash.hide {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
     }
 
     .splash-logo {
@@ -80,7 +73,6 @@
       font-size: 26px;
       font-weight: 900;
       margin: 0 0 8px 0;
-      letter-spacing: -0.3px;
     }
 
     .splash-sub {
@@ -96,8 +88,8 @@
       color: #fff;
       border: none;
       border-radius: 999px;
-      padding: 12px 26px;
-      font-size: 14px;
+      padding: 13px 28px;
+      font-size: 15px;
       font-weight: 800;
       cursor: pointer;
       box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
@@ -105,6 +97,7 @@
 
     /* App Shell */
     #appShell {
+      display: none;
       padding-bottom: calc(var(--nav-h) + 24px);
     }
 
@@ -373,7 +366,6 @@
       border-right: 3px solid var(--violet-bright);
     }
 
-    /* Chart Bars */
     .chart-row {
       margin-bottom: 12px;
     }
@@ -424,7 +416,7 @@
       margin-bottom: 4px;
     }
 
-    /* Bottom Nav (5 items) */
+    /* Bottom Nav */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -486,7 +478,7 @@
     <div class="splash-logo">Δ</div>
     <h2 class="splash-title">تحليل الفروقات</h2>
     <p class="splash-sub">منصة المحاسبة التحليلية لحساب الفروقات، كشف الأسباب، واقتراح الحلول الإدارية للمؤسسة</p>
-    <button class="splash-btn" onclick="closeSplash()">الدخول إلى الواجهة الرئيسية</button>
+    <button type="button" class="splash-btn" onclick="enterApp()">الدخول إلى الواجهة الرئيسية</button>
   </div>
 
   <div id="appShell">
@@ -530,7 +522,7 @@
           <div class="kpi">
             <div class="kpi-lbl">عدد التحليلات</div>
             <div class="kpi-val vtext" id="kCount">0</div>
-            <div class="kpi-sub" id="kPeriod">نوفمبر 2026</div>
+            <div class="kpi-sub" id="kPeriod">11/2026</div>
           </div>
           <div class="kpi">
             <div class="kpi-lbl">فروقات ملائمة (Favorable)</div>
@@ -549,7 +541,6 @@
           </div>
         </div>
 
-        <!-- رسوم بيانية للمقارنة -->
         <div class="card">
           <div class="card-head">
             <h3 class="card-title">📊 رسوم بيانية للمقارنة</h3>
@@ -567,7 +558,6 @@
           </div>
         </div>
 
-        <!-- التشخيص والحلول الفورية -->
         <div class="card">
           <div class="card-head">
             <h3 class="card-title">🧠 لماذا وقع الفرق وكيف تعالجه المؤسسة؟</h3>
@@ -580,13 +570,12 @@
       <!-- 2. إدخال -->
       <section id="page-input" class="page">
         <div class="subtabs">
-          <button class="subtab active" onclick="openSub('mat', this)">🧱 المواد</button>
-          <button class="subtab" onclick="openSub('lab', this)">👷 اليد والمصاريف غير المباشرة</button>
-          <button class="subtab" onclick="openSub('sales', this)">📈 المبيعات (Ventes)</button>
-          <button class="subtab" onclick="openSub('budget', this)">💼 الميزانية (Budget)</button>
+          <button type="button" class="subtab active" onclick="openSub('mat', this)">🧱 المواد</button>
+          <button type="button" class="subtab" onclick="openSub('lab', this)">👷 اليد والمصاريف غير المباشرة</button>
+          <button type="button" class="subtab" onclick="openSub('sales', this)">📈 المبيعات (Ventes)</button>
+          <button type="button" class="subtab" onclick="openSub('budget', this)">💼 الميزانية (Budget)</button>
         </div>
 
-        <!-- المواد -->
         <div id="sub-mat" class="card sub-panel">
           <div class="card-head">
             <h3 class="card-title">الفرق الإجمالي للمواد (Écart global sur matières)</h3>
@@ -595,4 +584,420 @@
           <div class="grid-2">
             <div class="field"><label>الكمية الفعلية (Qréelle)</label><input type="text" inputmode="decimal" id="mQr" placeholder="مثال: 1200" /></div>
             <div class="field"><label>الكمية المعيارية (Qprévue)</label><input type="text" inputmode="decimal" id="mQp" placeholder="مثال: 1000" /></div>
-            <div class="field"><label>السعر الفعلي (Préel)</label><input type="text" inputmode="decimal" id="mPr" placeholder="مثال: 
+            <div class="field"><label>السعر الفعلي (Préel)</label><input type="text" inputmode="decimal" id="mPr" placeholder="مثال: 55" /></div>
+            <div class="field"><label>السعر المعياري (Pprévu)</label><input type="text" inputmode="decimal" id="mPp" placeholder="مثال: 50" /></div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="calcMat()">حساب وتشخيص المواد</button>
+            <button type="button" class="btn btn-sec" onclick="mQr.value=1200;mQp.value=1000;mPr.value=55;mPp.value=50;">مثال</button>
+          </div>
+          <div id="out-mat" class="res-box" style="display:none;"></div>
+        </div>
+
+        <div id="sub-lab" class="card sub-panel" style="display:none;">
+          <div class="card-head">
+            <h3 class="card-title">اليد العاملة والمصاريف غير المباشرة</h3>
+            <span class="pill">ساعات + تكاليف</span>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>الساعات الفعلية (Hréelle)</label><input type="text" inputmode="decimal" id="lHr" placeholder="مثال: 420" /></div>
+            <div class="field"><label>الساعات المعيارية (Hprévue)</label><input type="text" inputmode="decimal" id="lHp" placeholder="مثال: 400" /></div>
+            <div class="field"><label>تكلفة الساعة الفعلية (Tréel)</label><input type="text" inputmode="decimal" id="lTr" placeholder="مثال: 320" /></div>
+            <div class="field"><label>تكلفة الساعة المعيارية (Tprévu)</label><input type="text" inputmode="decimal" id="lTp" placeholder="مثال: 300" /></div>
+            <div class="field"><label>المصاريف غير المباشرة الفعلية</label><input type="text" inputmode="decimal" id="lOvhR" placeholder="مثال: 185000" /></div>
+            <div class="field"><label>المصاريف غير المباشرة المعيارية</label><input type="text" inputmode="decimal" id="lOvhP" placeholder="مثال: 170000" /></div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="calcLabOvh()">حساب وتشخيص اليد والأعباء</button>
+            <button type="button" class="btn btn-sec" onclick="lHr.value=420;lHp.value=400;lTr.value=320;lTp.value=300;lOvhR.value=185000;lOvhP.value=170000;">مثال</button>
+          </div>
+          <div id="out-lab" class="res-box" style="display:none;"></div>
+        </div>
+
+        <div id="sub-sales" class="card sub-panel" style="display:none;">
+          <div class="card-head">
+            <h3 class="card-title">المبيعات (Ventes) — رقم الأعمال، الكمية، السعر</h3>
+            <span class="pill">إيرادات</span>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>الكمية المباعة الفعلية</label><input type="text" inputmode="decimal" id="sQr" placeholder="مثال: 950" /></div>
+            <div class="field"><label>الكمية المباعة المخططة</label><input type="text" inputmode="decimal" id="sQp" placeholder="مثال: 1000" /></div>
+            <div class="field"><label>سعر البيع الفعلي</label><input type="text" inputmode="decimal" id="sPr" placeholder="مثال: 1300" /></div>
+            <div class="field"><label>سعر البيع المخطط</label><input type="text" inputmode="decimal" id="sPp" placeholder="مثال: 1200" /></div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="calcSales()">حساب وتشخيص المبيعات</button>
+            <button type="button" class="btn btn-sec" onclick="sQr.value=950;sQp.value=1000;sPr.value=1300;sPp.value=1200;">مثال</button>
+          </div>
+          <div id="out-sales" class="res-box" style="display:none;"></div>
+        </div>
+
+        <div id="sub-budget" class="card sub-panel" style="display:none;">
+          <div class="card-head">
+            <h3 class="card-title">الميزانية (Budget) — تقديرية مقابل فعلية</h3>
+            <span class="pill">مقارنة شاملة</span>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>الميزانية التقديرية (Budget Prévu)</label><input type="text" inputmode="decimal" id="bPrevu" placeholder="مثال: 900000" /></div>
+            <div class="field"><label>الميزانية الفعلية (Budget Réel)</label><input type="text" inputmode="decimal" id="bReel" placeholder="مثال: 945000" /></div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="calcBudget()">مقارنة وتشخيص الميزانية</button>
+            <button type="button" class="btn btn-sec" onclick="bPrevu.value=900000;bReel.value=945000;">مثال</button>
+          </div>
+          <div id="out-budget" class="res-box" style="display:none;"></div>
+        </div>
+      </section>
+
+      <!-- 3. القوانين والشرح -->
+      <section id="page-laws" class="page">
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">📘 القوانين الحسابية وشرحها</h3>
+            <span class="pill">مرجع محاسبي</span>
+          </div>
+          <div class="rec-card">
+            <div class="rec-head"><span>1. الفرق الإجمالي للمواد (Écart global)</span></div>
+            E/G = (الكمية الفعلية × السعر الفعلي) − (الكمية المعيارية × السعر المعياري).<br>
+            • فرق السعر = (السعر الفعلي − السعر المعياري) × الكمية الفعلية.<br>
+            • فرق الكمية = (الكمية الفعلية − الكمية المعيارية) × السعر المعياري.
+          </div>
+          <div class="rec-card">
+            <div class="rec-head"><span>2. اليد العاملة والمصاريف غير المباشرة</span></div>
+            E/G = (الساعات الفعلية × التكلفة الفعلية) − (الساعات المعيارية × التكلفة المعيارية).<br>
+            • فرق المصاريف غير المباشرة = المصاريف الفعلية − المصاريف المعيارية.
+          </div>
+          <div class="rec-card">
+            <div class="rec-head"><span>3. المبيعات (Ventes)</span></div>
+            • فرق رقم الأعمال = رقم الأعمال الفعلي − رقم الأعمال المخطط.<br>
+            • فرق السعر = (السعر الفعلي − السعر المخطط) × الكمية الفعلية.<br>
+            • فرق الكمية = (الكمية الفعلية − الكمية المخططة) × السعر المخطط.
+          </div>
+          <div class="rec-card">
+            <div class="rec-head"><span>4. الميزانية (Budget) ونسبة الفرق (%)</span></div>
+            • الفرق = الفعلي − التقديري (في التكاليف: موجب = Défavorable، سالب = Favorable).<br>
+            • نسبة الفرق (%) = (الفرق ÷ القيمة المرجعية) × 100.
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. الأسباب والحلول -->
+      <section id="page-solutions" class="page">
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">🛠️ أسباب الفروقات والحلول المقترحة</h3>
+            <span class="pill">معالجة المؤسسة</span>
+          </div>
+          <div class="rec-card">
+            <div class="rec-head"><span class="defav">ارتفاع تكلفة المواد / السعر (Défavorable)</span></div>
+            <strong>الأسباب:</strong> تضخم أسعار السوق، الاعتماد على مورد واحد، أو شحن عاجل بتكلفة مرتفعة.<br>
+            <strong>الحلول:</strong> تنويع الموردين، إبرام عقود طويلة الأجل، وتجميع الطلبيات للحصول على تخفيضات.
+          </div>
+          <div class="rec-card">
+            <div class="rec-head"><span class="defav">تجاوز ساعات العمل أو المصاريف غير المباشرة</span></div>
+            <strong>الأسباب:</strong> أعطال الآلات، نقص تكوين العمال، أو سوء جدولة الورشات.<br>
+            <strong>الحلول:</strong> برنامج صيانة وقائية، تحسين تنظيم العمل، ومراقبة استهلاك الطاقة واللوازم.
+          </div>
+          <div class="rec-card">
+            <div class="rec-head"><span class="defav">انخفاض المبيعات أو تجاوز الميزانية</span></div>
+            <strong>الأسباب:</strong> منافسة سعرية، ضعف الترويج، أو ضعف الرقابة على بنود الإنفاق.<br>
+            <strong>الحلول:</strong> مراجعة العروض التجارية، تحسين جودة الخدمة، ووضع سقف إنفاق شهري لكل قسم.
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. السجل والتصدير والتعديل -->
+      <section id="page-history" class="page">
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">🗂️ السجل وتصدير النتائج</h3>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn-sec" style="padding:6px 10px; font-size:11.5px;" onclick="exportCSV()">تصدير CSV</button>
+              <button type="button" class="btn btn-del" onclick="clearAll()">مسح الكل</button>
+            </div>
+          </div>
+          <div id="historyContainer">
+            <p class="note-text">لا توجد عمليات محفوظة بعد.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+      <button type="button" class="nav-btn active" onclick="goPage('page-home', 0)">
+        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
+        <span>الرئيسية</span>
+      </button>
+      <button type="button" class="nav-btn" onclick="goPage('page-input', 1)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>
+        <span>إدخال</span>
+      </button>
+      <button type="button" class="nav-btn" onclick="goPage('page-laws', 2)">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>القوانين</span>
+      </button>
+      <button type="button" class="nav-btn" onclick="goPage('page-solutions', 3)">
+        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        <span>الحلول</span>
+      </button>
+      <button type="button" class="nav-btn" onclick="goPage('page-history', 4)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span>السجل</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    const DB_KEY = 'va_violet_pro_v2';
+    let items = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+
+    function enterApp() {
+      const sp = document.getElementById('splash');
+      const shell = document.getElementById('appShell');
+      if (sp) sp.style.display = 'none';
+      if (shell) shell.style.display = 'block';
+      renderAll();
+    }
+
+    setTimeout(() => {
+      const sp = document.getElementById('splash');
+      if (sp && sp.style.display !== 'none') {
+        enterApp();
+      }
+    }, 1800);
+
+    function goPage(pageId, idx) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(pageId);
+      if (target) target.classList.add('active');
+      document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openSub(sub, btn) {
+      document.querySelectorAll('.sub-panel').forEach(p => p.style.display = 'none');
+      document.getElementById('sub-' + sub).style.display = 'block';
+      document.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    }
+
+    function val(id) {
+      const raw = document.getElementById(id).value.replace(',', '.').trim();
+      const n = parseFloat(raw);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function fmt(n) {
+      return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function saveEntry(entry) {
+      const month = document.getElementById('monthSel').value;
+      const year = document.getElementById('yearSel').value;
+      items.unshift({
+        id: Date.now() + Math.random(),
+        period: `${month}/${year}`,
+        ...entry
+      });
+      localStorage.setItem(DB_KEY, JSON.stringify(items));
+      renderAll();
+    }
+
+    function deleteEntry(id) {
+      items = items.filter(x => x.id !== id);
+      localStorage.setItem(DB_KEY, JSON.stringify(items));
+      renderAll();
+    }
+
+    function editEntry(id) {
+      const target = items.find(x => x.id === id);
+      if (!target) return;
+      const newNote = prompt('تعديل ملاحظة أو تشخيص التحليل:', target.cause);
+      if (newNote !== null && newNote.trim() !== '') {
+        target.cause = newNote.trim();
+        localStorage.setItem(DB_KEY, JSON.stringify(items));
+        renderAll();
+      }
+    }
+
+    function clearAll() {
+      items = [];
+      localStorage.removeItem(DB_KEY);
+      renderAll();
+    }
+
+    function buildDiagnosis(kind, isFav) {
+      if (kind === 'mat') {
+        return isFav
+          ? { cause: 'انخفاض التكلفة الفعلية للمواد مقارنة بالمعيار نتيجة شروط شراء جيدة أو كفاءة استهلاك.', fix: 'تثبيت معايير الشراء وتوثيق سياسة المورد المعتمدة.' }
+          : { cause: 'ارتفاع تكلفة المواد نتيجة زيادة سعر الوحدة أو ارتفاع الكمية المستهلكة/الهدر.', fix: 'مراجعة أسعار الموردين، فرض رقابة على الهدر، وتحسين جودة المواد.' };
+      }
+      if (kind === 'lab') {
+        return isFav
+          ? { cause: 'إنجاز الإنتاج بساعات أقل أو تكلفة ساعة ومصاريف غير مباشرة أقل من المعيار.', fix: 'تعميم أساليب العمل الفعالة وتحفيز الفرق التشغيلية.' }
+          : { cause: 'تجاوز ساعات العمل أو ارتفاع المصاريف غير المباشرة بسبب تعطل أو بطء الأداء.', fix: 'برمجة الصيانة الوقائية، تدريب العمال، وضبط الأعباء غير المباشرة.' };
+      }
+      if (kind === 'sales') {
+        return isFav
+          ? { cause: 'تحقيق رقم أعمال أعلى من المخطط بفضل تحسن السعر أو زيادة حجم المبيعات.', fix: 'دعم المنتجات الأكثر ربحية والحفاظ على رضا العملاء.' }
+          : { cause: 'تراجع رقم الأعمال بسبب انخفاض الكمية المباعة أو ضغط الأسعار في السوق.', fix: 'تنشيط التسويق، دراسة عروض المنافسين، وتحسين قنوات البيع.' };
+      }
+      return isFav
+        ? { cause: 'الالتزام بالميزانية التقديرية وتحقيق وفورات فعلية.', fix: 'الاستمرار في الرقابة الدورية وتخصيص الفائض لمشاريع التطوير.' }
+        : { cause: 'تجاوز الميزانية الفعلية للتقديرية نتيجة نفقات غير متوقعة أو ضعف ضبط البنود.', fix: 'إعادة جدولة المصاريف غير الضرورية وتفعيل صلاحيات الصرف.' };
+    }
+
+    function renderResultBox(boxId, title, baseVal, actVal, diffVal, isFav, kind) {
+      const pct = baseVal !== 0 ? ((Math.abs(diffVal) / Math.abs(baseVal)) * 100) : 0;
+      const diag = buildDiagnosis(kind, isFav);
+      const statusText = isFav ? 'ملائم (Favorable)' : 'غير ملائم (Défavorable)';
+      const statusCls = isFav ? 'fav' : 'defav';
+
+      const box = document.getElementById(boxId);
+      box.style.display = 'block';
+      box.innerHTML = `
+        <div><strong>${title}</strong></div>
+        <div>قيمة الفرق: <strong class="${statusCls}">${fmt(Math.abs(diffVal))}</strong></div>
+        <div>نسبة الفرق (%): <strong>${pct.toFixed(2)}%</strong></div>
+        <div>الحالة: <strong class="${statusCls}">${statusText}</strong></div>
+        <div class="diag-box">
+          <div><strong>السبب المحتمل:</strong> ${diag.cause}</div>
+          <div><strong>الحل المقترح:</strong> ${diag.fix}</div>
+        </div>
+      `;
+
+      saveEntry({
+        kind,
+        title,
+        baseVal,
+        actVal,
+        diffVal: Math.abs(diffVal),
+        pct,
+        isFav,
+        cause: diag.cause,
+        fix: diag.fix
+      });
+    }
+
+    function calcMat() {
+      const qr = val('mQr'), qp = val('mQp'), pr = val('mPr'), pp = val('mPp');
+      const baseCost = qp * pp;
+      const actCost = qr * pr;
+      const diff = actCost - baseCost;
+      renderResultBox('out-mat', 'الفرق الإجمالي للمواد (Écart global sur matières)', baseCost, actCost, diff, diff <= 0, 'mat');
+    }
+
+    function calcLabOvh() {
+      const hr = val('lHr'), hp = val('lHp'), tr = val('lTr'), tp = val('lTp'), ovhr = val('lOvhR'), ovhp = val('lOvhP');
+      const baseTotal = (hp * tp) + ovhp;
+      const actTotal = (hr * tr) + ovhr;
+      const diff = actTotal - baseTotal;
+      renderResultBox('out-lab', 'اليد العاملة والمصاريف غير المباشرة', baseTotal, actTotal, diff, diff <= 0, 'lab');
+    }
+
+    function calcSales() {
+      const qr = val('sQr'), qp = val('sQp'), pr = val('sPr'), pp = val('sPp');
+      const baseRev = qp * pp;
+      const actRev = qr * pr;
+      const diff = actRev - baseRev;
+      renderResultBox('out-sales', 'تحليل المبيعات (Ventes)', baseRev, actRev, diff, diff >= 0, 'sales');
+    }
+
+    function calcBudget() {
+      const bp = val('bPrevu'), br = val('bReel');
+      const diff = br - bp;
+      renderResultBox('out-budget', 'مقارنة الميزانية التقديرية بالفعلية', bp, br, diff, diff <= 0, 'budget');
+    }
+
+    function renderAll() {
+      const m = document.getElementById('monthSel').value;
+      const y = document.getElementById('yearSel').value;
+      const periodStr = `${m}/${y}`;
+      document.getElementById('kPeriod').textContent = periodStr;
+
+      const filtered = items.filter(x => x.period === periodStr);
+      const count = filtered.length;
+      const favCount = filtered.filter(x => x.isFav).length;
+      const defavCount = count - favCount;
+      const avgPct = count ? (filtered.reduce((a, b) => a + b.pct, 0) / count) : 0;
+
+      document.getElementById('kCount').textContent = count;
+      document.getElementById('kFav').textContent = favCount;
+      document.getElementById('kDefav').textContent = defavCount;
+      document.getElementById('kPct').textContent = avgPct.toFixed(1) + '%';
+
+      const sumBase = filtered.reduce((a, b) => a + Math.abs(b.baseVal), 0);
+      const sumAct = filtered.reduce((a, b) => a + Math.abs(b.actVal), 0);
+      const maxVal = Math.max(sumBase, sumAct, 1);
+
+      document.getElementById('lblStd').textContent = fmt(sumBase);
+      document.getElementById('lblAct').textContent = fmt(sumAct);
+      document.getElementById('barStd').style.width = ((sumBase / maxVal) * 100).toFixed(1) + '%';
+      document.getElementById('barAct').style.width = ((sumAct / maxVal) * 100).toFixed(1) + '%';
+
+      const diagBox = document.getElementById('homeDiagBox');
+      if (count > 0) {
+        const latest = filtered[0];
+        diagBox.innerHTML = `
+          <div class="rec-card" style="margin:0;">
+            <div class="rec-head">
+              <span>${latest.title} (${latest.period})</span>
+              <span class="${latest.isFav ? 'fav' : 'defav'}">${latest.isFav ? 'Favorable' : 'Défavorable'} • ${latest.pct.toFixed(1)}%</span>
+            </div>
+            <div><strong>السبب:</strong> ${latest.cause}</div>
+            <div><strong>الحل:</strong> ${latest.fix}</div>
+          </div>
+        `;
+      } else {
+        diagBox.textContent = `لا توجد تحليلات مسجلة للفترة ${periodStr}. اختاري تبويب «إدخال» لحساب الفروقات وعرض التشخيص والحلول.`;
+      }
+
+      const histBox = document.getElementById('historyContainer');
+      if (!items.length) {
+        histBox.innerHTML = '<p class="note-text">لا توجد عمليات محفوظة بعد.</p>';
+      } else {
+        histBox.innerHTML = items.map(it => `
+          <div class="rec-card">
+            <div class="rec-head">
+              <span>${it.title} <small style="color:var(--muted)">(${it.period})</small></span>
+              <span class="${it.isFav ? 'fav' : 'defav'}">${it.isFav ? 'Favorable' : 'Défavorable'}</span>
+            </div>
+            <div>الفرق: <strong>${fmt(it.diffVal)}</strong> | النسبة: <strong>${it.pct.toFixed(2)}%</strong></div>
+            <div>السبب: ${it.cause}</div>
+            <div>الحل: ${it.fix}</div>
+            <div style="margin-top:8px; display:flex; gap:6px;">
+              <button type="button" class="btn btn-sec" style="padding:5px 10px; font-size:11.5px;" onclick="editEntry(${it.id})">تعديل</button>
+              <button type="button" class="btn btn-del" onclick="deleteEntry(${it.id})">حذف</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function exportCSV() {
+      if (!items.length) return;
+      const header = 'Period,Title,Diff,Percent,Status,Cause,Solution\n';
+      const rows = items.map(x => [
+        x.period,
+        `"${x.title}"`,
+        x.diffVal.toFixed(2),
+        x.pct.toFixed(2) + '%',
+        x.isFav ? 'Favorable' : 'Défavorable',
+        `"${x.cause.replace(/"/g, '""')}"`,
+        `"${x.fix.replace(/"/g, '""')}"`
+      ].join(',')).join('\n');
+
+      const blob = new Blob(['\ufeff' + header + rows], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'variance-analysis.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
