@@ -5,6 +5,7 @@
   "scope": "./",
   "display": "standalone",
   "background_color": "#120926",
-  "theme_color": "#140b29",
-  "orientation": "portrait"
+  "theme_color": "#140B29",
+  "orientation": "portrait",
+  "description": "Variance analysis and cost calculation tool"
 }
