@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#140b29" />
   <title>VARIANCE PRO — تحليل الفروقات</title>
+  <link rel="manifest" href="./manifest.json">
   <style>
     :root {
       --bg: #120926;
@@ -1909,5 +1910,13 @@
 
     ensureDefaultAdmin();
   </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js');
+    });
+  }
+  </script>
+  
 </body>
 </html>
