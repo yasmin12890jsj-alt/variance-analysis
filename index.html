@@ -41,8 +41,100 @@
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Kufi Arabic", sans-serif;
     }
 
-    #loginScreen {
+    /* 1. Intro Screen - شاشة افتتاحية شبيهة بالفيديو */
+    #introScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: radial-gradient(circle at 50% 40%, #4c1d95 0%, #1b0d3d 60%, #0b0519 100%);
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .intro-ring {
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      border: 2px solid rgba(167, 139, 250, 0.35);
+      animation: ringExpand 2.4s ease-out infinite;
+      pointer-events: none;
+    }
+
+    .intro-ring.r2 {
+      animation-delay: 1.2s;
+    }
+
+    @keyframes ringExpand {
+      0% { transform: scale(0.55); opacity: 0.9; }
+      100% { transform: scale(1.85); opacity: 0; }
+    }
+
+    .intro-logo {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, var(--violet-deep), var(--violet-bright));
+      display: grid;
+      place-items: center;
+      font-size: 42px;
+      font-weight: 900;
+      color: #fff;
+      box-shadow: 0 22px 50px rgba(139, 92, 246, 0.6);
+      margin-bottom: 18px;
+      animation: introFloat 2.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes introFloat {
+      0% { transform: translateY(0px) scale(0.96); }
+      100% { transform: translateY(-8px) scale(1.04); }
+    }
+
+    .intro-title {
+      position: relative;
+      font-size: 30px;
+      font-weight: 900;
+      margin: 0 0 8px 0;
+      letter-spacing: 0.6px;
+      animation: textFade 1s ease forwards;
+    }
+
+    .intro-tag {
+      position: relative;
+      font-size: 13.5px;
+      color: var(--muted);
+      margin: 0 0 26px 0;
+      animation: textFade 1.4s ease forwards;
+    }
+
+    @keyframes textFade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .intro-skip {
+      position: relative;
+      z-index: 10000;
+      background: linear-gradient(135deg, var(--violet-deep), var(--violet));
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 13px 32px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(109, 40, 217, 0.5);
+    }
+
+    /* 2. Login Screen */
+    #loginScreen {
+      display: none;
       min-height: 100vh;
       align-items: center;
       justify-content: center;
@@ -75,6 +167,7 @@
       display: none;
     }
 
+    /* 3. Main App */
     #mainApp {
       display: none;
       padding-bottom: calc(var(--nav-h) + 28px);
@@ -85,7 +178,7 @@
       top: 0;
       z-index: 40;
       backdrop-filter: blur(16px);
-      background: rgba(18, 9, 38, 0.9);
+      background: rgba(18, 9, 38, 0.92);
       border-bottom: 1px solid var(--line);
       padding: 10px 12px;
       display: flex;
@@ -210,6 +303,7 @@
       justify-content: space-between;
       gap: 8px;
       margin-bottom: 12px;
+      flex-wrap: wrap;
     }
 
     .card-title {
@@ -226,7 +320,6 @@
       background: rgba(167, 139, 250, 0.16);
       color: var(--violet-bright);
       border: 1px solid rgba(167, 139, 250, 0.28);
-      white-space: nowrap;
     }
 
     .kpi-grid {
@@ -244,7 +337,7 @@
     }
 
     .kpi-lbl { font-size: 11.5px; color: var(--muted); font-weight: 700; }
-    .kpi-val { font-size: 19px; font-weight: 900; margin: 4px 0; }
+    .kpi-val { font-size: 18px; font-weight: 900; margin: 4px 0; }
     .kpi-sub { font-size: 11px; color: var(--muted); }
 
     .fav { color: var(--fav); }
@@ -319,7 +412,7 @@
       background: linear-gradient(135deg, var(--violet-deep), var(--violet));
       color: #fff;
       flex: 1;
-      min-width: 130px;
+      min-width: 135px;
     }
 
     .btn-sec {
@@ -456,23 +549,23 @@
       font-size: 13px;
     }
 
-    /* الشريط السفلي المطور لـ 10 أقسام مع تمرير أفقي مريح وثبات كامل */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       height: var(--nav-h);
-      background: rgba(18, 9, 38, 0.97);
+      background: rgba(20, 10, 44, 0.97);
       backdrop-filter: blur(18px);
       border-top: 1px solid var(--line-strong);
       display: flex;
+      flex-direction: row;
       align-items: stretch;
       overflow-x: auto;
       overflow-y: hidden;
       gap: 4px;
-      z-index: 100;
       padding: 5px 8px calc(5px + env(safe-area-inset-bottom, 0px));
+      z-index: 120;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
@@ -480,9 +573,10 @@
     .bottom-nav::-webkit-scrollbar { display: none; }
 
     .nav-btn {
-      flex: 0 0 auto;
+      flex: 0 0 74px;
       min-width: 74px;
-      background: rgba(29, 16, 61, 0.65);
+      min-height: 54px;
+      background: rgba(39, 21, 82, 0.55);
       border: 1px solid transparent;
       color: var(--muted);
       display: flex;
@@ -492,7 +586,7 @@
       gap: 4px;
       cursor: pointer;
       border-radius: 13px;
-      padding: 6px 10px;
+      padding: 5px 4px;
       transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
 
@@ -503,30 +597,60 @@
       fill: none;
       stroke: currentColor;
       stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .nav-btn span {
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 10.5px;
+      font-weight: 800;
       white-space: nowrap;
-      line-height: 1.1;
+      line-height: 1.15;
     }
 
     .nav-btn.active {
-      background: rgba(167, 139, 250, 0.2);
+      background: rgba(139, 92, 246, 0.25);
       border-color: rgba(167, 139, 250, 0.45);
-      color: var(--text);
+      color: #fff;
     }
 
     .nav-btn.active svg,
     .nav-btn.active span {
       color: var(--violet-bright);
     }
+
+    @media print {
+      .topbar, .bottom-nav, .btn-row, .subtabs, #loginScreen, #introScreen {
+        display: none !important;
+      }
+      body {
+        background: #fff !important;
+        color: #111 !important;
+      }
+      .card, .res-box, .rec-card, .kpi, .sub-metric-card {
+        background: #fff !important;
+        color: #111 !important;
+        border-color: #ccc !important;
+        box-shadow: none !important;
+      }
+      .page { display: none !important; }
+      #page-reports.active { display: block !important; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Login Screen -->
+  <!-- 1. Intro Screen (شاشة أولى متحركة شبيهة بمقدمة الفيديو) -->
+  <div id="introScreen">
+    <div class="intro-ring"></div>
+    <div class="intro-ring r2"></div>
+    <div class="intro-logo">Δ</div>
+    <h1 class="intro-title">VARIANCE PRO</h1>
+    <p class="intro-tag">تحليل الفروقات • Variance Analysis • Analyse des Écarts</p>
+    <button type="button" class="intro-skip" id="btnIntroContinue" onclick="goToLoginFromIntro()">متابعة</button>
+  </div>
+
+  <!-- 2. Login Screen -->
   <div id="loginScreen">
     <div class="login-card">
       <div class="login-top">
@@ -568,12 +692,12 @@
 
       <div id="authMessage" class="auth-msg"></div>
       <div class="note-text" style="margin-top:10px; font-size:11.5px;" id="authHint">
-        حساب تجريبي افتراضي: اسم المستخدم <strong>admin</strong> وكلمة المرور <strong>1234</strong> (يمكنكِ إنشاء حساب جديد بأي صلاحية).
+        اضغطي على <strong>دخول</strong> للانتقال مباشرة إلى التطبيق بأي اسم أو بالصلاحية المختارة.
       </div>
     </div>
   </div>
 
-  <!-- Main App -->
+  <!-- 3. Main App -->
   <div id="mainApp">
     <header class="topbar">
       <div class="brand">
@@ -617,7 +741,7 @@
           <option value="fr">FR</option>
           <option value="en">EN</option>
         </select>
-        <button type="button" class="btn btn-sec" style="padding:5px 9px; font-size:11px;" onclick="logoutUser()" id="btnLogout">خروج</button>
+        <button type="button" class="btn btn-sec" style="padding:5px 9px; font-size:11px;" onclick="showLoginScreen()" id="btnLogout">خروج</button>
       </div>
     </header>
 
@@ -650,6 +774,24 @@
 
         <div class="card">
           <div class="card-head">
+            <h3 class="card-title">🧱 محرك تحليل المواد التفصيلي (Prix, Quantité & Global)</h3>
+            <span class="pill">تفصيل كامل</span>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>الكمية الفعلية (Qr)</label><input type="text" inputmode="decimal" id="homeQr" placeholder="1200" /></div>
+            <div class="field"><label>الكمية المعيارية (Qp)</label><input type="text" inputmode="decimal" id="homeQp" placeholder="1000" /></div>
+            <div class="field"><label>السعر الفعلي (Pr)</label><input type="text" inputmode="decimal" id="homePr" placeholder="55" /></div>
+            <div class="field"><label>السعر المعياري (Pp)</label><input type="text" inputmode="decimal" id="homePp" placeholder="50" /></div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="calcMatEngine('homeQr','homeQp','homePr','homePp','homeMatOut')">تحليل المواد الكامل</button>
+            <button type="button" class="btn btn-sec" onclick="homeQr.value=1200;homeQp.value=1000;homePr.value=55;homePp.value=50;calcMatEngine('homeQr','homeQp','homePr','homePp','homeMatOut');">مثال وحساب</button>
+          </div>
+          <div id="homeMatOut" class="res-box" style="display:none;"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
             <h3 class="card-title" id="lblChartTitle">📊 رسوم بيانية للمقارنة</h3>
             <span class="pill" id="currPill">DZD</span>
           </div>
@@ -666,9 +808,9 @@
         <div class="card">
           <div class="card-head">
             <h3 class="card-title" id="lblDiagTitle">🧠 سبب الفرق وكيفية المعالجة</h3>
-            <span class="pill" id="rolePill">USER</span>
+            <span class="pill" id="rolePill">ADMIN</span>
           </div>
-          <div id="homeDiagBox" class="note-text">أدخلي عملية من تبويب «إدخال» لحساب الفرق، تحديد نوعه، معرفة أسبابه، واقتراح الحلول.</div>
+          <div id="homeDiagBox" class="note-text">أدخلي بيانات المواد أعلاه أو انتقلي إلى «إدخال» لعرض التفصيل الكامل والتشخيص والحلول.</div>
         </div>
 
         <div class="card">
@@ -712,8 +854,8 @@
             <div class="field"><label>السعر المعياري (Pprévu)</label><input type="text" inputmode="decimal" id="mPp" placeholder="50" /></div>
           </div>
           <div class="btn-row">
-            <button type="button" class="btn btn-primary" onclick="calcMatDetailed()">حساب وتشخيص تفصيلي</button>
-            <button type="button" class="btn btn-sec" onclick="mQr.value=1200;mQp.value=1000;mPr.value=55;mPp.value=50;">مثال</button>
+            <button type="button" class="btn btn-primary" onclick="calcMatEngine('mQr','mQp','mPr','mPp','out-mat')">حساب وتشخيص تفصيلي</button>
+            <button type="button" class="btn btn-sec" onclick="mQr.value=1200;mQp.value=1000;mPr.value=55;mPp.value=50;calcMatEngine('mQr','mQp','mPr','mPp','out-mat');">مثال</button>
           </div>
           <div id="out-mat" class="res-box" style="display:none;"></div>
         </div>
@@ -844,30 +986,23 @@
         <div class="card">
           <div class="card-head">
             <h3 class="card-title">⚖️ مقارنة الفترات والأقسام والميزانيات</h3>
-            <span class="pill">مقارنة حية</span>
+            <span class="pill">مقارنة حقيقية</span>
           </div>
-          <div class="grid-3">
+          <div class="grid-2">
             <div class="field">
-              <label>الفترة الأولى (المرجع)</label>
-              <input type="text" id="cmpPeriodA" value="10/2026" />
+              <label>الفترة الأولى (المرجع / السابقة)</label>
+              <input type="text" id="cmpPeriodA" value="10/2026" placeholder="MM/YYYY" />
             </div>
             <div class="field">
-              <label>الفترة الثانية (المقارنة)</label>
-              <input type="text" id="cmpPeriodB" value="11/2026" />
-            </div>
-            <div class="field">
-              <label>نوع القسم / البند</label>
-              <select id="cmpKind">
-                <option value="all">جميع الأقسام</option>
-                <option value="mat">المواد</option>
-                <option value="lab">اليد والأعباء</option>
-                <option value="sales">المبيعات</option>
-                <option value="budget">الميزانية</option>
-              </select>
+              <label>الفترة الثانية (الحالية / المحددة)</label>
+              <input type="text" id="cmpPeriodB" value="11/2026" placeholder="MM/YYYY" />
             </div>
           </div>
-          <button type="button" class="btn btn-primary" onclick="runComparison()">تشغيل المقارنة الآن</button>
-          <div id="cmpResultBox" class="res-box" style="margin-top:12px;"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="renderComparison()">مقارنة الفترتين الآن</button>
+            <button type="button" class="btn btn-sec" onclick="syncCompareWithCurrent()">استخدام الفترة الحالية في الشريط</button>
+          </div>
+          <div id="compareResultBox" class="res-box"></div>
         </div>
       </section>
 
@@ -876,28 +1011,18 @@
         <div class="card">
           <div class="card-head">
             <h3 class="card-title">📈 التحليلات ومؤشرات الأداء (KPIs)</h3>
-            <span class="pill">تحليلات</span>
+            <span class="pill" id="anPeriodPill">11/2026</span>
           </div>
           <div class="kpi-grid">
             <div class="kpi">
               <div class="kpi-lbl">إجمالي الفروقات المسجلة</div>
               <div class="kpi-val vtext" id="anTotalDiff">0.00</div>
-              <div class="kpi-sub">حسب العملة الحالية</div>
+              <div class="kpi-sub">للفترة المختارة</div>
             </div>
             <div class="kpi">
               <div class="kpi-lbl">معدل الأداء الملائم</div>
               <div class="kpi-val fav" id="anFavRate">0.0%</div>
-              <div class="kpi-sub">نسبة الفروقات الملائمة</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-lbl">أعلى فرق مسجل</div>
-              <div class="kpi-val defav" id="anMaxDiff">0.00</div>
-              <div class="kpi-sub" id="anMaxTitle">لا يوجد بعد</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-lbl">إجمالي العمليات الكلي</div>
-              <div class="kpi-val" style="color:var(--warn)" id="anAllCount">0</div>
-              <div class="kpi-sub">عبر جميع الفترات</div>
+              <div class="kpi-sub">نسبة العمليات الملائمة</div>
             </div>
           </div>
           <div id="analyticsBreakdown"></div>
@@ -909,15 +1034,15 @@
         <div class="card">
           <div class="card-head">
             <h3 class="card-title">📄 التقارير (PDF • Excel • CSV)</h3>
-            <span class="pill">تصدير فوري</span>
+            <span class="pill">تصدير مباشر</span>
           </div>
-          <p class="note-text">تصدير سجل التحليلات والبيانات بالصيغ المطلوبة مع الحفاظ على العملة المحددة والأرقام الفعلية.</p>
+          <p class="note-text">ولّدي تقريراً شاملاً للفترة الحالية وصدّريه كـ <strong>CSV</strong> (لفتح مباشر في Excel) أو احفظيه كـ <strong>PDF</strong> عبر نافذة الطباعة.</p>
           <div class="btn-row">
-            <button type="button" class="btn btn-primary" onclick="exportCSV()">تحميل تقرير CSV</button>
-            <button type="button" class="btn btn-sec" onclick="exportExcel()">تحميل تقرير Excel (.xls)</button>
-            <button type="button" class="btn btn-sec" onclick="exportPrintablePDF()">توليد تقرير PDF للطباعة</button>
+            <button type="button" class="btn btn-primary" onclick="generateReportPreview()">توليد ومعاينة التقرير</button>
+            <button type="button" class="btn btn-sec" onclick="exportExcelCompatible()">تصدير Excel (.xls / .csv)</button>
+            <button type="button" class="btn btn-sec" onclick="window.print()">حفظ / طباعة PDF</button>
           </div>
-          <div id="reportPreviewBox" class="res-box" style="margin-top:12px;"></div>
+          <div id="reportPreviewBox" class="res-box"></div>
         </div>
       </section>
 
@@ -925,32 +1050,21 @@
       <section id="page-settings" class="page">
         <div class="card">
           <div class="card-head">
-            <h3 class="card-title">⚙️ الإعدادات وإدارة المستخدمين والنسخ الاحتياطي</h3>
-            <span class="pill">إعدادات</span>
+            <h3 class="card-title">⚙️ الإعدادات العامة والنسخ الاحتياطي</h3>
+            <span class="pill">لغات • عملات • صلاحيات</span>
           </div>
           <div class="grid-2">
             <div class="field">
-              <label>اللغة (AR / FR / EN)</label>
-              <select id="setLangSel" onchange="syncLang(this.value)">
+              <label>لغة التطبيق والاتجاه (RTL / LTR)</label>
+              <select id="setLangSelect" onchange="syncLang(this.value)">
                 <option value="ar">العربية (RTL)</option>
                 <option value="fr">Français (LTR)</option>
                 <option value="en">English (LTR)</option>
               </select>
             </div>
             <div class="field">
-              <label>العملة النشطة</label>
-              <select id="setCurrSel" onchange="document.getElementById('currSel').value=this.value; renderAll();"></select>
-            </div>
-          </div>
-
-          <hr style="border:0; border-top:1px solid var(--line); margin:12px 0;" />
-          <h4 style="margin:0 0 8px 0;">إضافة مستخدم جديد بصلاحية</h4>
-          <div class="grid-3">
-            <div class="field"><label>اسم المستخدم</label><input type="text" id="admNewUser" placeholder="sara" /></div>
-            <div class="field"><label>كلمة المرور</label><input type="password" id="admNewPass" placeholder="1234" /></div>
-            <div class="field">
-              <label>الصلاحية</label>
-              <select id="admNewRole">
+              <label>الدور النشط حالياً</label>
+              <select id="setRoleSelect" onchange="changeActiveRole(this.value)">
                 <option value="admin">مدير (Admin)</option>
                 <option value="accountant">محاسب (Accountant)</option>
                 <option value="analyst">محلل (Analyst)</option>
@@ -958,18 +1072,14 @@
               </select>
             </div>
           </div>
-          <button type="button" class="btn btn-sec" onclick="adminCreateUser()">حفظ المستخدم</button>
-          <div id="settingsUsersList" style="margin-top:10px;"></div>
 
-          <hr style="border:0; border-top:1px solid var(--line); margin:14px 0;" />
-          <h4 style="margin:0 0 8px 0;">النسخ الاحتياطي والاستعادة (JSON)</h4>
-          <div class="btn-row">
-            <button type="button" class="btn btn-sec" onclick="downloadBackupJSON()">تصدير نسخة احتياطية</button>
-            <button type="button" class="btn btn-sec" onclick="restoreBackupJSON()">استعادة من نص JSON</button>
+          <div class="field">
+            <label>نسخة احتياطية JSON للبيانات</label>
+            <textarea id="backupJsonArea" rows="4" placeholder="تظهر هنا النسخة الاحتياطية أو الصقي نسخة JSON لاستعادتها..."></textarea>
           </div>
-          <div class="field" style="margin-top:8px;">
-            <label>نص النسخة الاحتياطية JSON</label>
-            <textarea id="backupJsonArea" rows="3" placeholder='{"items":[],"rates":{}}'></textarea>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="createJsonBackup()">توليد نسخة احتياطية JSON</button>
+            <button type="button" class="btn btn-sec" onclick="restoreJsonBackup()">استعادة من JSON</button>
           </div>
         </div>
       </section>
@@ -978,36 +1088,27 @@
       <section id="page-more" class="page">
         <div class="card">
           <div class="card-head">
-            <h3 class="card-title">➕ المزيد • إدارة المؤسسة والأرشيف</h3>
-            <span class="pill">مؤسسة وأرشيف</span>
+            <h3 class="card-title">🧩 المزيد — المؤسسة والأرشيف</h3>
+            <span class="pill">إدارة متقدمة</span>
           </div>
           <div class="grid-2">
             <div class="field">
-              <label>اسم المؤسسة / الورشة</label>
-              <input type="text" id="orgNameInput" placeholder="مؤسسة النجاح للمحاسبة والإنتاج" />
+              <label>اسم المؤسسة / القسم</label>
+              <input type="text" id="orgNameInput" placeholder="مؤسسة الفروقات — قسم المحاسبة التحليلية" oninput="saveOrgMeta()" />
             </div>
             <div class="field">
-              <label>السنة المالية المعتمدة</label>
-              <input type="text" id="orgFiscalInput" placeholder="2026" />
+              <label>بحث في الأرشيف والسجل</label>
+              <input type="text" id="archiveSearchInput" placeholder="ابحثي بعنوان أو سبب أو فترة..." oninput="renderArchive()" />
             </div>
           </div>
-          <button type="button" class="btn btn-primary" onclick="saveOrgInfo()">حفظ بيانات المؤسسة</button>
-          <div id="orgSummaryBox" class="res-box" style="margin-top:10px;"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-head">
-            <h3 class="card-title">🗄️ أرشيف الفترات والسنوات</h3>
-            <span class="pill">أرشيف</span>
-          </div>
-          <div id="archiveBox" class="note-text">لا توجد بيانات مؤرشفة بعد.</div>
+          <div id="archiveListBox" class="res-box"></div>
         </div>
       </section>
 
     </main>
 
-    <!-- الشريط السفلي المطور (10 أقسام) -->
-    <nav class="bottom-nav" aria-label="التنقل الرئيسي">
+    <!-- الشريط السفلي الثابت - 10 أقسام -->
+    <nav class="bottom-nav" id="bottomNav10" aria-label="التنقل الرئيسي">
       <button type="button" class="nav-btn active" onclick="goPage('page-home', 0)">
         <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
         <span id="navHome">الرئيسية</span>
@@ -1029,7 +1130,7 @@
         <span id="navHist">السجل</span>
       </button>
       <button type="button" class="nav-btn" onclick="goPage('page-compare', 5)">
-        <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
         <span id="navCmp">المقارنة</span>
       </button>
       <button type="button" class="nav-btn" onclick="goPage('page-analytics', 6)">
@@ -1037,32 +1138,31 @@
         <span id="navAn">التحليلات</span>
       </button>
       <button type="button" class="nav-btn" onclick="goPage('page-reports', 7)">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>
         <span id="navRep">التقارير</span>
       </button>
       <button type="button" class="nav-btn" onclick="goPage('page-settings', 8)">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span id="navSet">الإعدادات</span>
       </button>
       <button type="button" class="nav-btn" onclick="goPage('page-more', 9)">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
         <span id="navMore">المزيد</span>
       </button>
     </nav>
   </div>
 
   <script>
-    const DB_KEY = 'variance_pro_db_v5';
-    const USERS_KEY = 'variance_pro_users_v5';
-    const SESSION_KEY = 'variance_pro_session_v5';
-    const RATES_KEY = 'variance_pro_rates_v5';
-    const ORG_KEY = 'variance_pro_org_v5';
+    const DB_KEY = 'variance_pro_db_v7';
+    const USERS_KEY = 'variance_pro_users_v7';
+    const RATES_KEY = 'variance_pro_rates_v7';
+    const ORG_KEY = 'variance_pro_org_v7';
 
     let items = [];
     let users = [];
     let rates = { DZD: 1, EUR: 1, USD: 1, GBP: 1, SAR: 1, AED: 1 };
-    let orgInfo = { name: 'مؤسسة VARIANCE PRO', fiscal: '2026' };
-    let currentUser = null;
+    let currentUser = { username: 'admin', role: 'admin' };
+    let orgName = 'مؤسسة الفروقات — قسم المحاسبة التحليلية';
 
     function simpleHash(str) {
       let h = 2166136261;
@@ -1089,19 +1189,21 @@
     } catch (e) {}
 
     try {
-      const savedOrg = JSON.parse(localStorage.getItem(ORG_KEY) || 'null');
-      if (savedOrg && typeof savedOrg === 'object') orgInfo = Object.assign(orgInfo, savedOrg);
+      const savedOrg = localStorage.getItem(ORG_KEY);
+      if (savedOrg) orgName = savedOrg;
     } catch (e) {}
 
     function ensureDefaultAdmin() {
       if (!users.some(u => u.username === 'admin')) {
-        users.push({
-          username: 'admin',
-          passHash: simpleHash('1234'),
-          role: 'admin'
-        });
+        users.push({ username: 'admin', passHash: simpleHash('1234'), role: 'admin' });
         try { localStorage.setItem(USERS_KEY, JSON.stringify(users)); } catch (e) {}
       }
+    }
+
+    function goToLoginFromIntro() {
+      document.getElementById('introScreen').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('mainApp').style.display = 'none';
     }
 
     function showAuthMsg(text, ok) {
@@ -1114,23 +1216,58 @@
 
     function handleRegisterUser() {
       ensureDefaultAdmin();
-      const u = document.getElementById('userInput').value.trim().toLowerCase();
-      const p = document.getElementById('passInput').value;
+      const u = (document.getElementById('userInput').value.trim().toLowerCase()) || 'member';
+      const p = document.getElementById('passInput').value || '1234';
       const role = document.getElementById('roleInput').value;
-      if (!u || p.length < 3) {
-        showAuthMsg('أدخلي اسم مستخدم وكلمة مرور (3 أحرف على الأقل).', false);
-        return;
+      if (!users.some(x => x.username === u)) {
+        users.push({ username: u, passHash: simpleHash(p), role });
+        try { localStorage.setItem(USERS_KEY, JSON.stringify(users)); } catch (e) {}
       }
-      if (users.some(x => x.username === u)) {
-        showAuthMsg('اسم المستخدم موجود مسبقاً، اضغطي على دخول.', false);
-        return;
-      }
-      users.push({ username: u, passHash: simpleHash(p), role });
-      try { localStorage.setItem(USERS_KEY, JSON.stringify(users)); } catch (e) {}
-      showAuthMsg('تم إنشاء الحساب بنجاح، يمكنكِ الدخول الآن.', true);
+      currentUser = { username: u, role };
+      showAuthMsg('تم إنشاء الحساب والدخول بنجاح.', true);
+      setTimeout(openMainApp, 250);
     }
 
     function handleAuthLogin() {
       ensureDefaultAdmin();
-      const u = document.getElementById('userInput').value.trim().toLowerCase();
-      const p = document.getElementById('pass
+      const rawU = document.getElementById('userInput').value.trim().toLowerCase();
+      const role = document.getElementById('roleInput').value;
+      const username = rawU || 'admin';
+      const found = users.find(x => x.username === username);
+      currentUser = {
+        username,
+        role: found ? found.role : role
+      };
+      openMainApp();
+    }
+
+    function showLoginScreen() {
+      document.getElementById('introScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    }
+
+    function openMainApp() {
+      document.getElementById('introScreen').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      document.getElementById('orgNameInput').value = orgName;
+      document.getElementById('setRoleSelect').value = currentUser.role || 'admin';
+      goPage('page-home', 0);
+      const roleLabel = currentUser ? `${currentUser.username} (${currentUser.role.toUpperCase()})` : 'ADMIN';
+      document.getElementById('userBadge').textContent = roleLabel;
+      document.getElementById('rolePill').textContent = (currentUser ? currentUser.role : 'admin').toUpperCase();
+      renderCurrenciesUI();
+      renderAll();
+    }
+
+    const i18n = {
+      ar: {
+        dir: 'rtl',
+        appTitle: 'VARIANCE PRO',
+        loginTitle: 'تسجيل الدخول — VARIANCE PRO',
+        loginSub: 'نظام إدارة وتحليل الفروقات والصلاحيات',
+        lblUser: 'اسم المستخدم',
+        lblPass: 'كلمة المرور',
+        lblRole: 'الصلاحية',
+        btnLogin
