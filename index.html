@@ -2,77 +2,181 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>تحليل الفروقات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#140b29" />
+  <title>تحليل الفروقات — المحاسبة التحليلية</title>
   <style>
+    :root {
+      --bg: #120926;
+      --bg-grad: radial-gradient(circle at 85% 0%, #2d1666 0%, #190d36 48%, #100822 100%);
+      --card: #1d103d;
+      --card-2: #271552;
+      --card-3: #331c6b;
+      --line: rgba(196, 181, 253, 0.16);
+      --line-strong: rgba(196, 181, 253, 0.32);
+      --text: #f8f5ff;
+      --muted: #b8a9e0;
+      --violet: #8b5cf6;
+      --violet-bright: #a78bfa;
+      --violet-deep: #5b21b6;
+      --fav: #34d399;
+      --defav: #fb7185;
+      --warn: #fbbf24;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --nav-h: 70px;
+    }
+
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    body {
+    html, body {
       margin: 0;
-      padding: 16px 16px 90px 16px;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #0f172a;
-      color: #f8fafc;
+      padding: 0;
+      min-height: 100vh;
+      background: var(--bg-grad);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Kufi Arabic", sans-serif;
     }
 
-    h1 {
-      font-size: 20px;
-      margin: 0 0 14px 0;
+    /* Splash Screen */
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: radial-gradient(circle at 50% 30%, #3b1d82 0%, #180c33 65%, #0e061f 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
     }
 
-    .box {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 14px;
+    #splash.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
 
-    .field {
-      margin-bottom: 12px;
+    .splash-logo {
+      width: 84px;
+      height: 84px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, var(--violet-deep), var(--violet-bright));
+      display: grid;
+      place-items: center;
+      font-size: 38px;
+      font-weight: 900;
+      color: #fff;
+      box-shadow: 0 18px 40px rgba(139, 92, 246, 0.45);
+      margin-bottom: 18px;
     }
 
-    label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 5px;
-      color: #cbd5e1;
+    .splash-title {
+      font-size: 26px;
+      font-weight: 900;
+      margin: 0 0 8px 0;
+      letter-spacing: -0.3px;
     }
 
-    input, textarea {
-      width: 100%;
-      padding: 11px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #64748b;
-      background: #0f172a;
-      color: #ffffff;
-      display: block;
-    }
-
-    button.action-btn {
-      width: 100%;
-      padding: 12px;
-      font-size: 15px;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      background: #2563eb;
-      color: #ffffff;
-      cursor: pointer;
-      margin-top: 6px;
-    }
-
-    .result {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 8px;
-      background: #0f172a;
-      border: 1px solid #475569;
+    .splash-sub {
       font-size: 14px;
-      line-height: 1.7;
+      color: var(--muted);
+      max-width: 340px;
+      line-height: 1.6;
+      margin: 0 0 24px 0;
+    }
+
+    .splash-btn {
+      background: linear-gradient(135deg, var(--violet), var(--violet-bright));
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 26px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+    }
+
+    /* App Shell */
+    #appShell {
+      padding-bottom: calc(var(--nav-h) + 24px);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(16px);
+      background: rgba(18, 9, 38, 0.86);
+      border-bottom: 1px solid var(--line);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--violet-deep), var(--violet-bright));
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 17px;
+    }
+
+    .brand h1 {
+      font-size: 15px;
+      margin: 0;
+      font-weight: 800;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .period-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    select, input, textarea {
+      font-family: inherit;
+    }
+
+    .sel {
+      background: var(--card-2);
+      color: var(--text);
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      padding: 6px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 14px;
     }
 
     .page {
@@ -81,186 +185,414 @@
 
     .page.active {
       display: block;
+      animation: fadeUp 0.2s ease;
     }
 
-    .bottom-bar {
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .subtabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+
+    .subtabs::-webkit-scrollbar { display: none; }
+
+    .subtab {
+      background: var(--card);
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 12.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .subtab.active {
+      background: linear-gradient(135deg, var(--violet-deep), var(--violet));
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(39, 21, 82, 0.9), rgba(29, 16, 61, 0.96));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 15px;
+      margin-bottom: 14px;
+      box-shadow: 0 12px 28px rgba(8, 3, 20, 0.45);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 15.5px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(167, 139, 250, 0.16);
+      color: var(--violet-bright);
+      border: 1px solid rgba(167, 139, 250, 0.28);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .kpi {
+      background: var(--card-2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .kpi-lbl { font-size: 11.5px; color: var(--muted); font-weight: 700; }
+    .kpi-val { font-size: 19px; font-weight: 900; margin: 4px 0; }
+    .kpi-sub { font-size: 11px; color: var(--muted); }
+
+    .fav { color: var(--fav); }
+    .defav { color: var(--defav); }
+    .vtext { color: var(--violet-bright); }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 11px;
+    }
+
+    @media (max-width: 620px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 15px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line-strong);
+      background: #100822;
+      color: var(--text);
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: var(--violet-bright);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 13px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--violet-deep), var(--violet));
+      color: #fff;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .btn-sec {
+      background: var(--card-3);
+      color: var(--text);
+      border: 1px solid var(--line-strong);
+    }
+
+    .btn-del {
+      background: rgba(251, 113, 133, 0.16);
+      color: #fda4af;
+      border: 1px solid rgba(251, 113, 133, 0.35);
+      padding: 6px 10px;
+      font-size: 11.5px;
+    }
+
+    .res-box {
+      margin-top: 13px;
+      background: #100822;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .diag-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(139, 92, 246, 0.12);
+      border-right: 3px solid var(--violet-bright);
+    }
+
+    /* Chart Bars */
+    .chart-row {
+      margin-bottom: 12px;
+    }
+
+    .chart-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 5px;
+      color: var(--muted);
+    }
+
+    .bar-track {
+      height: 11px;
+      border-radius: 999px;
+      background: #100822;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--violet), var(--violet-bright));
+      transition: width 0.35s ease;
+    }
+
+    .bar-fill.fav-bg {
+      background: linear-gradient(90deg, #059669, var(--fav));
+    }
+
+    .rec-card {
+      background: #100822;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 12px;
+      margin-bottom: 9px;
+      font-size: 12.5px;
+      line-height: 1.65;
+    }
+
+    .rec-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    /* Bottom Nav (5 items) */
+    .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: #1e293b;
-      border-top: 1px solid #334155;
+      height: var(--nav-h);
+      background: rgba(20, 10, 44, 0.96);
+      backdrop-filter: blur(18px);
+      border-top: 1px solid var(--line-strong);
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      padding: 6px;
-      gap: 4px;
+      grid-template-columns: repeat(5, 1fr);
+      z-index: 100;
+      padding: 4px 4px env(safe-area-inset-bottom, 4px);
     }
 
-    .nav-item {
+    .nav-btn {
       background: transparent;
       border: none;
-      color: #cbd5e1;
-      padding: 8px 4px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: bold;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
       cursor: pointer;
+      border-radius: 12px;
+      padding: 4px 2px;
     }
 
-    .nav-item.active {
-      background: #2563eb;
-      color: #ffffff;
+    .nav-btn svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .nav-btn span {
+      font-size: 10.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .nav-btn.active {
+      background: rgba(167, 139, 250, 0.16);
+      color: var(--text);
+    }
+
+    .nav-btn.active svg,
+    .nav-btn.active span {
+      color: var(--violet-bright);
     }
   </style>
 </head>
 <body>
 
-  <h1>تحليل الفروقات</h1>
-
-  <!-- 1. المواد -->
-  <div id="p-mat" class="page active">
-    <div class="box">
-      <div class="field">
-        <label>الكمية الفعلية (AQ)</label>
-        <input type="text" inputmode="decimal" id="aq" placeholder="مثال: 1200" />
-      </div>
-      <div class="field">
-        <label>الكمية المعيارية (SQ)</label>
-        <input type="text" inputmode="decimal" id="sq" placeholder="مثال: 1000" />
-      </div>
-      <div class="field">
-        <label>السعر الفعلي (AP)</label>
-        <input type="text" inputmode="decimal" id="ap" placeholder="مثال: 55" />
-      </div>
-      <div class="field">
-        <label>السعر المعياري (SP)</label>
-        <input type="text" inputmode="decimal" id="sp" placeholder="مثال: 50" />
-      </div>
-      <button class="action-btn" onclick="calcMat()">احسب فروقات المواد</button>
-      <div id="resMat" class="result">أدخلي الأرقام ثم اضغطي على زر الحساب.</div>
-    </div>
+  <!-- Splash Screen -->
+  <div id="splash">
+    <div class="splash-logo">Δ</div>
+    <h2 class="splash-title">تحليل الفروقات</h2>
+    <p class="splash-sub">منصة المحاسبة التحليلية لحساب الفروقات، كشف الأسباب، واقتراح الحلول الإدارية للمؤسسة</p>
+    <button class="splash-btn" onclick="closeSplash()">الدخول إلى الواجهة الرئيسية</button>
   </div>
 
-  <!-- 2. اليد العاملة -->
-  <div id="p-lab" class="page">
-    <div class="box">
-      <div class="field">
-        <label>الساعات الفعلية (AH)</label>
-        <input type="text" inputmode="decimal" id="ah" placeholder="مثال: 420" />
+  <div id="appShell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">Δ</div>
+        <div>
+          <h1>تحليل الفروقات</h1>
+          <small>حساب • تشخيص • معالجة</small>
+        </div>
       </div>
-      <div class="field">
-        <label>الساعات المعيارية (SH)</label>
-        <input type="text" inputmode="decimal" id="sh" placeholder="مثال: 400" />
+
+      <div class="period-bar">
+        <select id="monthSel" class="sel" onchange="renderAll()">
+          <option value="01">جانفي (01)</option>
+          <option value="02">فيفري (02)</option>
+          <option value="03">مارس (03)</option>
+          <option value="04">أفريل (04)</option>
+          <option value="05">ماي (05)</option>
+          <option value="06">جوان (06)</option>
+          <option value="07">جويلية (07)</option>
+          <option value="08">أوت (08)</option>
+          <option value="09">سبتمبر (09)</option>
+          <option value="10">أكتوبر (10)</option>
+          <option value="11" selected>نوفمبر (11)</option>
+          <option value="12">ديسمبر (12)</option>
+        </select>
+        <select id="yearSel" class="sel" onchange="renderAll()">
+          <option value="2025">2025</option>
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+        </select>
       </div>
-      <div class="field">
-        <label>الأجر الفعلي للساعة (AR)</label>
-        <input type="text" inputmode="decimal" id="ar" placeholder="مثال: 320" />
-      </div>
-      <div class="field">
-        <label>الأجر المعياري للساعة (SR)</label>
-        <input type="text" inputmode="decimal" id="sr" placeholder="مثال: 300" />
-      </div>
-      <button class="action-btn" onclick="calcLab()">احسب فروقات اليد العاملة</button>
-      <div id="resLab" class="result">أدخلي الأرقام ثم اضغطي على زر الحساب.</div>
-    </div>
-  </div>
+    </header>
 
-  <!-- 3. المساعد -->
-  <div id="p-ai" class="page">
-    <div class="box">
-      <div class="field">
-        <label>اكتبي سؤالك هنا</label>
-        <input type="text" id="qInput" placeholder="مثال: ما الفرق بين F و U؟" />
-      </div>
-      <button class="action-btn" onclick="answerQ()">إجابة</button>
-      <div id="resAI" class="result">اسألي عن الفروقات أو القوانين.</div>
-    </div>
-  </div>
+    <main class="container">
 
-  <!-- 4. السجل -->
-  <div id="p-hist" class="page">
-    <div class="box">
-      <div id="resHist" class="result">لا توجد عمليات محفوظة بعد.</div>
-      <button class="action-btn" onclick="clearHist()">مسح السجل</button>
-    </div>
-  </div>
+      <!-- 1. الرئيسية -->
+      <section id="page-home" class="page active">
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-lbl">عدد التحليلات</div>
+            <div class="kpi-val vtext" id="kCount">0</div>
+            <div class="kpi-sub" id="kPeriod">نوفمبر 2026</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">فروقات ملائمة (Favorable)</div>
+            <div class="kpi-val fav" id="kFav">0</div>
+            <div class="kpi-sub">أداء إيجابي</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">فروقات غير ملائمة (Défavorable)</div>
+            <div class="kpi-val defav" id="kDefav">0</div>
+            <div class="kpi-sub">تحتاج معالجة</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">متوسط نسبة الفرق (%)</div>
+            <div class="kpi-val" style="color:var(--warn)" id="kPct">0.0%</div>
+            <div class="kpi-sub">مقارنة بالمعيار/التقدير</div>
+          </div>
+        </div>
 
-  <div class="bottom-bar">
-    <button class="nav-item active" onclick="openPage('p-mat', this)">المواد</button>
-    <button class="nav-item" onclick="openPage('p-lab', this)">اليد العاملة</button>
-    <button class="nav-item" onclick="openPage('p-ai', this)">المساعد</button>
-    <button class="nav-item" onclick="openPage('p-hist', this)">السجل</button>
-  </div>
+        <!-- رسوم بيانية للمقارنة -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">📊 رسوم بيانية للمقارنة</h3>
+            <span class="pill">تقديري / معياري مقابل فعلي</span>
+          </div>
+          <div id="chartBox">
+            <div class="chart-row">
+              <div class="chart-label"><span>المعياري / التقديري</span><span id="lblStd">0.00</span></div>
+              <div class="bar-track"><div class="bar-fill" id="barStd" style="width:0%"></div></div>
+            </div>
+            <div class="chart-row">
+              <div class="chart-label"><span>الفعلي</span><span id="lblAct">0.00</span></div>
+              <div class="bar-track"><div class="bar-fill fav-bg" id="barAct" style="width:0%"></div></div>
+            </div>
+          </div>
+        </div>
 
-  <script>
-    let hist = JSON.parse(localStorage.getItem('simple_va_hist') || '[]');
+        <!-- التشخيص والحلول الفورية -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">🧠 لماذا وقع الفرق وكيف تعالجه المؤسسة؟</h3>
+            <span class="pill">تشخيص إداري</span>
+          </div>
+          <div id="homeDiagBox" class="note-text">أدخلي عملية من تبويب «إدخال» ليقوم التطبيق بحساب الفرق، تحديد نوعه (Favorable أو Défavorable)، ذكر أسبابه، واقتراح الحلول العملية.</div>
+        </div>
+      </section>
 
-    function openPage(id, btn) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      showHist();
-    }
+      <!-- 2. إدخال -->
+      <section id="page-input" class="page">
+        <div class="subtabs">
+          <button class="subtab active" onclick="openSub('mat', this)">🧱 المواد</button>
+          <button class="subtab" onclick="openSub('lab', this)">👷 اليد والمصاريف غير المباشرة</button>
+          <button class="subtab" onclick="openSub('sales', this)">📈 المبيعات (Ventes)</button>
+          <button class="subtab" onclick="openSub('budget', this)">💼 الميزانية (Budget)</button>
+        </div>
 
-    function num(id) {
-      const val = document.getElementById(id).value.replace(',', '.');
-      return parseFloat(val) || 0;
-    }
-
-    function saveItem(text) {
-      hist.unshift(text);
-      hist = hist.slice(0, 20);
-      localStorage.setItem('simple_va_hist', JSON.stringify(hist));
-      showHist();
-    }
-
-    function showHist() {
-      const box = document.getElementById('resHist');
-      box.innerHTML = hist.length ? hist.map(x => '• ' + x).join('<br>') : 'لا توجد عمليات محفوظة بعد.';
-    }
-
-    function clearHist() {
-      hist = [];
-      localStorage.removeItem('simple_va_hist');
-      showHist();
-    }
-
-    function calcMat() {
-      const aq = num('aq'), sq = num('sq'), ap = num('ap'), sp = num('sp');
-      const pv = (ap - sp) * aq;
-      const qv = (aq - sq) * sp;
-      const tv = (ap * aq) - (sp * sq);
-      const msg = `انحراف السعر: ${pv.toFixed(2)} | انحراف الكمية: ${qv.toFixed(2)} | الإجمالي: ${tv.toFixed(2)}`;
-      document.getElementById('resMat').innerHTML = msg;
-      saveItem('مواد: ' + msg);
-    }
-
-    function calcLab() {
-      const ah = num('ah'), sh = num('sh'), ar = num('ar'), sr = num('sr');
-      const rv = (ar - sr) * ah;
-      const ev = (ah - sh) * sr;
-      const tv = (ar * ah) - (sr * sh);
-      const msg = `انحراف المعدل: ${rv.toFixed(2)} | انحراف الكفاءة: ${ev.toFixed(2)} | الإجمالي: ${tv.toFixed(2)}`;
-      document.getElementById('resLab').innerHTML = msg;
-      saveItem('يد عاملة: ' + msg);
-    }
-
-    function answerQ() {
-      const q = document.getElementById('qInput').value.trim();
-      const box = document.getElementById('resAI');
-      if (!q) {
-        box.innerHTML = 'اكتبي سؤالك أولاً.';
-        return;
-      }
-      if (q.includes('F') || q.includes('U') || q.includes('ملائم')) {
-        box.innerHTML = 'F (ملائم): أفضل من المعيار. U (غير ملائم): أسوأ من المعيار.';
-      } else {
-        box.innerHTML = 'قانون السعر/المعدل = (الفعلي - المعياري) × الفعلي. قانون الكمية/الكفاءة = (الفعلي - المعياري) × المعياري.';
-      }
-    }
-
-    showHist();
-  </script>
-</body>
-</html>
+        <!-- المواد -->
+        <div id="sub-mat" class="card sub-panel">
+          <div class="card-head">
+            <h3 class="card-title">الفرق الإجمالي للمواد (Écart global sur matières)</h3>
+            <span class="pill">سعر + كمية</span>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>الكمية الفعلية (Qréelle)</label><input type="text" inputmode="decimal" id="mQr" placeholder="مثال: 1200" /></div>
+            <div class="field"><label>الكمية المعيارية (Qprévue)</label><input type="text" inputmode="decimal" id="mQp" placeholder="مثال: 1000" /></div>
+            <div class="field"><label>السعر الفعلي (Préel)</label><input type="text" inputmode="decimal" id="mPr" placeholder="مثال: 
