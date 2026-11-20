@@ -2,10 +2,10 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b132b" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230b132b'/%3E%3Cpath d='M14 42L26 28L36 35L50 18' stroke='%2310b981' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='50' cy='18' r='5' fill='%23f59e0b'/%3E%3C/svg%3E" />
-  <title>الموسوعة الشاملة لتحليل الفروقات والميزانية + مساعد ذكي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#070d19" />
+  <title>تحليل الانحرافات — Analyse des Écarts</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root {
       --bg: #070d19;
@@ -13,1395 +13,1516 @@
       --panel-2: #162033;
       --panel-3: #1e293b;
       --line: rgba(148, 163, 184, 0.16);
+      --line-strong: rgba(148, 163, 184, 0.28);
       --text: #f8fafc;
       --muted: #94a3b8;
-      --emerald: #10b981;
-      --emerald-bg: rgba(16, 185, 129, 0.14);
-      --rose: #f43f5e;
-      --rose-bg: rgba(244, 63, 94, 0.14);
-      --amber: #f59e0b;
-      --amber-bg: rgba(245, 158, 11, 0.14);
-      --sky: #38bdf8;
-      --sky-bg: rgba(56, 189, 248, 0.14);
-      --violet: #a78bfa;
-      --violet-bg: rgba(167, 139, 250, 0.14);
-      --r: 18px;
+      --accent: #38bdf8;
+      --accent-2: #6366f1;
+      --fav: #10b981;
+      --fav-bg: rgba(16, 185, 129, 0.14);
+      --unfav: #f43f5e;
+      --unfav-bg: rgba(244, 63, 94, 0.14);
+      --warn: #f59e0b;
+      --warn-bg: rgba(245, 158, 11, 0.14);
+      --radius: 16px;
+      --radius-sm: 11px;
+      --nav-h: 68px;
     }
 
     * {
       box-sizing: border-box;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
-    }
-
-    body {
       margin: 0;
-      background:
-        radial-gradient(circle at 12% 0%, rgba(16, 185, 129, 0.12), transparent 36%),
-        radial-gradient(circle at 88% 8%, rgba(167, 139, 250, 0.12), transparent 36%),
-        var(--bg);
-      color: var(--text);
-      line-height: 1.65;
-      padding-bottom: 64px;
-      min-height: 100vh;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: calc(var(--nav-h) + 22px);
+    }
+
+    /* Top Header */
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 40;
-      backdrop-filter: blur(14px);
+      z-index: 30;
       background: rgba(7, 13, 25, 0.88);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--line);
-      padding: 13px 16px;
-    }
-
-    .topbar-inner {
-      max-width: 1120px;
-      margin: 0 auto;
+      padding: 10px 14px;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      min-width: 0;
     }
 
-    .brand-mark {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(167, 139, 250, 0.2));
-      border: 1px solid rgba(167, 139, 250, 0.35);
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
       display: grid;
       place-items: center;
+      font-weight: 800;
+      color: #fff;
+      font-size: 15px;
       flex-shrink: 0;
     }
 
-    .brand h1 {
-      margin: 0;
-      font-size: 1.12rem;
-      font-weight: 800;
+    .brand-title {
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .brand p {
-      margin: 1px 0 0;
-      font-size: 0.77rem;
+    .brand-sub {
+      font-size: 11px;
       color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .selectors {
+    .top-controls {
       display: flex;
-      gap: 8px;
+      align-items: center;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
-    select, input, button, textarea {
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      font-size: 0.92rem;
-      outline: none;
+    select, input, textarea, button {
+      font-family: inherit;
+      color: var(--text);
     }
 
-    select {
+    select.ctrl-select {
       background: var(--panel-2);
-      color: var(--text);
-      padding: 8px 11px;
-      font-weight: 700;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 6px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
       cursor: pointer;
     }
 
-    .wrap {
-      max-width: 1120px;
-      margin: 18px auto 0;
-      padding: 0 14px;
+    .user-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
     }
 
-    .panel {
+    .user-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--fav);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Alert Banner */
+    .alert-banner {
+      background: var(--unfav-bg);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12.5px;
+    }
+
+    .alert-banner.show {
+      display: flex;
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .kpi-card {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: var(--r);
-      padding: 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+      border-radius: var(--radius);
+      padding: 14px;
     }
 
-    .panel-title {
-      margin: 0 0 14px;
-      font-size: 1.02rem;
-      font-weight: 800;
-      color: var(--sky);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 12px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 700;
+    .kpi-label {
+      font-size: 11.5px;
+      color: var(--muted);
       margin-bottom: 6px;
-      color: #cbd5e1;
     }
 
-    .field input, .field select {
-      width: 100%;
-      padding: 10px 12px;
-      background: var(--panel-2);
-      color: var(--text);
+    .kpi-val {
+      font-size: 20px;
+      font-weight: 800;
     }
 
-    .field input:focus, .field select:focus {
-      border-color: var(--emerald);
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.16);
-    }
-
-    .hint {
-      font-size: 0.75rem;
+    .kpi-sub {
+      font-size: 11px;
       color: var(--muted);
       margin-top: 4px;
     }
 
-    .nav-pills {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-      margin-bottom: 16px;
-    }
+    .text-fav { color: var(--fav); }
+    .text-unfav { color: var(--unfav); }
+    .text-warn { color: var(--warn); }
+    .text-accent { color: var(--accent); }
 
-    .pill-btn {
-      background: var(--panel-2);
-      color: #cbd5e1;
+    /* Cards & Layout */
+    .card {
+      background: var(--panel);
       border: 1px solid var(--line);
-      padding: 10px 14px;
-      font-weight: 800;
-      font-size: 0.84rem;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: 0.2s;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
     }
 
-    .pill-btn.active {
-      background: linear-gradient(135deg, #10b981, #0ea5e9);
-      color: #05111a;
-      border-color: transparent;
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
     }
 
-    .pill-btn[data-sec="ai"].active {
-      background: linear-gradient(135deg, #8b5cf6, #38bdf8);
-      color: #080b16;
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
     }
 
-    .btn-run {
-      background: linear-gradient(135deg, #10b981, #0ea5e9);
-      color: #05111a;
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .field input, .field select, .field textarea {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--accent);
+    }
+
+    /* Live Calculation Preview */
+    .calc-preview {
+      background: var(--panel-2);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+    .calc-item-label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .calc-item-val {
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
       border: none;
-      padding: 12px 18px;
-      font-weight: 800;
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 700;
       cursor: pointer;
-      flex: 1;
-      min-width: 210px;
+      transition: transform 0.1s, opacity 0.15s;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
     }
 
     .btn-ghost {
       background: var(--panel-2);
-      color: var(--text);
       border: 1px solid var(--line);
-      padding: 11px 14px;
-      font-weight: 700;
-      font-size: 0.84rem;
-      cursor: pointer;
+      color: var(--text);
+    }
+
+    .btn-danger {
+      background: var(--unfav-bg);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      color: var(--unfav);
+    }
+
+    .btn-sm {
+      padding: 6px 10px;
+      font-size: 11.5px;
+      border-radius: 8px;
     }
 
     .btn-row {
       display: flex;
+      gap: 8px;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
+      margin-top: 12px;
     }
 
-    .hero-result {
-      border-radius: 16px;
-      padding: 16px;
-      border: 1px solid var(--line);
-      background: var(--panel-2);
+    /* Tags & Chips */
+    .chip-group {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
+      gap: 7px;
+      margin-top: 6px;
     }
 
-    .hero-result.fav {
-      background: var(--emerald-bg);
-      border-color: rgba(16, 185, 129, 0.45);
-    }
-
-    .hero-result.unfav {
-      background: var(--rose-bg);
-      border-color: rgba(244, 63, 94, 0.45);
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
-      gap: 12px;
-    }
-
-    .stat-card {
+    .chip {
       background: var(--panel-2);
       border: 1px solid var(--line);
-      border-radius: 15px;
-      padding: 14px;
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
     }
 
-    .stat-name {
-      font-size: 0.8rem;
-      color: var(--muted);
+    .chip.selected {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: var(--accent);
+      color: var(--accent);
       font-weight: 700;
     }
 
-    .stat-num {
-      font-size: 1.24rem;
-      font-weight: 800;
-      margin: 5px 0 8px;
-    }
-
-    .bar-track {
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, 0.16);
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.3s ease;
-    }
-
-    .tag {
+    .badge {
       display: inline-block;
-      padding: 3px 10px;
+      padding: 3px 8px;
       border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 800;
+      font-size: 11px;
+      font-weight: 700;
     }
 
-    .tag-fav {
-      background: var(--emerald-bg);
-      color: #6ee7b7;
+    .badge-fav {
+      background: var(--fav-bg);
+      color: var(--fav);
     }
 
-    .tag-unfav {
-      background: var(--rose-bg);
-      color: #fda4af;
+    .badge-unfav {
+      background: var(--unfav-bg);
+      color: var(--unfav);
     }
 
-    .tag-zero {
-      background: var(--sky-bg);
-      color: #7dd3fc;
+    .badge-neutral {
+      background: var(--panel-3);
+      color: var(--muted);
     }
 
-    .tag-ai {
-      background: var(--violet-bg);
-      color: #ddd6fe;
-    }
-
-    .alert-box {
-      background: var(--amber-bg);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      color: #fde68a;
-      border-radius: 14px;
-      padding: 12px 14px;
-      margin-top: 10px;
-      font-size: 0.88rem;
-    }
-
-    .alert-box strong {
-      display: block;
-      color: #fbbf24;
-      margin-bottom: 2px;
-    }
-
-    .history-item, .guide-box {
-      background: var(--panel-2);
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
       border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px 14px;
-      margin-bottom: 10px;
-      font-size: 0.88rem;
+      border-radius: var(--radius-sm);
     }
 
-    .history-item {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
     }
 
-    /* واجهة الذكاء الاصطناعي الداخلي */
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: start;
+      white-space: nowrap;
+    }
+
+    th {
+      background: var(--panel-2);
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 11.5px;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    /* AI Chat */
     .chat-box {
       background: var(--panel-2);
       border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px;
-      max-height: 360px;
+      border-radius: var(--radius);
+      padding: 12px;
+      height: 360px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .msg {
-      padding: 11px 14px;
+      max-width: 86%;
+      padding: 10px 13px;
       border-radius: 14px;
-      max-width: 90%;
-      font-size: 0.9rem;
+      font-size: 13px;
+      line-height: 1.55;
       white-space: pre-line;
     }
 
     .msg-ai {
-      background: var(--violet-bg);
-      border: 1px solid rgba(167, 139, 250, 0.35);
-      color: #f3e8ff;
       align-self: flex-start;
+      background: var(--panel-3);
+      border: 1px solid var(--line);
     }
 
     .msg-user {
-      background: var(--sky-bg);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      color: #e0f2fe;
       align-self: flex-end;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
     }
 
-    .quick-qs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .q-chip {
-      background: var(--panel-3);
-      color: #e2e8f0;
-      border: 1px solid var(--line);
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .chat-form {
+    .chat-input-row {
       display: flex;
       gap: 8px;
-      flex-wrap: wrap;
     }
 
-    .chat-form input {
+    .chat-input-row input {
       flex: 1;
-      min-width: 200px;
-      padding: 11px 13px;
       background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    /* Instagram-style Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-h);
+      background: rgba(10, 17, 32, 0.94);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--line-strong);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      z-index: 40;
+      padding: 0 4px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 600;
+      cursor: pointer;
+      height: 100%;
+      transition: color 0.15s;
+    }
+
+    .nav-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke-width: 2;
+    }
+
+    .nav-btn.active {
       color: var(--text);
     }
 
-    .btn-ai {
-      background: linear-gradient(135deg, #8b5cf6, #38bdf8);
-      color: #070d19;
-      border: none;
-      padding: 11px 18px;
-      font-weight: 800;
-      cursor: pointer;
+    .nav-btn.active svg {
+      stroke: var(--accent);
+    }
+
+    .nav-ai-pill {
+      width: 38px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.28);
+    }
+
+    .nav-btn.active .nav-ai-pill {
+      transform: scale(1.06);
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--panel);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .summary-box {
+      background: var(--panel-2);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text);
+    }
+
+    @media print {
+      .topbar, .bottom-nav, .no-print { display: none !important; }
+      body { background: #fff; color: #000; padding: 0; }
+      .card { border: 1px solid #ccc; background: #fff; color: #000; break-inside: avoid; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Top Bar -->
   <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-mark">
-          <svg width="24" height="24" viewBox="0 0 64 64" fill="none">
-            <path d="M14 42L26 28L36 35L50 18" stroke="#10b981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="50" cy="18" r="5" fill="#a78bfa"/>
-          </svg>
-        </div>
-        <div>
-          <h1 id="t_title">الموسوعة الشاملة لتحليل الفروقات والميزانية</h1>
-          <p id="t_sub">مواد • يد عاملة • أعباء ثابتة ومتغيرة • مبيعات • ميزانية مرنة • ذكاء اصطناعي</p>
-        </div>
+    <div class="brand">
+      <div class="brand-logo">Δ</div>
+      <div>
+        <div class="brand-title" id="t-appTitle">تحليل الانحرافات</div>
+        <div class="brand-sub" id="t-appSub">متابعة الأداء والانحرافات المالية والتشغيلية</div>
       </div>
+    </div>
 
-      <div class="selectors">
-        <select id="langSel" aria-label="Language">
-          <option value="ar">العربية (AR)</option>
-          <option value="fr">Français (FR)</option>
-          <option value="en">English (EN)</option>
-        </select>
-        <select id="curSel" aria-label="Currency">
-          <option value="DZD">DZD (د.ج)</option>
-          <option value="EUR">EUR (€)</option>
-          <option value="USD">USD ($)</option>
-        </select>
-      </div>
+    <div class="top-controls no-print">
+      <select id="langSelect" class="ctrl-select" aria-label="Language">
+        <option value="ar">العربية</option>
+        <option value="fr">Français</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+      </select>
+
+      <select id="currencySelect" class="ctrl-select" aria-label="Currency">
+        <option value="DZD">DZD (د.ج)</option>
+        <option value="EUR">EUR (€)</option>
+        <option value="USD">USD ($)</option>
+        <option value="GBP">GBP (£)</option>
+        <option value="SAR">SAR (ر.س)</option>
+      </select>
+
+      <button type="button" class="user-chip" id="userBtn">
+        <span class="user-dot"></span>
+        <span id="currentUserLabel">مراقب التسيير</span>
+      </button>
     </div>
   </header>
 
-  <main class="wrap">
-    <!-- الإعدادات العامة والعملة -->
-    <section class="panel">
-      <div class="panel-title">
-        <span id="t_cfgTitle">الإعدادات العامة والعملة</span>
-        <span class="tag tag-ai" id="t_cfgBadge">AI + DZD/EUR/USD</span>
+  <main class="container">
+    <!-- Alert Banner for Large Variances -->
+    <div class="alert-banner no-print" id="alertBanner">
+      <span id="alertText"></span>
+      <button type="button" class="btn btn-sm btn-danger" id="dismissAlertBtn">×</button>
+    </div>
+
+    <!-- 1. DASHBOARD PAGE -->
+    <section class="page active" id="page-dashboard">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label" id="k-totalLabel">إجمالي الانحرافات</div>
+          <div class="kpi-val text-accent" id="kpiTotal">0</div>
+          <div class="kpi-sub" id="k-totalSub">جميع السجلات</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label" id="k-favLabel">انحرافات إيجابية (ملائمة)</div>
+          <div class="kpi-val text-fav" id="kpiFav">0</div>
+          <div class="kpi-sub" id="k-favSub">أداء أفضل من المتوقع</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label" id="k-unfavLabel">انحرافات سلبية (غير ملائمة)</div>
+          <div class="kpi-val text-unfav" id="kpiUnfav">0</div>
+          <div class="kpi-sub" id="k-unfavSub">تحتاج تدخلاً سريعاً</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label" id="k-achLabel">نسبة تحقيق الأهداف</div>
+          <div class="kpi-val text-warn" id="kpiAch">0%</div>
+          <div class="kpi-sub" id="k-achSub">المتوسط العام للإنجاز</div>
+        </div>
       </div>
-      <div class="grid-4">
-        <div class="field">
-          <label id="t_baseCurLbl" for="baseCur">عملة الإدخال</label>
-          <select id="baseCur">
-            <option value="DZD">DZD</option>
-            <option value="EUR">EUR</option>
-            <option value="USD">USD</option>
-          </select>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" id="t-execSummaryTitle">الملخص المالي والتشغيلي</div>
+          <button type="button" class="btn btn-sm btn-ghost no-print" id="goEntryBtn">+ إدخال انحراف جديد</button>
         </div>
-        <div class="field">
-          <label id="t_rateLbl" for="fxRate">سعر التحويل لعملة العرض</label>
-          <input type="number" id="fxRate" step="any" value="1" min="0.000001" />
-          <div class="hint" id="t_rateHint">مثال: 145 لتحويل EUR إلى DZD</div>
+        <div class="summary-box" id="execSummaryText"></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title" id="t-chartCompTitle">التوقعات مقابل الإنجازات</div>
+          </div>
+          <canvas id="chartComparison" height="210"></canvas>
         </div>
-        <div class="field">
-          <label id="t_natureLbl" for="natureSel">طبيعة العنصر</label>
-          <select id="natureSel">
-            <option value="cost">تكلفة / أعباء (Cost)</option>
-            <option value="revenue">إيراد / مبيعات (Revenue)</option>
-          </select>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title" id="t-chartTrendTitle">تطور الانحرافات حسب الفترة</div>
+          </div>
+          <canvas id="chartTrend" height="210"></canvas>
         </div>
-        <div class="field">
-          <label id="t_jointRuleLbl" for="jointRule">معالجة التداخل (Joint)</label>
-          <select id="jointRule">
-            <option value="isolate">عزل الفارق المشترك</option>
-            <option value="std_base">قاعدة المعيار الأساسي</option>
-          </select>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title" id="t-chartDeptTitle">مقارنة الأقسام والمصالح</div>
+          </div>
+          <canvas id="chartDept" height="210"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title" id="t-chartCausesTitle">ترتيب المشاكل الأكثر تكراراً</div>
+          </div>
+          <canvas id="chartCauses" height="210"></canvas>
         </div>
       </div>
     </section>
 
-    <!-- أقسام التطبيق الشاملة -->
-    <section class="panel">
-      <div class="nav-pills">
-        <button class="pill-btn active" data-sec="mat" id="t_tabMat">المواد والشراء</button>
-        <button class="pill-btn" data-sec="lab" id="t_tabLab">اليد العاملة</button>
-        <button class="pill-btn" data-sec="ovh" id="t_tabOvh">الأعباء (ثابتة/متغيرة)</button>
-        <button class="pill-btn" data-sec="sls" id="t_tabSls">المبيعات والإيرادات</button>
-        <button class="pill-btn" data-sec="bud" id="t_tabBud">الميزانية المرنة</button>
-        <button class="pill-btn" data-sec="ai" id="t_tabAi">المساعد الذكي (AI)</button>
-        <button class="pill-btn" data-sec="fixes" id="t_tabFixes">المشاكل والحلول</button>
-        <button class="pill-btn" data-sec="hist" id="t_tabHist">السجل</button>
-      </div>
+    <!-- 2. DATA ENTRY & AUTOMATIC CALCULATION PAGE -->
+    <section class="page" id="page-entry">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" id="t-entryTitle">إدخال البيانات والحساب الآلي للانحراف</div>
+          <button type="button" class="btn btn-sm btn-ghost" id="resetFormBtn">تفريغ الحقول</button>
+        </div>
 
-      <!-- 1. المواد الأولية والشراء -->
-      <div id="sec-mat" class="sec-box">
-        <div class="grid-4">
-          <div class="field">
-            <label id="t_mqAct">الكمية المستهلكة الفعلية</label>
-            <input type="number" id="mqAct" step="any" value="120" />
+        <form id="varianceForm">
+          <input type="hidden" id="editId" />
+          <div class="form-grid">
+            <div class="field">
+              <label id="l-company">اسم المؤسسة</label>
+              <input type="text" id="company" required placeholder="مثال: مؤسسة الأمل الصناعية" />
+            </div>
+            <div class="field">
+              <label id="l-dept">القسم أو المصلحة</label>
+              <select id="department">
+                <option value="الإنتاج">الإنتاج / Production</option>
+                <option value="المبيعات والتسويق">المبيعات والتسويق / Ventes</option>
+                <option value="المالية والمحاسبة">المالية والمحاسبة / Finance</option>
+                <option value="الموارد البشرية">الموارد البشرية / RH</option>
+                <option value="المخزون واللوجستيك">المخزون واللوجستيك / Stocks</option>
+              </select>
+            </div>
+            <div class="field">
+              <label id="l-periodType">نوع الفترة</label>
+              <select id="periodType">
+                <option value="month">شهر / Mois</option>
+                <option value="quarter">فصل / Trimestre</option>
+                <option value="year">سنة / Année</option>
+              </select>
+            </div>
+            <div class="field">
+              <label id="l-periodLabel">الفترة الزمنية</label>
+              <input type="text" id="periodLabel" required placeholder="مثال: 2026-11 أو T4-2026" />
+            </div>
+            <div class="field">
+              <label id="l-entryDate">تاريخ الإدخال</label>
+              <input type="date" id="entryDate" required />
+            </div>
+            <div class="field">
+              <label id="l-type">نوع الانحراف</label>
+              <select id="varianceType">
+                <option value="sales">انحراف المبيعات / Écart sur les ventes</option>
+                <option value="production">انحراف الإنتاج / Écart sur la production</option>
+                <option value="costs">انحراف التكاليف / Écart sur les coûts</option>
+                <option value="budget">انحراف الميزانية / Écart budgétaire</option>
+                <option value="labor">انحراف اليد العاملة / Écart sur la main-d'œuvre</option>
+                <option value="materials">انحراف المواد الأولية / Écart sur les matières premières</option>
+                <option value="yield">انحراف المردودية / Écart de rendement</option>
+                <option value="charges">انحراف الأعباء / Écart sur les charges</option>
+                <option value="stocks">انحراف المخزون / Écart sur les stocks</option>
+                <option value="profit">انحراف الأرباح / Écart sur les bénéfices</option>
+              </select>
+            </div>
+            <div class="field">
+              <label id="l-forecast">القيمة التقديرية (Prévision)</label>
+              <input type="number" step="any" id="forecastVal" required placeholder="0" />
+            </div>
+            <div class="field">
+              <label id="l-actual">القيمة الفعلية (Réalisation)</label>
+              <input type="number" step="any" id="actualVal" required placeholder="0" />
+            </div>
+            <div class="field">
+              <label id="l-target">الهدف المسطر (Objectif)</label>
+              <input type="number" step="any" id="targetVal" placeholder="0" />
+            </div>
           </div>
-          <div class="field">
-            <label id="t_mqStd">الكمية المعيارية المقررة</label>
-            <input type="number" id="mqStd" step="any" value="100" />
-          </div>
-          <div class="field">
-            <label id="t_mpAct">السعر الفعلي للوحدة</label>
-            <input type="number" id="mpAct" step="any" value="550" />
-          </div>
-          <div class="field">
-            <label id="t_mpStd">السعر المعياري للوحدة</label>
-            <input type="number" id="mpStd" step="any" value="500" />
-          </div>
-        </div>
-        <div class="field" style="margin-top:12px;">
-          <label id="t_mqPur">الكمية المشتراة (اختياري - الشراء مقابل الاستهلاك)</label>
-          <input type="number" id="mqPur" step="any" placeholder="مثال: 150" />
-        </div>
-        <div class="btn-row">
-          <button class="btn-run" id="runMat">تحليل فروقات المواد والشراء</button>
-          <button class="btn-ghost" type="button" id="exMat">مثال جاهز</button>
-        </div>
-      </div>
 
-      <!-- 2. اليد العاملة -->
-      <div id="sec-lab" class="sec-box" style="display:none;">
-        <div class="grid-4">
-          <div class="field">
-            <label id="t_lhAct">الساعات الفعلية</label>
-            <input type="number" id="lhAct" step="any" value="90" />
+          <!-- Live Calculation Box -->
+          <div class="calc-preview">
+            <div>
+              <div class="calc-item-label" id="c-varLabel">الانحراف (فعلي - تقديري)</div>
+              <div class="calc-item-val" id="liveVar">0.00</div>
+            </div>
+            <div>
+              <div class="calc-item-label" id="c-rateLabel">نسبة الانحراف (%)</div>
+              <div class="calc-item-val" id="liveRate">0.00%</div>
+            </div>
+            <div>
+              <div class="calc-item-label" id="c-achLabel">نسبة الإنجاز (%)</div>
+              <div class="calc-item-val" id="liveAch">0.00%</div>
+            </div>
+            <div>
+              <div class="calc-item-label" id="c-statusLabel">التقييم</div>
+              <div class="calc-item-val" id="liveStatus">—</div>
+            </div>
           </div>
-          <div class="field">
-            <label id="t_lhStd">الساعات المعيارية</label>
-            <input type="number" id="lhStd" step="any" value="80" />
-          </div>
-          <div class="field">
-            <label id="t_lrAct">معدل الأجر الفعلي</label>
-            <input type="number" id="lrAct" step="any" value="1300" />
-          </div>
-          <div class="field">
-            <label id="t_lrStd">معدل الأجر المعياري</label>
-            <input type="number" id="lrStd" step="any" value="1250" />
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn-run" id="runLab">تحليل فروقات اليد العاملة</button>
-          <button class="btn-ghost" type="button" id="exLab">مثال جاهز</button>
-        </div>
-      </div>
 
-      <!-- 3. الأعباء غير المباشرة الثابتة والمتغيرة -->
-      <div id="sec-ovh" class="sec-box" style="display:none;">
-        <div class="grid-4">
-          <div class="field">
-            <label id="t_ovVarAct">أعباء متغيرة فعلية</label>
-            <input type="number" id="ovVarAct" step="any" value="88000" />
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary" id="saveVarianceBtn">حفظ التحليل</button>
+            <button type="button" class="btn btn-ghost" id="analyzeWithAiBtn">تحليل بالمساعد الذكي</button>
           </div>
-          <div class="field">
-            <label id="t_ovVarBud">أعباء متغيرة معيارية (للنشاط الفعلي)</label>
-            <input type="number" id="ovVarBud" step="any" value="80000" />
-          </div>
-          <div class="field">
-            <label id="t_ovFixAct">أعباء ثابتة فعلية</label>
-            <input type="number" id="ovFixAct" step="any" value="125000" />
-          </div>
-          <div class="field">
-            <label id="t_ovFixBud">أعباء ثابتة مخططة / ممتصة</label>
-            <input type="number" id="ovFixBud" step="any" value="120000" />
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn-run" id="runOvh">تحليل الأعباء الثابتة والمتغيرة</button>
-          <button class="btn-ghost" type="button" id="exOvh">مثال جاهز</button>
-        </div>
-      </div>
-
-      <!-- 4. المبيعات والإيرادات -->
-      <div id="sec-sls" class="sec-box" style="display:none;">
-        <div class="grid-4">
-          <div class="field">
-            <label id="t_sqAct">الكمية المباعة الفعلية</label>
-            <input type="number" id="sqAct" step="any" value="540" />
-          </div>
-          <div class="field">
-            <label id="t_sqBud">الكمية المباعة المخططة</label>
-            <input type="number" id="sqBud" step="any" value="500" />
-          </div>
-          <div class="field">
-            <label id="t_spAct">سعر البيع الفعلي للوحدة</label>
-            <input type="number" id="spAct" step="any" value="1950" />
-          </div>
-          <div class="field">
-            <label id="t_spBud">سعر البيع المخطط للوحدة</label>
-            <input type="number" id="spBud" step="any" value="2000" />
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn-run" id="runSls">تحليل فروقات المبيعات والإيرادات</button>
-          <button class="btn-ghost" type="button" id="exSls">مثال جاهز</button>
-        </div>
-      </div>
-
-      <!-- 5. الميزانية المرنة والثابتة -->
-      <div id="sec-bud" class="sec-box" style="display:none;">
-        <div class="grid-4">
-          <div class="field">
-            <label id="t_bAct">الإنفاق / القيمة الفعلية</label>
-            <input type="number" id="bAct" step="any" value="260000" />
-          </div>
-          <div class="field">
-            <label id="t_bFixed">الميزانية الثابتة / المخططة</label>
-            <input type="number" id="bFixed" step="any" value="200000" />
-          </div>
-          <div class="field">
-            <label id="t_bActLvl">النشاط الفعلي (وحدات / ساعات)</label>
-            <input type="number" id="bActLvl" step="any" value="120" />
-          </div>
-          <div class="field">
-            <label id="t_bPlanLvl">النشاط المخطط (وحدات / ساعات)</label>
-            <input type="number" id="bPlanLvl" step="any" value="100" />
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn-run" id="runBud">تحليل الميزانية المرنة والنشاط</button>
-          <button class="btn-ghost" type="button" id="exBud">مثال جاهز</button>
-        </div>
-      </div>
-
-      <!-- 6. المساعد الذكي الداخلي (AI) -->
-      <div id="sec-ai" class="sec-box" style="display:none;">
-        <div class="quick-qs" id="quickQuestions"></div>
-        <div class="chat-box" id="chatBox"></div>
-        <form class="chat-form" id="chatForm">
-          <input type="text" id="chatInput" placeholder="اسألني عن أي فارق، ميزانية، تداخل، عملة، أو مشكلة محاسبية..." />
-          <button class="btn-ai" type="submit" id="sendAiBtn">اسأل الذكاء الاصطناعي</button>
         </form>
       </div>
+    </section>
 
-      <!-- 7. المشاكل والحلول -->
-      <div id="sec-fixes" class="sec-box" style="display:none;">
-        <div id="fixesContainer"></div>
-      </div>
-
-      <!-- 8. السجل -->
-      <div id="sec-hist" class="sec-box" style="display:none;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-          <span style="font-weight:700;color:var(--muted);" id="t_histInfo">العمليات المحفوظة في هذا الجهاز</span>
-          <button class="btn-ghost" type="button" id="clearHist">مسح السجل</button>
+    <!-- 3. AI ASSISTANT PAGE (CENTER PIECE IN BOTTOM NAV) -->
+    <section class="page" id="page-ai">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" id="t-aiTitle">المساعد الذكي لتحليل الانحرافات</div>
+          <button type="button" class="btn btn-sm btn-ghost" id="clearChatBtn">مسح المحادثة</button>
         </div>
-        <div id="historyList"></div>
+
+        <div class="chip-group no-print" id="aiQuickPrompts">
+          <span class="chip" data-prompt="لخص وضع الانحرافات الحالي وأهم المخاطر">ملخص الوضع الحالي</span>
+          <span class="chip" data-prompt="ما هي أبرز أسباب انحراف التكاليف والمواد وكيف نعالجها؟">أسباب التكاليف وحلولها</span>
+          <span class="chip" data-prompt="اشرح قوانين حساب الانحراف ونسبة الإنجاز مع مثال">قوانين الحساب ومثال</span>
+          <span class="chip" data-prompt="اقترح خطة تصحيحية لتحسين الأداء والربحية">خطة تصحيحية</span>
+        </div>
+
+        <div class="chat-box" id="chatBox" style="margin-top:10px;"></div>
+
+        <form class="chat-input-row no-print" id="chatForm">
+          <input type="text" id="chatInput" placeholder="اكتب سؤالك حول الانحرافات، الأسباب، أو الحلول..." required />
+          <button type="submit" class="btn btn-primary" id="sendChatBtn">إرسال</button>
+        </form>
       </div>
     </section>
 
-    <!-- لوحة النتائج -->
-    <section class="panel" id="resultPanel">
-      <div class="panel-title">
-        <span id="t_resTitle">لوحة النتائج والتشخيص</span>
-        <span class="tag tag-zero" id="t_resMode">تحليل فوري</span>
+    <!-- 4. CAUSES, SOLUTIONS & FOLLOW-UP PAGE -->
+    <section class="page" id="page-diagnosis">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" id="t-diagTitle">تشخيص الأسباب والحلول المقترحة</div>
+          <select id="diagRecordSelect" class="ctrl-select"></select>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <div class="field">
+              <label id="l-causesGroup">الأسباب المحتملة للانحراف</label>
+              <div class="chip-group" id="causesChips"></div>
+            </div>
+            <div class="field" style="margin-top:10px;">
+              <label id="l-customCause">ملاحظات إضافية حول السبب</label>
+              <textarea id="causeNotes" rows="2" placeholder="أضف تفاصيل السبب إن وجدت..."></textarea>
+            </div>
+          </div>
+
+          <div>
+            <div class="field">
+              <label id="l-solutionsGroup">الحلول والإجراءات التصحيحية المقترحة</label>
+              <div class="chip-group" id="solutionsChips"></div>
+            </div>
+            <div class="field" style="margin-top:10px;">
+              <label id="l-effLabel">تقييم فاعلية الإجراء المطبق (%)</label>
+              <input type="number" min="0" max="100" id="effectivenessVal" placeholder="مثال: 85" />
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" id="saveDiagBtn">حفظ التشخيص والحلول</button>
+        </div>
       </div>
-      <div class="hero-result" id="heroBox"></div>
-      <div class="cards-grid" id="cardsGrid"></div>
-      <div id="alertsArea"></div>
+    </section>
+
+    <!-- 5. HISTORY, USERS & REPORTS PAGE -->
+    <section class="page" id="page-history">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" id="t-histTitle">السجل، الفلترة، والتقارير</div>
+          <div class="btn-row no-print" style="margin-top:0;">
+            <button type="button" class="btn btn-sm btn-ghost" id="exportCsvBtn">تصدير CSV</button>
+            <button type="button" class="btn btn-sm btn-primary" id="printReportBtn">طباعة / PDF</button>
+          </div>
+        </div>
+
+        <div class="form-grid no-print" style="margin-bottom:12px;">
+          <div class="field">
+            <label id="l-search">بحث سريع</label>
+            <input type="text" id="searchInput" placeholder="مؤسسة، فترة، نوع..." />
+          </div>
+          <div class="field">
+            <label id="l-filterDept">تصفية حسب القسم</label>
+            <select id="filterDept">
+              <option value="ALL">الكل / Tous</option>
+              <option value="الإنتاج">الإنتاج</option>
+              <option value="المبيعات والتسويق">المبيعات والتسويق</option>
+              <option value="المالية والمحاسبة">المالية والمحاسبة</option>
+              <option value="الموارد البشرية">الموارد البشرية</option>
+              <option value="المخزون واللوجستيك">المخزون واللوجستيك</option>
+            </select>
+          </div>
+          <div class="field">
+            <label id="l-filterPeriod">تصفية حسب الفترة</label>
+            <input type="text" id="filterPeriod" placeholder="مثال: 2026-11" />
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th id="th-company">المؤسسة</th>
+                <th id="th-dept">القسم</th>
+                <th id="th-period">الفترة</th>
+                <th id="th-type">النوع</th>
+                <th id="th-forecast">التقديري</th>
+                <th id="th-actual">الفعلي</th>
+                <th id="th-var">الانحراف</th>
+                <th id="th-rate">النسبة</th>
+                <th id="th-status">الحالة</th>
+                <th id="th-actions" class="no-print">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="recordsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Detailed Report Summary Card -->
+      <div class="card" id="detailedReportCard">
+        <div class="card-header">
+          <div class="card-title" id="t-repSummaryTitle">التقرير التفصيلي للأسباب والحلول</div>
+        </div>
+        <div class="summary-box" id="detailedReportContent"></div>
+      </div>
     </section>
   </main>
 
+  <!-- User Profile & Permissions Modal -->
+  <div class="modal-backdrop no-print" id="userModal">
+    <div class="modal-card">
+      <div class="card-header">
+        <div class="card-title" id="t-userModalTitle">إدارة المستخدم والصلاحيات</div>
+        <button type="button" class="btn btn-sm btn-ghost" id="closeUserModal">×</button>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label id="l-userName">اسم المستخدم</label>
+          <input type="text" id="userNameInput" />
+        </div>
+        <div class="field">
+          <label id="l-userRole">الدور والصلاحية</label>
+          <select id="userRoleInput">
+            <option value="contrôleur">مراقب التسيير (إدخال + تعديل + تقارير)</option>
+            <option value="manager">مدير القسم (مراجعة + تشخيص + تقارير)</option>
+            <option value="viewer">مطالع (عرض وتصدير فقط)</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" id="saveUserBtn">حفظ الملف الشخصي</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instagram-style Bottom Navigation Bar -->
+  <nav class="bottom-nav no-print" aria-label="Bottom Navigation">
+    <button type="button" class="nav-btn active" data-page="page-dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z" />
+      </svg>
+      <span id="nav-dash">الرئيسية</span>
+    </button>
+
+    <button type="button" class="nav-btn" data-page="page-entry">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <rect x="3" y="3" width="18" height="18" rx="4" />
+        <path d="M12 8v8M8 12h8" />
+      </svg>
+      <span id="nav-entry">إدخال</span>
+    </button>
+
+    <button type="button" class="nav-btn" data-page="page-ai">
+      <span class="nav-ai-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:18px;height:18px;">
+          <path d="M12 3v3m0 12v3M4.9 4.9l2.1 2.1m10 10 2.1 2.1M3 12h3m12 0h3M4.9 19.1l2.1-2.1m10-10 2.1-2.1" />
+        </svg>
+      </span>
+      <span id="nav-ai">الذكاء</span>
+    </button>
+
+    <button type="button" class="nav-btn" data-page="page-diagnosis">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M9 11l3 3L22 4" />
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+      </svg>
+      <span id="nav-diag">الحلول</span>
+    </button>
+
+    <button type="button" class="nav-btn" data-page="page-history">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <path d="M14 2v6h6M8 13h8M8 17h5" />
+      </svg>
+      <span id="nav-hist">السجل</span>
+    </button>
+  </nav>
+
   <script>
-    const TXT = {
-      ar: {
-        dir: "rtl", lang: "ar",
-        title: "الموسوعة الشاملة لتحليل الفروقات والميزانية",
-        sub: "مواد • يد عاملة • أعباء ثابتة ومتغيرة • مبيعات • ميزانية مرنة • ذكاء اصطناعي",
-        cfgTitle: "الإعدادات العامة والعملة",
-        baseCurLbl: "عملة الإدخال",
-        rateLbl: "سعر التحويل لعملة العرض",
-        rateHint: "مثال: 145 لتحويل EUR إلى DZD",
-        natureLbl: "طبيعة العنصر",
-        costOpt: "تكلفة / أعباء (Cost)",
-        revOpt: "إيراد / مبيعات (Revenue)",
-        jointRuleLbl: "معالجة التداخل (Joint)",
-        isolateOpt: "عزل الفارق المشترك",
-        stdBaseOpt: "قاعدة المعيار الأساسي",
-        tabMat: "المواد والشراء",
-        tabLab: "اليد العاملة",
-        tabOvh: "الأعباء (ثابتة/متغيرة)",
-        tabSls: "المبيعات والإيرادات",
-        tabBud: "الميزانية المرنة",
-        tabAi: "المساعد الذكي (AI)",
-        tabFixes: "المشاكل والحلول",
-        tabHist: "السجل",
-        mqAct: "الكمية المستهلكة الفعلية",
-        mqStd: "الكمية المعيارية المقررة",
-        mpAct: "السعر الفعلي للوحدة",
-        mpStd: "السعر المعياري للوحدة",
-        mqPur: "الكمية المشتراة (اختياري - الشراء مقابل الاستهلاك)",
-        runMat: "تحليل فروقات المواد والشراء",
-        lhAct: "الساعات الفعلية",
-        lhStd: "الساعات المعيارية",
-        lrAct: "معدل الأجر الفعلي",
-        lrStd: "معدل الأجر المعياري",
-        runLab: "تحليل فروقات اليد العاملة",
-        ovVarAct: "أعباء متغيرة فعلية",
-        ovVarBud: "أعباء متغيرة معيارية (للنشاط الفعلي)",
-        ovFixAct: "أعباء ثابتة فعلية",
-        ovFixBud: "أعباء ثابتة مخططة",
-        runOvh: "تحليل الأعباء الثابتة والمتغيرة",
-        sqAct: "الكمية المباعة الفعلية",
-        sqBud: "الكمية المباعة المخططة",
-        spAct: "سعر البيع الفعلي للوحدة",
-        spBud: "سعر البيع المخطط للوحدة",
-        runSls: "تحليل فروقات المبيعات والإيرادات",
-        bAct: "الإنفاق / القيمة الفعلية",
-        bFixed: "الميزانية الثابتة / المخططة",
-        bActLvl: "النشاط الفعلي (وحدات / ساعات)",
-        bPlanLvl: "النشاط المخطط (وحدات / ساعات)",
-        runBud: "تحليل الميزانية المرنة والنشاط",
-        exBtn: "مثال جاهز",
-        resTitle: "لوحة النتائج والتشخيص",
-        fav: "ملائم (Favorable)",
-        unfav: "غير ملائم (Unfavorable)",
-        zero: "متوازن (0)",
-        vTotal: "الفارق الإجمالي",
-        vPrice: "فارق السعر / المعدل",
-        vQty: "فارق الكمية / الكفاءة",
-        vJoint: "فارق التداخل المشترك",
-        vPurPrice: "فارق السعر عند الشراء",
-        vVarSpend: "فارق الأعباء المتغيرة",
-        vFixSpend: "فارق الأعباء الثابتة",
-        vSalesPrice: "فارق سعر البيع",
-        vSalesVol: "فارق حجم المبيعات",
-        vFlexBud: "الميزانية المرنة المعدلة",
-        vVol: "فارق حجم النشاط",
-        vSpend: "فارق الإنفاق / الأداء التشغيلي",
-        histInfo: "العمليات المحفوظة في هذا الجهاز",
-        clearHist: "مسح السجل",
-        noHist: "لا توجد عمليات محفوظة بعد.",
-        aJoint: "تنبيه التداخل: السعر والكمية/الوقت تغيرا معاً. يُنصح بتحديد المعالجة بوضوح.",
-        aPur: "تنبيه الشراء والاستهلاك: الكمية المشتراة تختلف عن المستهلكة؛ افصل فرق الشراء عن فرق الاستهلاك.",
-        aAct: "تنبيه تغير النشاط: مستوى النشاط الفعلي يختلف عن المخطط؛ اعتمد الميزانية المرنة.",
-        aFx: "تنبيه العملة والصرف: تم تطبيق سعر تحويل؛ افصل أثر العملة عن الأداء التشغيلي.",
-        aiWelcome: "أهلاً بكِ في المساعد المحاسبي الذكي! اسأليني عن تحليل الفروقات، الميزانية المرنة، التداخل بين السعر والكمية، فرق الشراء عن الاستهلاك، الأعباء الثابتة والمتغيرة، أو تقلبات العملات (DZD / EUR / USD).",
-        aiPh: "اكتبي سؤالكِ المحاسبي هنا...",
-        aiBtn: "اسأل الذكاء الاصطناعي",
-        quickQs: [
-          "كيف أحل مشكلة التداخل بين السعر والكمية؟",
-          "ما الفرق بين الميزانية الثابتة والمرنة؟",
-          "لماذا نفصل فرق الشراء عن فرق الاستهلاك؟",
-          "كيف أتعامل مع تقلبات EUR / USD / DZD؟"
-        ],
-        fixes: [
-          "<strong>1. التداخل بين السعر والكمية (Joint Variance):</strong> يظهر عندما يتغير السعر والكمية معاً. يُعالج بعزل الفارق المشترك (ΔP × ΔQ) أو بتطبيق قاعدة موحدة وفق المنهجية المعتمدة.",
-          "<strong>2. فرق الشراء عن الاستهلاك:</strong> يُحسب فارق السعر على الكميات المشتراة لحظة الشراء، وفارق الكمية على المستهلك فعلياً في الإنتاج.",
-          "<strong>3. الميزانية الثابتة مقابل المرنة:</strong> تُعدّل الميزانية المرنة حسب النشاط الفعلي لفصل أثر تغير الحجم/النشاط عن فرق الإنفاق الفعلي.",
-          "<strong>4. الأعباء الثابتة والمتغيرة:</strong> افصل الأعباء المتغيرة (المرتبطة بالنشاط) عن الثابتة (المرتبطة بالزمن/الطاقة) لتشخيص السبب بدقة.",
-          "<strong>5. تقلبات العملات (DZD / EUR / USD):</strong> افصل أثر سعر الصرف عن السعر بالعملة الأجنبية حتى لا يظهر أداء تشغيلي وهمي."
-        ]
-      },
-      fr: {
-        dir: "ltr", lang: "fr",
-        title: "Suite Complète d'Analyse des Écarts & Budgets + IA",
-        sub: "Matières • Main-d'œuvre • Charges fixes/variables • Ventes • Budget flexible • IA",
-        cfgTitle: "Paramètres généraux & devises",
-        baseCurLbl: "Devise de saisie",
-        rateLbl: "Taux de conversion (affichage)",
-        rateHint: "Ex. : 145 pour convertir EUR en DZD",
-        natureLbl: "Nature de l'élément",
-        costOpt: "Coût / Charge",
-        revOpt: "Produit / Revenu",
-        jointRuleLbl: "Traitement écart conjoint",
-        isolateOpt: "Isoler l'écart conjoint",
-        stdBaseOpt: "Base standard classique",
-        tabMat: "Matières & Achats",
-        tabLab: "Main-d'œuvre",
-        tabOvh: "Charges (Fixes/Var.)",
-        tabSls: "Ventes & Revenus",
-        tabBud: "Budget flexible",
-        tabAi: "Assistant IA",
-        tabFixes: "Problèmes & solutions",
-        tabHist: "Historique",
-        mqAct: "Quantité consommée réelle",
-        mqStd: "Quantité standard",
-        mpAct: "Prix unitaire réel",
-        mpStd: "Prix unitaire standard",
-        mqPur: "Quantité achetée (optionnel)",
-        runMat: "Analyser matières & achats",
-        lhAct: "Heures réelles",
-        lhStd: "Heures standards",
-        lrAct: "Taux horaire réel",
-        lrStd: "Taux horaire standard",
-        runLab: "Analyser main-d'œuvre",
-        ovVarAct: "Charges variables réelles",
-        ovVarBud: "Charges variables standard (activité réelle)",
-        ovFixAct: "Charges fixes réelles",
-        ovFixBud: "Charges fixes prévues",
-        runOvh: "Analyser charges fixes & variables",
-        sqAct: "Quantité vendue réelle",
-        sqBud: "Quantité vendue prévue",
-        spAct: "Prix de vente réel",
-        spBud: "Prix de vente prévu",
-        runSls: "Analyser ventes & revenus",
-        bAct: "Montant / Valeur réelle",
-        bFixed: "Budget fixe / prévu",
-        bActLvl: "Activité réelle",
-        bPlanLvl: "Activité prévue",
-        runBud: "Analyser budget flexible & activité",
-        exBtn: "Exemple type",
-        resTitle: "Résultats & diagnostic",
-        fav: "Favorable (F)",
-        unfav: "Défavorable (Déf)",
-        zero: "Nul (0)",
-        vTotal: "Écart global",
-        vPrice: "Écart sur prix / taux",
-        vQty: "Écart sur quantité / rendement",
-        vJoint: "Écart conjoint",
-        vPurPrice: "Écart prix à l'achat",
-        vVarSpend: "Écart charges variables",
-        vFixSpend: "Écart charges fixes",
-        vSalesPrice: "Écart sur prix de vente",
-        vSalesVol: "Écart sur volume des ventes",
-        vFlexBud: "Budget flexible ajusté",
-        vVol: "Écart de volume / activité",
-        vSpend: "Écart de dépenses / opérationnel",
-        histInfo: "Calculs enregistrés sur cet appareil",
-        clearHist: "Effacer l'historique",
-        noHist: "Aucun calcul enregistré pour le moment.",
-        aJoint: "Écart conjoint détecté : prix et quantité varient ensemble.",
-        aPur: "Achat ≠ consommation : séparez l'écart d'achat de l'écart de consommation.",
-        aAct: "Niveau d'activité modifié : utilisez le budget flexible.",
-        aFx: "Conversion de devises active : isolez l'effet change.",
-        aiWelcome: "Bienvenue dans l'Assistant IA Comptable ! Posez vos questions sur l'analyse des écarts, le budget flexible, l'écart conjoint, l'achat vs consommation, les charges fixes/variables ou les devises (DZD / EUR / USD).",
-        aiPh: "Posez votre question comptable ici...",
-        aiBtn: "Demander à l'IA",
-        quickQs: [
-          "Comment traiter l'écart conjoint prix × quantité ?",
-          "Quelle différence entre budget fixe et flexible ?",
-          "Pourquoi séparer achat et consommation ?",
-          "Comment gérer l'effet change EUR / USD / DZD ?"
-        ],
-        fixes: [
-          "<strong>1. Écart conjoint :</strong> apparaît quand prix et quantité varient ensemble ; isolez-le ou appliquez une règle constante.",
-          "<strong>2. Achat vs consommation :</strong> calculez l'écart prix à l'achat et l'écart quantité à la consommation.",
-          "<strong>3. Budget fixe vs flexible :</strong> adaptez le budget à l'activité réelle pour isoler l'effet volume.",
-          "<strong>4. Charges fixes & variables :</strong> séparez l'effet activité des charges fixes de l'effet dépense.",
-          "<strong>5. Devises (DZD / EUR / USD) :</strong> isolez l'effet taux de change de la performance réelle."
-        ]
-      },
-      en: {
-        dir: "ltr", lang: "en",
-        title: "Complete Variance & Budget Analysis Suite + AI",
-        sub: "Materials • Labor • Fixed/Variable OH • Sales • Flexible budget • Built-in AI",
-        cfgTitle: "General & Currency Settings",
-        baseCurLbl: "Input Currency",
-        rateLbl: "Display Conversion Rate",
-        rateHint: "Ex.: 145 to convert EUR to DZD",
-        natureLbl: "Item Nature",
-        costOpt: "Cost / Expense",
-        revOpt: "Revenue / Sales",
-        jointRuleLbl: "Joint Variance Rule",
-        isolateOpt: "Isolate joint variance",
-        stdBaseOpt: "Standard base convention",
-        tabMat: "Materials & Purchases",
-        tabLab: "Direct Labor",
-        tabOvh: "Fixed & Var. Overhead",
-        tabSls: "Sales & Revenue",
-        tabBud: "Flexible Budget",
-        tabAi: "AI Assistant",
-        tabFixes: "Issues & Fixes",
-        tabHist: "History",
-        mqAct: "Actual Quantity Used",
-        mqStd: "Standard Quantity",
-        mpAct: "Actual Unit Price",
-        mpStd: "Standard Unit Price",
-        mqPur: "Quantity Purchased (optional)",
-        runMat: "Analyze Material Variances",
-        lhAct: "Actual Hours",
-        lhStd: "Standard Hours",
-        lrAct: "Actual Hourly Rate",
-        lrStd: "Standard Hourly Rate",
-        runLab: "Analyze Labor Variances",
-        ovVarAct: "Actual Variable OH",
-        ovVarBud: "Standard Variable OH (at actual level)",
-        ovFixAct: "Actual Fixed OH",
-        ovFixBud: "Planned Fixed OH",
-        runOvh: "Analyze Variable & Fixed OH",
-        sqAct: "Actual Units Sold",
-        sqBud: "Budgeted Units Sold",
-        spAct: "Actual Unit Selling Price",
-        spBud: "Budgeted Unit Selling Price",
-        runSls: "Analyze Sales & Revenue Variances",
-        bAct: "Actual Amount / Value",
-        bFixed: "Static / Planned Budget",
-        bActLvl: "Actual Activity Level",
-        bPlanLvl: "Planned Activity Level",
-        runBud: "Analyze Flexible Budget & Activity",
-        exBtn: "Load Example",
-        resTitle: "Results & Diagnosis",
-        fav: "Favorable (F)",
-        unfav: "Unfavorable (U)",
-        zero: "Zero (0)",
-        vTotal: "Total Variance",
-        vPrice: "Price / Rate Variance",
-        vQty: "Quantity / Efficiency Variance",
-        vJoint: "Joint Variance",
-        vPurPrice: "Purchase Price Variance",
-        vVarSpend: "Variable OH Variance",
-        vFixSpend: "Fixed OH Variance",
-        vSalesPrice: "Selling Price Variance",
-        vSalesVol: "Sales Volume Variance",
-        vFlexBud: "Flexible Budget Adjusted",
-        vVol: "Activity / Volume Variance",
-        vSpend: "Spending / Operational Variance",
-        histInfo: "Saved calculations on this device",
-        clearHist: "Clear History",
-        noHist: "No saved calculations yet.",
-        aJoint: "Joint variance alert: price and quantity changed together.",
-        aPur: "Purchase vs. usage mismatch: separate purchase price variance from usage variance.",
-        aAct: "Activity shift detected: use a flexible budget at actual activity.",
-        aFx: "Currency conversion active: separate FX movement from operational variance.",
-        aiWelcome: "Welcome to the Built-in Accounting AI Assistant! Ask me about variance analysis, flexible budgets, joint variances, purchase vs. usage, fixed/variable overhead, or currency effects (DZD / EUR / USD).",
-        aiPh: "Ask your accounting question here...",
-        aiBtn: "Ask AI Assistant",
-        quickQs: [
-          "How do I handle joint price-quantity variance?",
-          "Static vs. flexible budget: when to use each?",
-          "Why separate purchase price from usage variance?",
-          "How to handle EUR / USD / DZD exchange shifts?"
-        ],
-        fixes: [
-          "<strong>1. Joint Variance:</strong> arises when price and quantity move together; isolate (ΔP × ΔQ) or apply a consistent rule.",
-          "<strong>2. Purchase vs. Usage:</strong> measure price variance on purchased units and usage variance on consumed units.",
-          "<strong>3. Static vs. Flexible Budget:</strong> flex the budget to actual activity to isolate volume vs. spending.",
-          "<strong>4. Variable & Fixed Overhead:</strong> separate activity-driven variable OH from fixed capacity/spending variances.",
-          "<strong>5. Currencies (DZD / EUR / USD):</strong> isolate FX rate shifts from underlying operational variances."
-        ]
-      }
-    };
-
-    let lang = "ar";
-    let sec = "mat";
-    let historyItems = JSON.parse(localStorage.getItem("va_history_v3") || "[]");
-    let chatMessages = [];
-
-    function setLang() {
-      const t = TXT[lang];
-      document.documentElement.lang = t.lang;
-      document.documentElement.dir = t.dir;
-
-      const map = {
-        t_title: t.title, t_sub: t.sub, t_cfgTitle: t.cfgTitle,
-        t_baseCurLbl: t.baseCurLbl, t_rateLbl: t.rateLbl, t_rateHint: t.rateHint,
-        t_natureLbl: t.natureLbl, t_jointRuleLbl: t.jointRuleLbl,
-        t_tabMat: t.tabMat, t_tabLab: t.tabLab, t_tabOvh: t.tabOvh,
-        t_tabSls: t.tabSls, t_tabBud: t.tabBud, t_tabAi: t.tabAi,
-        t_tabFixes: t.tabFixes, t_tabHist: t.tabHist,
-        t_mqAct: t.mqAct, t_mqStd: t.mqStd, t_mpAct: t.mpAct, t_mpStd: t.mpStd, t_mqPur: t.mqPur,
-        runMat: t.runMat, exMat: t.exBtn,
-        t_lhAct: t.lhAct, t_lhStd: t.lhStd, t_lrAct: t.lrAct, t_lrStd: t.lrStd,
-        runLab: t.runLab, exLab: t.exBtn,
-        t_ovVarAct: t.ovVarAct, t_ovVarBud: t.ovVarBud, t_ovFixAct: t.ovFixAct, t_ovFixBud: t.ovFixBud,
-        runOvh: t.runOvh, exOvh: t.exBtn,
-        t_sqAct: t.sqAct, t_sqBud: t.sqBud, t_spAct: t.spAct, t_spBud: t.spBud,
-        runSls: t.runSls, exSls: t.exBtn,
-        t_bAct: t.bAct, t_bFixed: t.bFixed, t_bActLvl: t.bActLvl, t_bPlanLvl: t.bPlanLvl,
-        runBud: t.runBud, exBud: t.exBtn,
-        t_resTitle: t.resTitle, t_histInfo: t.histInfo, clearHist: t.clearHist,
-        sendAiBtn: t.aiBtn
+    (function () {
+      const STORAGE_KEY = "variance_suite_v4_data";
+      const CURRENCY_RATES = {
+        DZD: { symbol: "د.ج", rate: 1 },
+        EUR: { symbol: "€", rate: 0.0068 },
+        USD: { symbol: "$", rate: 0.0074 },
+        GBP: { symbol: "£", rate: 0.0058 },
+        SAR: { symbol: "ر.س", rate: 0.0278 }
       };
-      Object.entries(map).forEach(([id, val]) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = val;
-      });
 
-      document.getElementById("chatInput").placeholder = t.aiPh;
-
-      const nSel = document.getElementById("natureSel");
-      nSel.options[0].text = t.costOpt;
-      nSel.options[1].text = t.revOpt;
-
-      const jSel = document.getElementById("jointRule");
-      jSel.options[0].text = t.isolateOpt;
-      jSel.options[1].text = t.stdBaseOpt;
-
-      document.getElementById("fixesContainer").innerHTML =
-        t.fixes.map(item => `<div class="guide-box">${item}</div>`).join("");
-
-      const qBox = document.getElementById("quickQuestions");
-      qBox.innerHTML = t.quickQs.map(q => `<button type="button" class="q-chip">${q}</button>`).join("");
-      qBox.querySelectorAll(".q-chip").forEach(btn => {
-        btn.addEventListener("click", () => handleAiQuestion(btn.textContent));
-      });
-
-      if (!chatMessages.length) {
-        chatMessages.push({ role: "ai", text: t.aiWelcome });
-      }
-      renderChat();
-      renderHistory();
-      runActive(false);
-    }
-
-    function renderChat() {
-      const box = document.getElementById("chatBox");
-      box.innerHTML = chatMessages.map(m =>
-        `<div class="msg ${m.role === "user" ? "msg-user" : "msg-ai"}">${m.text}</div>`
-      ).join("");
-      box.scrollTop = box.scrollHeight;
-    }
-
-    function generateAiReply(q) {
-      const ql = q.toLowerCase();
-      const cur = document.getElementById("curSel").value;
-      const rate = parseFloat(document.getElementById("fxRate").value) || 1;
-      const nature = document.getElementById("natureSel").value;
-
-      if (lang === "ar") {
-        if (ql.includes("تداخل") || ql.includes("مشترك") || ql.includes("joint")) {
-          return "مشكلة التداخل (ΔP × ΔQ) تظهر عندما يتغير السعر والكمية معاً في نفس الفترة.\n• الحل العملي: عزل الفارق المشترك لإظهار أثر التغير المتزامن بوضوح، أو اعتماد قاعدة موحدة (مثل المعيار الأساسي) وتوضيح ذلك في التقرير المحاسبي.";
+      const I18N = {
+        ar: {
+          appTitle: "تحليل الانحرافات",
+          appSub: "متابعة الأداء والانحرافات المالية والتشغيلية",
+          navDash: "الرئيسية", navEntry: "إدخال", navAi: "الذكاء", navDiag: "الحلول", navHist: "السجل",
+          totalLabel: "إجمالي الانحرافات", favLabel: "انحرافات إيجابية (ملائمة)",
+          unfavLabel: "انحرافات سلبية (غير ملائمة)", achLabel: "نسبة تحقيق الأهداف",
+          fav: "ملائم", unfav: "غير ملائم", neutral: "متعادل",
+          alertMsg: (n, pct) => `تنبيه: يوجد ${n} انحراف يتجاوز عتبة التنبيه (${pct}%).`
+        },
+        fr: {
+          appTitle: "Analyse des Écarts",
+          appSub: "Suivi financier, opérationnel et aide à la décision",
+          navDash: "Tableau", navEntry: "Saisie", navAi: "IA", navDiag: "Causes", navHist: "Historique",
+          totalLabel: "Total des écarts", favLabel: "Écarts favorables",
+          unfavLabel: "Écarts défavorables", achLabel: "Taux de réalisation",
+          fav: "Favorable", unfav: "Défavorable", neutral: "Neutre",
+          alertMsg: (n, pct) => `Alerte : ${n} écart(s) dépassent le seuil (${pct}%).`
+        },
+        en: {
+          appTitle: "Variance Analysis",
+          appSub: "Financial & operational performance tracking",
+          navDash: "Dashboard", navEntry: "Entry", navAi: "AI", navDiag: "Solutions", navHist: "History",
+          totalLabel: "Total Variances", favLabel: "Favorable Variances",
+          unfavLabel: "Unfavorable Variances", achLabel: "Goal Achievement Rate",
+          fav: "Favorable", unfav: "Unfavorable", neutral: "Neutral",
+          alertMsg: (n, pct) => `Alert: ${n} variance(s) exceed threshold (${pct}%).`
+        },
+        es: {
+          appTitle: "Análisis de Desviaciones",
+          appSub: "Seguimiento financiero y operativo",
+          navDash: "Panel", navEntry: "Entrada", navAi: "IA", navDiag: "Causas", navHist: "Historial",
+          totalLabel: "Total desviaciones", favLabel: "Desviaciones favorables",
+          unfavLabel: "Desviaciones desfavorables", achLabel: "Tasa de cumplimiento",
+          fav: "Favorable", unfav: "Desfavorable", neutral: "Neutral",
+          alertMsg: (n, pct) => `Alerta: ${n} desviación(es) superan el umbral (${pct}%).`
         }
-        if (ql.includes("مرنة") || ql.includes("ثابتة") || ql.includes("ميزانية")) {
-          return "الميزانية الثابتة تُبنى على مستوى نشاط مخطط واحد، بينما الميزانية المرنة تُحدّث حسب مستوى النشاط الفعلي.\n• القاعدة: لا تحكم على الأداء بمقارنة إنفاق نشاط 120 وحدة بميزانية 100 وحدة مباشرة؛ عدّل الميزانية أولاً لفصل فارق الحجم عن فارق الإنفاق.";
-        }
-        if (ql.includes("شراء") || ql.includes("استهلاك") || ql.includes("purchase")) {
-          return "الكمية المشتراة غالباً لا تساوي الكمية المستهلكة في الإنتاج خلال الفترة نفسها.\n• الحل: نحسب فارق السعر عند لحظة الشراء (على الكمية المشتراة) لتقييم المشتريات، ونحسب فارق الكمية على الكمية المستهلكة لتقييم كفاءة الإنتاج.";
-        }
-        if (ql.includes("عملة") || ql.includes("صرف") || ql.includes("eur") || ql.includes("usd") || ql.includes("dzd")) {
-          return `الإعداد الحالي للعرض هو (${cur}) بمعامل تحويل (${rate}) وطبيعة عنصر (${nature === "cost" ? "تكلفة" : "إيراد"}).\n• عند التعامل مع DZD و EUR و USD: افصل فارق السعر بالعملة الأصلية عن أثر تغير سعر الصرف حتى لا يختلط قرار التسعير مع حركة السوق النقدي.`;
-        }
-        if (ql.includes("ملائم") || ql.includes("غير ملائم") || ql.includes("favorable")) {
-          return "• في التكاليف والأعباء: الفعلي أقل من المعياري/الميزانية = ملائم (Favorable) لأن التكلفة انخفضت، والفعلي أعلى = غير ملائم (Unfavorable).\n• في الإيرادات والمبيعات: الفعلي أعلى من المخطط = ملائم (Favorable) لأن الإيراد زاد، والفعلي أقل = غير ملائم (Unfavorable).";
-        }
-        return `بناءً على إعداداتكِ الحالية (${cur} | معامل ${rate})، يمكنني مساعدتكِ في تفسير أي فارق (مواد، يد عاملة، أعباء ثابتة/متغيرة، مبيعات، أو ميزانية مرنة) وتشخيص أسبابه المحاسبية خطوة بخطوة.`;
-      }
-
-      if (lang === "fr") {
-        if (ql.includes("conjoint") || ql.includes("joint")) {
-          return "L'écart conjoint (ΔP × ΔQ) apparaît lorsque le prix et la quantité varient simultanément.\n• Solution : isolez l'effet conjoint ou appliquez une convention constante et documentée.";
-        }
-        if (ql.includes("flexible") || ql.includes("budget")) {
-          return "Le budget flexible s'ajuste au niveau d'activité réel afin de séparer l'écart de volume/activité de l'écart de dépenses ou de rendement.";
-        }
-        if (ql.includes("achat") || ql.includes("consommation")) {
-          return "Séparez l'écart de prix sur quantités achetées de l'écart de quantité sur quantités consommées pour évaluer distinctement achats et production.";
-        }
-        if (ql.includes("change") || ql.includes("eur") || ql.includes("usd") || ql.includes("dzd")) {
-          return `Devise d'affichage actuelle : ${cur} (taux : ${rate}). Isolez l'effet de change de la performance opérationnelle.`;
-        }
-        return `Je peux vous aider à interpréter vos écarts (matières, main-d'œuvre, charges fixes/variables, ventes, budget flexible) en ${cur}.`;
-      }
-
-      if (ql.includes("joint")) {
-        return "Joint variance (ΔP × ΔQ) happens when price and quantity shift together.\n• Fix: isolate the mixed component or follow a consistent standard convention.";
-      }
-      if (ql.includes("flexible") || ql.includes("budget")) {
-        return "A flexible budget adjusts to actual activity so volume/activity effects are separated from spending or efficiency variances.";
-      }
-      if (ql.includes("purchase") || ql.includes("usage")) {
-        return "Measure price variance on purchased units and usage variance on consumed units to evaluate purchasing and production separately.";
-      }
-      if (ql.includes("fx") || ql.includes("currency") || ql.includes("eur") || ql.includes("usd") || ql.includes("dzd")) {
-        return `Active display currency: ${cur} (rate: ${rate}). Separate currency exchange movements from operational variances.`;
-      }
-      return `I can help interpret your variances across materials, labor, fixed/variable overhead, sales, and flexible budgets in ${cur}.`;
-    }
-
-    function handleAiQuestion(text) {
-      const clean = (text || "").trim();
-      if (!clean) return;
-      chatMessages.push({ role: "user", text: clean });
-      chatMessages.push({ role: "ai", text: generateAiReply(clean) });
-      renderChat();
-      document.getElementById("chatInput").value = "";
-    }
-
-    function classify(val, nature) {
-      const t = TXT[lang];
-      if (Math.abs(val) < 1e-9) return { txt: t.zero, cls: "tag-zero", hero: "", bar: "#38bdf8" };
-      const fav = nature === "cost" ? val < 0 : val > 0;
-      return fav
-        ? { txt: t.fav, cls: "tag-fav", hero: "fav", bar: "#10b981" }
-        : { txt: t.unfav, cls: "tag-unfav", hero: "unfav", bar: "#f43f5e" };
-    }
-
-    function fmt(num) {
-      const rate = parseFloat(document.getElementById("fxRate").value) || 1;
-      const cur = document.getElementById("curSel").value;
-      const v = num * rate;
-      return `${new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v)} ${cur}`;
-    }
-
-    function saveHistory(label, totalVal, nature) {
-      const item = {
-        id: Date.now(),
-        label,
-        totalStr: fmt(totalVal),
-        cls: classify(totalVal, nature).cls,
-        badge: classify(totalVal, nature).txt
       };
-      historyItems.unshift(item);
-      historyItems = historyItems.slice(0, 15);
-      localStorage.setItem("va_history_v3", JSON.stringify(historyItems));
-      renderHistory();
-    }
 
-    function renderHistory() {
-      const t = TXT[lang];
-      const box = document.getElementById("historyList");
-      if (!historyItems.length) {
-        box.innerHTML = `<div class="hint">${t.noHist}</div>`;
-        return;
+      const TYPE_LABELS = {
+        sales: { ar: "انحراف المبيعات", fr: "Écart sur les ventes", en: "Sales Variance", es: "Desviación de ventas", favorableWhenPositive: true },
+        production: { ar: "انحراف الإنتاج", fr: "Écart sur la production", en: "Production Variance", es: "Desviación de producción", favorableWhenPositive: true },
+        costs: { ar: "انحراف التكاليف", fr: "Écart sur les coûts", en: "Costs Variance", es: "Desviación de costes", favorableWhenPositive: false },
+        budget: { ar: "انحراف الميزانية", fr: "Écart budgétaire", en: "Budget Variance", es: "Desviación presupuestaria", favorableWhenPositive: false },
+        labor: { ar: "انحراف اليد العاملة", fr: "Écart sur la main-d'œuvre", en: "Labor Variance", es: "Desviación de mano de obra", favorableWhenPositive: false },
+        materials: { ar: "انحراف المواد الأولية", fr: "Écart sur les matières premières", en: "Materials Variance", es: "Desviación de materias primas", favorableWhenPositive: false },
+        yield: { ar: "انحراف المردودية", fr: "Écart de rendement", en: "Yield Variance", es: "Desviación de rendimiento", favorableWhenPositive: true },
+        charges: { ar: "انحراف الأعباء", fr: "Écart sur les charges", en: "Charges Variance", es: "Desviación de cargas", favorableWhenPositive: false },
+        stocks: { ar: "انحراف المخزون", fr: "Écart sur les stocks", en: "Stocks Variance", es: "Desviación de existencias", favorableWhenPositive: true },
+        profit: { ar: "انحراف الأرباح", fr: "Écart sur les bénéfices", en: "Profit Variance", es: "Desviación de beneficios", favorableWhenPositive: true }
+      };
+
+      const CAUSES_LIST = [
+        { id: "c1", label: "انخفاض المبيعات / Baisse des ventes" },
+        { id: "c2", label: "تناقص العملاء أو ضعف الإشهار / Clients & pub" },
+        { id: "c3", label: "عطل الآلات أو تأخر الإنتاج / Panne & retard" },
+        { id: "c4", label: "نقص المواد الأولية / Manque matières" },
+        { id: "c5", label: "تجاوز الميزانية أو ارتفاع الأعباء / Dépassement budget" },
+        { id: "c6", label: "ضعف مردودية العمال أو نقص التكوين / RH & rendement" },
+        { id: "c7", label: "نفاد المخزون أو سوء إدارته / Rupture de stock" }
+      ];
+
+      const SOLUTIONS_LIST = [
+        { id: "s1", label: "تقليص النفقات غير الضرورية / Réduire dépenses" },
+        { id: "s2", label: "تحسين الإنتاجية والمردودية / Améliorer productivité" },
+        { id: "s3", label: "تعزيز الاستراتيجية التجارية / Stratégie commerciale" },
+        { id: "s4", label: "تكوين الموظفين / Former employés" },
+        { id: "s5", label: "تحسين إدارة المخزون / Gestion des stocks" },
+        { id: "s6", label: "صيانة دورية للآلات / Maintenance machines" },
+        { id: "s7", label: "مراجعة التقديرات ومراقبة التسيير / Réviser prévisions" }
+      ];
+
+      const DEFAULT_RECORDS = [
+        {
+          id: "rec-1",
+          company: "مؤسسة الأمل الصناعية",
+          department: "الإنتاج",
+          periodType: "month",
+          periodLabel: "2026-10",
+          entryDate: "2026-10-31",
+          type: "materials",
+          forecast: 450000,
+          actual: 517500,
+          target: 450000,
+          causes: ["c4", "c5"],
+          causeNotes: "ارتفاع أسعار المواد الأولية في السوق.",
+          solutions: ["s5", "s7"],
+          effectiveness: 75
+        },
+        {
+          id: "rec-2",
+          company: "مؤسسة الأمل الصناعية",
+          department: "المبيعات والتسويق",
+          periodType: "month",
+          periodLabel: "2026-11",
+          entryDate: "2026-11-18",
+          type: "sales",
+          forecast: 800000,
+          actual: 920000,
+          target: 900000,
+          causes: [],
+          causeNotes: "تحسن الطلب الموسمي.",
+          solutions: ["s3"],
+          effectiveness: 90
+        },
+        {
+          id: "rec-3",
+          company: "مؤسسة الأمل الصناعية",
+          department: "الموارد البشرية",
+          periodType: "month",
+          periodLabel: "2026-11",
+          entryDate: "2026-11-19",
+          type: "labor",
+          forecast: 300000,
+          actual: 345000,
+          target: 300000,
+          causes: ["c6", "c3"],
+          causeNotes: "ساعات إضافية لتعويض تأخر خط التعبئة.",
+          solutions: ["s4", "s6"],
+          effectiveness: 80
+        }
+      ];
+
+      let state = {
+        lang: "ar",
+        currency: "DZD",
+        user: { name: "مراقب التسيير", role: "contrôleur" },
+        records: DEFAULT_RECORDS,
+        chat: [
+          {
+            role: "ai",
+            text: "مرحباً بكِ في المساعد الذكي لتحليل الانحرافات. يمكنكِ سؤالي عن أي انحراف، سبب، حل، أو قانون حساب (الفرق، النسبة، ونسبة الإنجاز)."
+          }
+        ]
+      };
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            state = { ...state, ...parsed, user: { ...state.user, ...(parsed.user || {}) } };
+          }
+        } catch (e) {
+          console.error(e);
+        }
       }
-      box.innerHTML = historyItems.map(h => `
-        <div class="history-item">
-          <strong>${h.label}</strong>
-          <div>
-            <span style="margin-inline-end:8px;font-weight:800;">${h.totalStr}</span>
-            <span class="tag ${h.cls}">${h.badge}</span>
-          </div>
-        </div>
-      `).join("");
-    }
 
-    function paintResults(title, totalVal, cards, alerts, nature, record) {
-      const hero = document.getElementById("heroBox");
-      const hMeta = classify(totalVal, nature);
-      hero.className = `hero-result ${hMeta.hero}`;
-      hero.innerHTML = `
-        <div>
-          <div class="stat-name">${title}</div>
-          <div style="font-size:1.35rem;font-weight:800;">${fmt(totalVal)}</div>
-        </div>
-        <span class="tag ${hMeta.cls}">${hMeta.txt}</span>
-      `;
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
 
-      const maxAbs = Math.max(...cards.map(c => Math.abs(c.val)), 1);
-      document.getElementById("cardsGrid").innerHTML = cards.map(c => {
-        const m = classify(c.val, nature);
-        const pct = Math.min(100, Math.round((Math.abs(c.val) / maxAbs) * 100));
-        return `
-          <div class="stat-card">
-            <div class="stat-name">${c.label}</div>
-            <div class="stat-num">${fmt(c.val)}</div>
-            <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${m.bar};"></div></div>
-            <span class="tag ${m.cls}">${m.txt}</span>
-          </div>
-        `;
-      }).join("");
+      function computeMetrics(rec) {
+        const forecast = Number(rec.forecast) || 0;
+        const actual = Number(rec.actual) || 0;
+        const diff = actual - forecast;
+        const rate = forecast !== 0 ? (diff / Math.abs(forecast)) * 100 : 0;
+        const achievement = forecast !== 0 ? (actual / forecast) * 100 : 0;
 
-      document.getElementById("alertsArea").innerHTML = alerts.map(a => `
-        <div class="alert-box"><strong>!</strong>${a}</div>
-      `).join("");
+        const meta = TYPE_LABELS[rec.type] || { favorableWhenPositive: true };
+        let status = "neutral";
+        if (diff > 0) {
+          status = meta.favorableWhenPositive ? "fav" : "unfav";
+        } else if (diff < 0) {
+          status = meta.favorableWhenPositive ? "unfav" : "fav";
+        }
+        return { diff, rate, achievement, status };
+      }
 
-      if (record) saveHistory(title, totalVal, nature);
-    }
+      function formatMoney(val) {
+        const c = CURRENCY_RATES[state.currency] || CURRENCY_RATES.DZD;
+        const converted = (Number(val) || 0) * c.rate;
+        return `${converted.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${c.symbol}`;
+      }
 
-    function addFxAlert(alerts) {
-      const b = document.getElementById("baseCur").value;
-      const d = document.getElementById("curSel").value;
-      const r = parseFloat(document.getElementById("fxRate").value) || 1;
-      if (b !== d || r !== 1) alerts.push(TXT[lang].aFx);
-    }
+      // Navigation
+      const navButtons = document.querySelectorAll(".nav-btn");
+      const pages = document.querySelectorAll(".page");
 
-    function calcMat(record = true) {
-      const t = TXT[lang];
-      const nature = document.getElementById("natureSel").value;
-      const rule = document.getElementById("jointRule").value;
-      const qa = parseFloat(document.getElementById("mqAct").value) || 0;
-      const qs = parseFloat(document.getElementById("mqStd").value) || 0;
-      const pa = parseFloat(document.getElementById("mpAct").value) || 0;
-      const ps = parseFloat(document.getElementById("mpStd").value) || 0;
-      const purRaw = document.getElementById("mqPur").value;
-      const qPur = purRaw !== "" ? parseFloat(purRaw) : qa;
+      function switchPage(pageId) {
+        pages.forEach((p) => p.classList.toggle("active", p.id === pageId));
+        navButtons.forEach((b) => b.classList.toggle("active", b.dataset.page === pageId));
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (pageId === "page-dashboard") renderCharts();
+        if (pageId === "page-diagnosis") populateDiagnosisSelector();
+        if (pageId === "page-history") {
+          renderTable();
+          renderDetailedReport();
+        }
+      }
 
-      const total = (qa * pa) - (qs * ps);
-      const joint = (pa - ps) * (qa - qs);
-      const priceVar = rule === "isolate" ? (pa - ps) * qs : (pa - ps) * qa;
-      const qtyVar = (qa - qs) * ps;
-      const purPriceVar = (pa - ps) * qPur;
-
-      const alerts = [];
-      if (Math.abs(pa - ps) > 0 && Math.abs(qa - qs) > 0) alerts.push(t.aJoint);
-      if (Math.abs(qPur - qa) > 1e-9) alerts.push(t.aPur);
-      addFxAlert(alerts);
-
-      const cards = [
-        { label: t.vPrice, val: priceVar },
-        { label: t.vQty, val: qtyVar },
-        { label: t.vPurPrice, val: purPriceVar }
-      ];
-      if (rule === "isolate") cards.push({ label: t.vJoint, val: joint });
-
-      paintResults(`${t.tabMat} — ${t.vTotal}`, total, cards, alerts, nature, record);
-    }
-
-    function calcLab(record = true) {
-      const t = TXT[lang];
-      const nature = document.getElementById("natureSel").value;
-      const rule = document.getElementById("jointRule").value;
-      const ha = parseFloat(document.getElementById("lhAct").value) || 0;
-      const hs = parseFloat(document.getElementById("lhStd").value) || 0;
-      const ra = parseFloat(document.getElementById("lrAct").value) || 0;
-      const rs = parseFloat(document.getElementById("lrStd").value) || 0;
-
-      const total = (ha * ra) - (hs * rs);
-      const joint = (ra - rs) * (ha - hs);
-      const rateVar = rule === "isolate" ? (ra - rs) * hs : (ra - rs) * ha;
-      const timeVar = (ha - hs) * rs;
-
-      const alerts = [];
-      if (Math.abs(ra - rs) > 0 && Math.abs(ha - hs) > 0) alerts.push(t.aJoint);
-      addFxAlert(alerts);
-
-      const cards = [
-        { label: t.vPrice, val: rateVar },
-        { label: t.vQty, val: timeVar }
-      ];
-      if (rule === "isolate") cards.push({ label: t.vJoint, val: joint });
-
-      paintResults(`${t.tabLab} — ${t.vTotal}`, total, cards, alerts, nature, record);
-    }
-
-    function calcOvh(record = true) {
-      const t = TXT[lang];
-      const nature = document.getElementById("natureSel").value;
-      const va = parseFloat(document.getElementById("ovVarAct").value) || 0;
-      const vb = parseFloat(document.getElementById("ovVarBud").value) || 0;
-      const fa = parseFloat(document.getElementById("ovFixAct").value) || 0;
-      const fb = parseFloat(document.getElementById("ovFixBud").value) || 0;
-
-      const varDiff = va - vb;
-      const fixDiff = fa - fb;
-      const total = varDiff + fixDiff;
-
-      const alerts = [];
-      addFxAlert(alerts);
-
-      paintResults(`${t.tabOvh} — ${t.vTotal}`, total, [
-        { label: t.vVarSpend, val: varDiff },
-        { label: t.vFixSpend, val: fixDiff }
-      ], alerts, nature, record);
-    }
-
-    function calcSls(record = true) {
-      const t = TXT[lang];
-      const sqAct = parseFloat(document.getElementById("sqAct").value) || 0;
-      const sqBud = parseFloat(document.getElementById("sqBud").value) || 0;
-      const spAct = parseFloat(document.getElementById("spAct").value) || 0;
-      const spBud = parseFloat(document.getElementById("spBud").value) || 0;
-
-      const totalRevVar = (sqAct * spAct) - (sqBud * spBud);
-      const priceVar = (spAct - spBud) * sqAct;
-      const volVar = (sqAct - sqBud) * spBud;
-
-      const alerts = [];
-      addFxAlert(alerts);
-
-      paintResults(`${t.tabSls} — ${t.vTotal}`, totalRevVar, [
-        { label: t.vSalesPrice, val: priceVar },
-        { label: t.vSalesVol, val: volVar }
-      ], alerts, "revenue", record);
-    }
-
-    function calcBud(record = true) {
-      const t = TXT[lang];
-      const nature = document.getElementById("natureSel").value;
-      const act = parseFloat(document.getElementById("bAct").value) || 0;
-      const fixedBud = parseFloat(document.getElementById("bFixed").value) || 0;
-      const actLvl = parseFloat(document.getElementById("bActLvl").value) || 0;
-      const planLvl = parseFloat(document.getElementById("bPlanLvl").value) || 1;
-
-      const flexBud = fixedBud * (actLvl / planLvl);
-      const totalVar = act - flexBud;
-      const volVar = flexBud - fixedBud;
-
-      const alerts = [];
-      if (Math.abs(actLvl - planLvl) > 1e-9) alerts.push(t.aAct);
-      addFxAlert(alerts);
-
-      paintResults(`${t.tabBud} — ${t.vSpend}`, totalVar, [
-        { label: t.vFlexBud, val: flexBud },
-        { label: t.vVol, val: volVar }
-      ], alerts, nature, record);
-    }
-
-    function runActive(record = false) {
-      if (sec === "mat") calcMat(record);
-      else if (sec === "lab") calcLab(record);
-      else if (sec === "ovh") calcOvh(record);
-      else if (sec === "sls") calcSls(record);
-      else if (sec === "bud") calcBud(record);
-    }
-
-    document.querySelectorAll(".pill-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".pill-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        sec = btn.dataset.sec;
-
-        document.querySelectorAll(".sec-box").forEach(box => box.style.display = "none");
-        document.getElementById(`sec-${sec}`).style.display = "block";
-
-        const hideRes = ["ai", "fixes", "hist"].includes(sec);
-        document.getElementById("resultPanel").style.display = hideRes ? "none" : "block";
-        if (!hideRes) runActive(false);
+      navButtons.forEach((btn) => {
+        btn.addEventListener("click", () => switchPage(btn.dataset.page));
       });
-    });
 
-    document.getElementById("langSel").addEventListener("change", e => {
-      lang = e.target.value;
-      setLang();
-    });
+      document.getElementById("goEntryBtn").addEventListener("click", () => switchPage("page-entry"));
 
-    ["curSel", "baseCur", "fxRate", "natureSel", "jointRule"].forEach(id => {
-      document.getElementById(id).addEventListener("change", () => runActive(false));
-      document.getElementById(id).addEventListener("input", () => runActive(false));
-    });
+      // Live Entry Form Calculation
+      const forecastInput = document.getElementById("forecastVal");
+      const actualInput = document.getElementById("actualVal");
+      const typeInput = document.getElementById("varianceType");
 
-    document.getElementById("runMat").addEventListener("click", () => calcMat(true));
-    document.getElementById("runLab").addEventListener("click", () => calcLab(true));
-    document.getElementById("runOvh").addEventListener("click", () => calcOvh(true));
-    document.getElementById("runSls").addEventListener("click", () => calcSls(true));
-    document.getElementById("runBud").addEventListener("click", () => calcBud(true));
+      function updateLiveCalc() {
+        const m = computeMetrics({
+          forecast: forecastInput.value,
+          actual: actualInput.value,
+          type: typeInput.value
+        });
+        const t = I18N[state.lang] || I18N.ar;
+        const liveVar = document.getElementById("liveVar");
+        const liveRate = document.getElementById("liveRate");
+        const liveAch = document.getElementById("liveAch");
+        const liveStatus = document.getElementById("liveStatus");
 
-    document.getElementById("exMat").addEventListener("click", () => {
-      document.getElementById("mqAct").value = 115;
-      document.getElementById("mqStd").value = 100;
-      document.getElementById("mpAct").value = 470;
-      document.getElementById("mpStd").value = 500;
-      document.getElementById("mqPur").value = 140;
-      calcMat(true);
-    });
+        liveVar.textContent = formatMoney(m.diff);
+        liveRate.textContent = `${m.rate.toFixed(2)}%`;
+        liveAch.textContent = `${m.achievement.toFixed(2)}%`;
 
-    document.getElementById("exLab").addEventListener("click", () => {
-      document.getElementById("lhAct").value = 75;
-      document.getElementById("lhStd").value = 80;
-      document.getElementById("lrAct").value = 1200;
-      document.getElementById("lrStd").value = 1250;
-      calcLab(true);
-    });
+        liveVar.className = "calc-item-val " + (m.status === "fav" ? "text-fav" : m.status === "unfav" ? "text-unfav" : "");
+        liveStatus.textContent = m.status === "fav" ? t.fav : m.status === "unfav" ? t.unfav : t.neutral;
+        liveStatus.className = "calc-item-val " + (m.status === "fav" ? "text-fav" : m.status === "unfav" ? "text-unfav" : "");
+      }
 
-    document.getElementById("exOvh").addEventListener("click", () => {
-      document.getElementById("ovVarAct").value = 76000;
-      document.getElementById("ovVarBud").value = 80000;
-      document.getElementById("ovFixAct").value = 132000;
-      document.getElementById("ovFixBud").value = 120000;
-      calcOvh(true);
-    });
+      [forecastInput, actualInput, typeInput].forEach((el) => el.addEventListener("input", updateLiveCalc));
 
-    document.getElementById("exSls").addEventListener("click", () => {
-      document.getElementById("sqAct").value = 560;
-      document.getElementById("sqBud").value = 500;
-      document.getElementById("spAct").value = 2100;
-      document.getElementById("spBud").value = 2000;
-      calcSls(true);
-    });
+      // Save / Edit Record
+      document.getElementById("varianceForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (state.user.role === "viewer") {
+          alert("صلاحية المطالع لا تسمح بالإضافة أو التعديل.");
+          return;
+        }
+        const editId = document.getElementById("editId").value;
+        const recData = {
+          id: editId || "rec-" + Date.now(),
+          company: document.getElementById("company").value.trim(),
+          department: document.getElementById("department").value,
+          periodType: document.getElementById("periodType").value,
+          periodLabel: document.getElementById("periodLabel").value.trim(),
+          entryDate: document.getElementById("entryDate").value,
+          type: document.getElementById("varianceType").value,
+          forecast: Number(document.getElementById("forecastVal").value) || 0,
+          actual: Number(document.getElementById("actualVal").value) || 0,
+          target: Number(document.getElementById("targetVal").value) || 0,
+          causes: [],
+          causeNotes: "",
+          solutions: [],
+          effectiveness: 0
+        };
 
-    document.getElementById("exBud").addEventListener("click", () => {
-      document.getElementById("bAct").value = 215000;
-      document.getElementById("bFixed").value = 200000;
-      document.getElementById("bActLvl").value = 110;
-      document.getElementById("bPlanLvl").value = 100;
-      calcBud(true);
-    });
+        if (editId) {
+          const idx = state.records.findIndex((r) => r.id === editId);
+          if (idx > -1) {
+            state.records[idx] = {
+              ...state.records[idx],
+              ...recData,
+              causes: state.records[idx].causes,
+              causeNotes: state.records[idx].causeNotes,
+              solutions: state.records[idx].solutions,
+              effectiveness: state.records[idx].effectiveness
+            };
+          }
+        } else {
+          state.records.unshift(recData);
+        }
 
-    document.getElementById("chatForm").addEventListener("submit", e => {
-      e.preventDefault();
-      handleAiQuestion(document.getElementById("chatInput").value);
-    });
+        saveState();
+        resetEntryForm();
+        renderAll();
+        switchPage("page-dashboard");
+      });
 
-    document.getElementById("clearHist").addEventListener("click", () => {
-      historyItems = [];
-      localStorage.removeItem("va_history_v3");
-      renderHistory();
-    });
+      function resetEntryForm() {
+        document.getElementById("editId").value = "";
+        document.getElementById("varianceForm").reset();
+        document.getElementById("entryDate").value = new Date().toISOString().slice(0, 10);
+        updateLiveCalc();
+      }
 
-    setLang();
-  </script>
-</body>
-</html>
+      document.getElementById("resetFormBtn").addEventListener("click", resetEntryForm);
+
+      document.getElementById("analyzeWithAiBtn").addEventListener("click", () => {
+        const m = computeMetrics({
+          forecast: forecastInput.value,
+          actual: actualInput.value,
+          type: typeInput.value
+        });
+        const q = `حلل هذا الانحراف (${typeInput.value}): التقديري ${forecastInput.value}، الفعلي ${actualInput.value}، الانحراف ${m.diff.toFixed(2)}، النسبة ${m.rate.toFixed(2)}%، ونسبة الإنجاز ${m.achievement.toFixed(2)}%.`;
+        switchPage("page-ai");
+        handleAiMessage(q);
+      });
+
+      // KPIs, Alert & Summary
+      function renderDashboard() {
+        const t = I18N[state.lang] || I18N.ar;
+        document.getElementById("t-appTitle").textContent = t.appTitle;
+        document.getElementById("t-appSub").textContent = t.appSub;
+        document.getElementById("nav-dash").textContent = t.navDash;
+        document.getElementById("nav-entry").textContent = t.navEntry;
+        document.getElementById("nav-ai").textContent = t.navAi;
+        document.getElementById("nav-diag").textContent = t.navDiag;
+        document.getElementById("nav-hist").textContent = t.navHist;
+        document.getElementById("k-totalLabel").textContent = t.totalLabel;
+        document.getElementById("k-favLabel").textContent = t.favLabel;
+        document.getElementById("k-unfavLabel").textContent = t.unfavLabel;
+        document.getElementById("k-achLabel").textContent = t.achLabel;
+
+        let favCount = 0;
+        let unfavCount = 0;
+        let achSum = 0;
+        let largeAlerts = 0;
+
+        state.records.forEach((r) => {
+          const m = computeMetrics(r);
+          if (m.status === "fav") favCount++;
+          if (m.status === "unfav") unfavCount++;
+          achSum += m.achievement;
+          if (Math.abs(m.rate) >= 15 && m.status === "unfav") largeAlerts++;
+        });
+
+        const total = state.records.length;
+        const avgAch = total ? (achSum / total).toFixed(1) : "0.0";
+
+        document.getElementById("kpiTotal").textContent = total;
+        document.getElementById("kpiFav").textContent = favCount;
+        document.getElementById("kpiUnfav").textContent = unfavCount;
+        document.getElementById("kpiAch").textContent = `${avgAch}%`;
+
+        const banner = document.getElementById("alertBanner");
+        if (largeAlerts > 0) {
+          document.getElementById("alertText").textContent = t.alertMsg(largeAlerts, 15);
+          banner.classList.add("show");
+        } else {
+          banner.classList.remove("show");
+        }
+
+        const totalForecast = state.records.reduce((s, r) => s + (Number(r.forecast) || 0), 0);
+        const totalActual = state.records.reduce((s, r) => s + (Number(r.actual) || 0), 0);
+        const netDiff = totalActual - totalForecast;
+
+        document.getElementById("execSummaryText").textContent =
+          `إجمالي التقديرات: ${formatMoney(totalForecast)} | إجمالي الإنجازات: ${formatMoney(totalActual)} | صافي الفرق: ${formatMoney(netDiff)} | ملائم: ${favCount} | غير ملائم: ${unfavCount} | متوسط الإنجاز: ${avgAch}%.`;
+      }
+
+      document.getElementById("dismissAlertBtn").addEventListener("click", () => {
+        document.getElementById("alertBanner").classList.remove("show");
+      });
+
+      // Charts
+      let charts = {};
+
+      function renderCharts() {
+        if (typeof Chart === "undefined") return;
+        Object.values(charts).forEach((ch) => ch && ch.destroy());
+
+        const labels = state.records.map((r) => `${r.periodLabel} (${r.department.split(" ")[0]})`);
+        const forecasts = state.records.map((r) => Number(r.forecast) || 0);
+        const actuals = state.records.map((r) => Number(r.actual) || 0);
+        const diffs = state.records.map((r) => computeMetrics(r).diff);
+
+        const ctxComp = document.getElementById("chartComparison");
+        if (ctxComp) {
+          charts.comp = new Chart(ctxComp, {
+            type: "bar",
+            data: {
+              labels,
+              datasets: [
+                { label: "Prévision", data: forecasts, backgroundColor: "rgba(56, 189, 248, 0.7)" },
+                { label: "Réalisation", data: actuals, backgroundColor: "rgba(99, 102, 241, 0.75)" }
+              ]
+            },
+            options: { responsive: true, plugins: { legend: { labels: { color: "#cbd5e1" } } }, scales: { x: { ticks: { color: "#94a3b8" } }, y: { ticks: { color: "#94a3b8" } } } }
+          });
+        }
+
+        const ctxTrend = document.getElementById("chartTrend");
+        if (ctxTrend) {
+          charts.trend = new Chart(ctxTrend, {
+            type: "line",
+            data: {
+              labels,
+              datasets: [{
+                label: "Écart",
+                data: diffs,
+                borderColor: "#10b981",
+                backgroundColor: "rgba(16, 185, 129, 0.15)",
+                fill: true,
+                tension: 0.3
+              }]
+            },
+            options: { responsive: true, plugins: { legend: { labels: { color: "#cbd5e1" } } }, scales: { x: { ticks: { color: "#94a3b8" } }, y: { ticks: { color: "#94a3b8" } } } }
+          });
+        }
+
+        const deptMap = {};
+        state.records.forEach((r) => {
+          deptMap[r.department] = (deptMap[r.department] || 0) + Math.abs(computeMetrics(r).diff);
+        });
+
+        const ctxDept = document.getElementById("chartDept");
+        if (ctxDept) {
+          charts.dept = new Chart(ctxDept, {
+            type: "doughnut",
+            data: {
+              labels: Object.keys(deptMap),
+              datasets: [{
+                data: Object.values(deptMap),
+                backgroundColor: ["#38bdf8", "#6366f1", "#10b981", "#f59e0b", "#f43f5e"]
+              }]
+            },
+            options: { responsive: true, plugins: { legend: { labels: { color: "#cbd5e1" } } } }
+          });
+        }
+
+        const causeCounts = {};
+        state.records.forEach((r) => {
+          (r.causes || []).forEach((cid) => {
+            const found = CAUSES_LIST.find((c) => c.id === cid);
+            const name = found ? found.label.split("/")[0].trim() : cid;
+            causeCounts[name] = (causeCounts[name] || 0) + 1;
+          });
+        });
+
+        const ctxCauses = document.getElementById("chartCauses");
+        if (ctxCauses) {
+          charts.causes = new Chart(ctxCauses, {
+            type: "bar",
+            data: {
+              labels: Object.keys(causeCounts),
+              datasets: [{
+                label: "Occurrences",
+                data: Object.values(causeCounts),
+                backgroundColor: "rgba(244, 63, 94, 0.72)"
+              }]
+            },
+            options: { indexAxis: "y", responsive: true, plugins: { legend: { labels: { color: "#cbd5e1" } } }, scales: { x: { ticks: { color: "#94a3b8" } }, y: { ticks: { color: "#94a3b8" } } } }
+          });
+        }
+      }
+
+      // Diagnosis (Causes & Solutions)
+      const diagSelect = document.getElementById("diagRecordSelect");
+      const causesChipsEl = document.getElementById("causesChips");
+      const solutionsChipsEl = document.getElementById("solutionsChips");
+      let selectedCauses = new Set();
+      let selectedSolutions = new Set();
+
+      function buildChips() {
+        causesChipsEl.innerHTML = "";
+        CAUSES_LIST.forEach((c) => {
+          const el = document.createElement("span");
+          el.className = "chip" + (selectedCauses.has(c.id) ? " selected" : "");
+          el.textContent = c.label;
+          el.addEventListener("click", () => {
+            if (selectedCauses.has(c.id)) selectedCauses.delete(c.id);
+            else selectedCauses.add(c.id);
+            el.classList.toggle("selected");
+          });
+          causesChipsEl.appendChild(el);
+        });
+
+        solutionsChipsEl.innerHTML = "";
+        SOLUTIONS_LIST.forEach((s) => {
+          const el = document.createElement("span");
+          el.className = "chip" + (selectedSolutions.has(s.id) ? " selected" : "");
+          el.textContent = s.label;
+          el.addEventListener("click", () => {
+            if (selectedSolutions.has(s.id)) selectedSolutions.delete(s.id);
+            else selectedSolutions.add(s.id);
+            el.classList.toggle("selected");
+          });
+          solutionsChipsEl.appendChild(el);
+        });
+      }
+
+      function populateDiagnosisSelector() {
+        diagSelect.innerHTML = "";
+        state.records.forEach((r) => {
+          const opt = document.createElement("option");
+          opt.value = r.id;
+          opt.textContent = `${r.periodLabel} — ${r.department} (${r.company})`;
+          diagSelect.appendChild(opt);
+        });
+        loadDiagnosisForSelected();
+      }
+
+      function loadDiagnosisForSelected() {
+        const rec = state.records.find((r) => r.id === diagSelect.value);
+        selectedCauses = new Set((rec && rec.causes) || []);
+        selectedSolutions = new Set((rec && rec.solutions) || []);
+        document.getElementById("causeNotes").value = (rec && rec.causeNotes) || "";
+        document.getElementById("effectivenessVal").value = (rec && rec.effectiveness) || "";
+        buildChips();
+      }
+
+      diagSelect.addEventListener("change", loadDiagnosisForSelected);
+
+      document.getElementById("saveDiagBtn").addEventListener("click", () => {
+        if (state.user.role === "viewer") {
+          alert("صلاحية المطالع لا تسمح بالحفظ.");
+          return;
+        }
+        const rec = state.records.find((r) => r.id === diagSelect.value);
+        if (!rec) return;
+        rec.causes = Array.from(selectedCauses);
+        rec.solutions = Array.from(selectedSolutions);
+        rec.causeNotes = document.getElementById("causeNotes").value.trim();
+        rec.effectiveness = Number(document.getElementById("effectivenessVal").value) || 0;
+        saveState();
+        renderDetailedReport();
+        alert("تم حفظ التشخيص والحلول بنجاح.");
+      });
+
+      // Table, Search, Filter & Detailed Report
+      function renderTable() {
+        const q = document.getElementById("searchInput").value.trim().toLowerCase();
+        const dept = document.getElementById("filterDept").value;
+        const period = document.getElementById("filterPeriod").value.trim().toLowerCase();
+        const t = I18N[state.lang] || I18N.ar;
+
+        const tbody = document.getElementById("recordsTbody");
+        tbody.innerHTML = "";
+
+        const filtered = state.records.filter((r) => {
+          const matchDept = dept === "ALL" || r.department === dept;
+          const matchPeriod = !period || r.periodLabel.toLowerCase().includes(period);
+          const typeName = (TYPE_LABELS[r.type] && TYPE_LABELS[r.type][state.lang]) || r.type;
+          const matchQ = !q ||
+            r.company.toLowerCase().includes(q) ||
+            r.department.toLowerCase().includes(q) ||
+            r.periodLabel.toLowerCase().includes(q) ||
+            typeName.toLowerCase().includes(q);
+          return matchDept && matchPeriod && matchQ;
+        });
+
+        filtered.forEach((r) => {
+          const m = computeMetrics(r);
+          const typeName = (TYPE_LABELS[r.type] &&
