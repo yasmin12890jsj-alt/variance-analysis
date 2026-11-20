@@ -1,0 +1,10 @@
+{
+  "name": "VARIANCE PRO",
+  "short_name": "VARIANCE PRO",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#120926",
+  "theme_color": "#140b29",
+  "orientation": "portrait"
+}
