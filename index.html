@@ -1001,3 +1001,785 @@
   </script>
 </body>
 </html>
+
+
+/* ==========================================
+   VARIANCE PRO
+   إضافة تطويرية للتطبيق الأصلي
+   ========================================== */
+
+(() => {
+"use strict";
+
+if (window.__varianceProLoaded) return;
+window.__varianceProLoaded = true;
+
+const LANGS = ["ar", "en", "fr"];
+
+const CURRENCIES = [
+"DZD", "EUR", "USD", "GBP",
+"SAR", "AED", "TND", "MAD"
+];
+
+const RATES = {
+DZD: 1,
+EUR: 145,
+USD: 134,
+GBP: 170,
+SAR: 35.7,
+AED: 36.5,
+TND: 43,
+MAD: 13.4
+};
+
+const TEXT = {
+ar: {
+brand:"VARIANCE PRO",
+tagline:"منصة ذكية لتحليل الفروقات وإدارة الأداء",
+welcome:"مرحباً بك",
+login:"تسجيل الدخول",
+username:"اسم المستخدم أو البريد الإلكتروني",
+password:"كلمة المرور",
+start:"ابدأ الآن",
+enter:"الدخول إلى التطبيق",
+skip:"متابعة",
+language:"اللغة",
+currency:"العملة",
+tools:"الأدوات المتقدمة",
+close:"إغلاق",
+calculator:"حاسبة الفروقات",
+standard:"القيمة المعيارية",
+actual:"القيمة الفعلية",
+variance:"قيمة الفرق",
+percent:"نسبة الفرق",
+calculate:"احسب الفرق",
+favorable:"فرق ملائم",
+unfavorable:"فرق غير ملائم",
+neutral:"لا يوجد فرق",
+diagnose:"التشخيص وتحليل الأسباب",
+solutions:"الحلول التصحيحية",
+forecast:"التوقعات المستقبلية",
+reports:"التقارير والإحصائيات",
+history:"سجل التحليلات",
+settings:"الإعدادات",
+export:"تصدير Excel/CSV",
+clear:"مسح السجل",
+cost:"التكاليف",
+production:"الإنتاج والإيرادات",
+note:"زيادة التكلفة غالباً غير ملائمة، وزيادة الإنتاج قد تكون ملائمة.",
+notice:"هذه واجهة دخول تجريبية وليست نظام حماية حسابات حقيقياً.",
+currencyNote:"أسعار الصرف تقريبية ويجب تحديثها قبل استخدامها محاسبياً."
+},
+
+en: {
+brand:"VARIANCE PRO",
+tagline:"Intelligent Variance Analysis & Performance Management",
+welcome:"Welcome",
+login:"Sign In",
+username:"Username or Email",
+password:"Password",
+start:"Get Started",
+enter:"Enter Application",
+skip:"Continue",
+language:"Language",
+currency:"Currency",
+tools:"Advanced Tools",
+close:"Close",
+calculator:"Variance Calculator",
+standard:"Standard Value",
+actual:"Actual Value",
+variance:"Variance",
+percent:"Variance Percentage",
+calculate:"Calculate",
+favorable:"Favorable",
+unfavorable:"Unfavorable",
+neutral:"No Variance",
+diagnose:"Diagnosis & Root Causes",
+solutions:"Corrective Actions",
+forecast:"Forecasts",
+reports:"Reports & Statistics",
+history:"Analysis History",
+settings:"Settings",
+export:"Export CSV",
+clear:"Clear History",
+cost:"Costs",
+production:"Production & Revenue",
+note:"Higher costs are usually unfavorable, while higher production may be favorable.",
+notice:"Demo login only. This is not real account authentication.",
+currencyNote:"Exchange rates are indicative and must be updated before accounting use."
+},
+
+fr: {
+brand:"VARIANCE PRO",
+tagline:"Analyse intelligente des écarts et gestion de la performance",
+welcome:"Bienvenue",
+login:"Connexion",
+username:"Nom d'utilisateur ou e-mail",
+password:"Mot de passe",
+start:"Commencer",
+enter:"Entrer dans l'application",
+skip:"Continuer",
+language:"Langue",
+currency:"Devise",
+tools:"Outils avancés",
+close:"Fermer",
+calculator:"Calculateur des écarts",
+standard:"Valeur standard",
+actual:"Valeur réelle",
+variance:"Valeur de l'écart",
+percent:"Pourcentage de l'écart",
+calculate:"Calculer",
+favorable:"Écart favorable",
+unfavorable:"Écart défavorable",
+neutral:"Aucun écart",
+diagnose:"Diagnostic et analyse des causes",
+solutions:"Actions correctives",
+forecast:"Prévisions",
+reports:"Rapports et statistiques",
+history:"Historique des analyses",
+settings:"Paramètres",
+export:"Exporter CSV",
+clear:"Effacer l'historique",
+cost:"Coûts",
+production:"Production et revenus",
+note:"Une hausse des coûts est généralement défavorable.",
+notice:"Connexion de démonstration uniquement.",
+currencyNote:"Taux indicatifs à actualiser avant toute utilisation comptable."
+}
+};
+
+let lang = localStorage.getItem("vp_lang") || "ar";
+let currency = localStorage.getItem("vp_currency") || "DZD";
+
+if (!LANGS.includes(lang)) lang = "ar";
+if (!CURRENCIES.includes(currency)) currency = "DZD";
+
+const t = key => TEXT[lang][key] || key;
+const direction = lang === "ar" ? "rtl" : "ltr";
+
+const format = n => new Intl.NumberFormat(
+lang === "ar" ? "ar-DZ" : lang === "fr" ? "fr-FR" : "en-US",
+{maximumFractionDigits:2}
+).format(n);
+
+/* التصميم */
+
+const css = document.createElement("style");
+
+css.textContent = `
+#vp-overlay {
+position:fixed;
+inset:0;
+z-index:999999;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:radial-gradient(circle,#392064,#170d2d 55%,#090513);
+color:white;
+font-family:Arial,sans-serif;
+}
+
+#vp-overlay[hidden] {display:none}
+
+.vp-card {
+width:min(460px,100%);
+padding:28px;
+border-radius:26px;
+border:1px solid #7653a8;
+background:#201239;
+box-shadow:0 20px 80px #0009;
+}
+
+.vp-logo {
+width:80px;
+height:80px;
+margin:auto auto 18px;
+border-radius:25px;
+display:grid;
+place-items:center;
+font-size:38px;
+font-weight:bold;
+background:linear-gradient(135deg,#b58aff,#6732bc);
+box-shadow:0 0 40px #9b5cff88;
+}
+
+.vp-title {
+text-align:center;
+font-size:28px;
+font-weight:900;
+}
+
+.vp-sub {
+text-align:center;
+color:#c7b6e3;
+margin:12px 0 25px;
+}
+
+.vp-field {
+display:grid;
+gap:8px;
+margin:14px 0;
+color:#d9c9f3;
+}
+
+.vp-field input,
+.vp-field select {
+width:100%;
+box-sizing:border-box;
+padding:14px;
+border:1px solid #62458a;
+border-radius:13px;
+background:#160d29;
+color:white;
+font-size:15px;
+}
+
+.vp-btn {
+width:100%;
+padding:14px;
+border:0;
+border-radius:14px;
+margin-top:10px;
+background:linear-gradient(110deg,#a56af4,#6733c4);
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.vp-secondary {
+background:#30204c;
+border:1px solid #694b91;
+}
+
+.vp-bars {
+display:flex;
+justify-content:center;
+align-items:end;
+gap:7px;
+height:55px;
+margin:25px;
+}
+
+.vp-bars i {
+width:9px;
+border-radius:8px;
+background:#c19aff;
+animation:vpBounce .8s infinite alternate;
+}
+
+.vp-bars i:nth-child(1){height:18px}
+.vp-bars i:nth-child(2){height:31px;animation-delay:.15s}
+.vp-bars i:nth-child(3){height:43px;animation-delay:.3s}
+.vp-bars i:nth-child(4){height:26px;animation-delay:.45s}
+.vp-bars i:nth-child(5){height:36px;animation-delay:.6s}
+
+@keyframes vpBounce {
+to {transform:scaleY(.35);opacity:.5}
+}
+
+#vp-toolbar {
+position:fixed;
+z-index:99998;
+top:12px;
+right:12px;
+display:flex;
+gap:8px;
+}
+
+#vp-toolbar[hidden]{display:none}
+
+#vp-toolbar button {
+background:#25153d;
+color:white;
+border:1px solid #7653a8;
+padding:10px;
+border-radius:12px;
+}
+
+#vp-panel {
+display:none;
+position:fixed;
+inset:0;
+z-index:999997;
+overflow:auto;
+background:#0e081b;
+color:white;
+padding:20px;
+font-family:Arial,sans-serif;
+}
+
+#vp-panel.open {display:block}
+
+.vp-grid {
+max-width:1100px;
+margin:25px auto;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:15px;
+}
+
+.vp-module {
+padding:20px;
+border-radius:18px;
+border:1px solid #503575;
+background:linear-gradient(145deg,#281748,#1b1030);
+}
+
+.vp-module h3 {color:#c9a6ff}
+
+.vp-module p {
+color:#c2b3d8;
+line-height:1.8;
+}
+
+.vp-result {
+background:#160d29;
+padding:14px;
+border-radius:12px;
+margin-top:12px;
+line-height:2;
+}
+
+.vp-good {color:#75e0b1}
+.vp-bad {color:#ff879b}
+
+.vp-header {
+max-width:1100px;
+margin:20px auto;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+}
+
+@media(max-width:600px){
+.vp-card{padding:20px}
+.vp-header{flex-direction:column;align-items:stretch}
+}
+`;
+
+document.head.appendChild(css);
+
+/* إنشاء الواجهة */
+
+const root = document.createElement("div");
+root.id = "vp-root";
+
+root.innerHTML = `
+<div id="vp-overlay" dir="${direction}">
+
+<div class="vp-card" id="vp-splash">
+
+<div class="vp-logo">Δ</div>
+
+<h1 class="vp-title">${t("brand")}</h1>
+
+<p class="vp-sub">${t("tagline")}</p>
+
+<div class="vp-bars">
+<i></i><i></i><i></i><i></i><i></i>
+</div>
+
+<button class="vp-btn" id="vp-start">
+${t("start")}
+</button>
+
+</div>
+
+<div class="vp-card" id="vp-login" hidden>
+
+<div class="vp-logo">Δ</div>
+
+<h2 class="vp-title">${t("welcome")}</h2>
+
+<p class="vp-sub">${t("login")}</p>
+
+<label class="vp-field">
+${t("language")}
+<select id="vp-lang">
+<option value="ar">العربية</option>
+<option value="en">English</option>
+<option value="fr">Français</option>
+</select>
+</label>
+
+<label class="vp-field">
+${t("currency")}
+<select id="vp-currency">
+${CURRENCIES.map(c=>`<option value="${c}">${c}</option>`).join("")}
+</select>
+</label>
+
+<label class="vp-field">
+${t("username")}
+<input id="vp-user" autocomplete="username">
+</label>
+
+<label class="vp-field">
+${t("password")}
+<input id="vp-pass" type="password" autocomplete="current-password">
+</label>
+
+<button class="vp-btn" id="vp-enter">
+${t("enter")}
+</button>
+
+<button class="vp-btn vp-secondary" id="vp-skip">
+${t("skip")}
+</button>
+
+<p class="vp-sub">${t("notice")}</p>
+
+</div>
+</div>
+
+<div id="vp-toolbar" hidden>
+<button id="vp-open">${t("tools")}</button>
+<button id="vp-language">${lang.toUpperCase()}</button>
+</div>
+
+<section id="vp-panel" dir="${direction}">
+
+<div class="vp-header">
+<h1>${t("brand")}</h1>
+<button class="vp-btn" id="vp-close" style="width:auto">
+${t("close")} ✕
+</button>
+</div>
+
+<div class="vp-grid">
+
+<article class="vp-module">
+<h3>📊 ${t("calculator")}</h3>
+
+<label class="vp-field">
+${t("standard")}
+<input type="number" id="vp-standard" value="100">
+</label>
+
+<label class="vp-field">
+${t("actual")}
+<input type="number" id="vp-actual" value="120">
+</label>
+
+<label class="vp-field">
+${t("direction")}
+<select id="vp-type">
+<option value="cost">${t("cost")}</option>
+<option value="production">${t("production")}</option>
+</select>
+</label>
+
+<button class="vp-btn" id="vp-calculate">
+${t("calculate")}
+</button>
+
+<div class="vp-result" id="vp-result">
+${t("note")}
+</div>
+</article>
+
+<article class="vp-module">
+<h3>🧠 ${t("diagnose")}</h3>
+<p>${t("note")}</p>
+<p>تحليل الأسباب المحتملة ومراجعة البيانات وتحديد مصدر الانحراف.</p>
+</article>
+
+<article class="vp-module">
+<h3>🛠 ${t("solutions")}</h3>
+<p>تحديد الإجراء التصحيحي والمسؤول عن التنفيذ والأجل والنتيجة.</p>
+</article>
+
+<article class="vp-module">
+<h3>📈 ${t("forecast")}</h3>
+<p>توقع النتائج المستقبلية اعتماداً على بيانات تاريخية كافية.</p>
+</article>
+
+<article class="vp-module">
+<h3>📄 ${t("reports")}</h3>
+<p>تصدير سجل التحليلات بصيغة CSV المتوافقة مع Excel.</p>
+<button class="vp-btn" id="vp-export">${t("export")}</button>
+</article>
+
+<article class="vp-module">
+<h3>🕘 ${t("history")}</h3>
+<div id="vp-history" class="vp-result">—</div>
+<button class="vp-btn vp-secondary" id="vp-clear">${t("clear")}</button>
+</article>
+
+<article class="vp-module">
+<h3>⚙️ ${t("settings")}</h3>
+
+<label class="vp-field">
+${t("language")}
+<select id="vp-lang-settings">
+<option value="ar">العربية</option>
+<option value="en">English</option>
+<option value="fr">Français</option>
+</select>
+</label>
+
+<label class="vp-field">
+${t("currency")}
+<select id="vp-currency-settings">
+${CURRENCIES.map(c=>`<option>${c}</option>`).join("")}
+</select>
+</label>
+
+<p>${t("currencyNote")}</p>
+</article>
+
+</div>
+</section>
+`;
+
+document.body.appendChild(root);
+
+const $ = id => document.getElementById(id);
+
+/* الإعدادات */
+
+$("vp-lang").value = lang;
+$("vp-currency").value = currency;
+$("vp-lang-settings").value = lang;
+$("vp-currency-settings").value = currency;
+
+/* التنقل */
+
+function showLogin(){
+$("vp-splash").hidden = true;
+$("vp-login").hidden = false;
+}
+
+function enterApp(){
+$("vp-overlay").hidden = true;
+$("vp-toolbar").hidden = false;
+document.documentElement.lang = lang;
+document.documentElement.dir = direction;
+updateHistory();
+}
+
+$("vp-start").onclick = showLogin;
+$("vp-enter").onclick = enterApp;
+$("vp-skip").onclick = enterApp;
+
+$("vp-lang").onchange = e => {
+localStorage.setItem("vp_lang",e.target.value);
+location.reload();
+};
+
+$("vp-lang-settings").onchange = e => {
+localStorage.setItem("vp_lang",e.target.value);
+location.reload();
+};
+
+$("vp-language").onclick = () => {
+const i = LANGS.indexOf(lang);
+localStorage.setItem("vp_lang",LANGS[(i+1)%3]);
+location.reload();
+};
+
+$("vp-currency").onchange = e => {
+currency = e.target.value;
+localStorage.setItem("vp_currency",currency);
+};
+
+$("vp-currency-settings").onchange = e => {
+currency = e.target.value;
+localStorage.setItem("vp_currency",currency);
+$("vp-currency").value = currency;
+};
+
+/* فتح وإغلاق الأدوات */
+
+$("vp-open").onclick = () => {
+$("vp-panel").classList.add("open");
+updateHistory();
+};
+
+$("vp-close").onclick = () => {
+$("vp-panel").classList.remove("open");
+};
+
+/* سجل التحليلات */
+
+function getHistory(){
+try{
+return JSON.parse(localStorage.getItem("vp_history") || "[]");
+}catch{
+return [];
+}
+}
+
+function updateHistory(){
+const arr = getHistory();
+
+$("vp-history").innerHTML = arr.length
+? arr.slice(-10).reverse().map(x =>
+`<div style="border-bottom:1px solid #493363;padding:7px">
+${x.date} — ${format(x.diff)} ${x.currency}
+(${format(x.pct)}%)
+</div>`
+).join("")
+: "لا توجد تحليلات مسجلة";
+}
+
+/* حساب الفروقات */
+
+$("vp-calculate").onclick = () => {
+
+const standard = Number($("vp-standard").value);
+const actual = Number($("vp-actual").value);
+const type = $("vp-type").value;
+
+if(!Number.isFinite(standard) ||
+!Number.isFinite(actual) ||
+standard === 0){
+
+$("vp-result").textContent =
+"أدخل قيماً صحيحة، ولا تجعل القيمة المعيارية صفراً.";
+
+return;
+}
+
+const diff = actual - standard;
+const pct = diff / Math.abs(standard) * 100;
+
+const favorable =
+type === "production" ? diff >= 0 : diff <= 0;
+
+const status = diff === 0
+? t("neutral")
+: favorable
+? t("favorable")
+: t("unfavorable");
+
+const sign = diff > 0 ? "+" : "";
+
+$("vp-result").innerHTML = `
+${t("variance")}:
+<b>${sign}${format(diff)} ${currency}</b>
+<br>
+${t("percent")}:
+<b>${sign}${format(pct)}%</b>
+<br>
+<span class="${favorable?"vp-good":"vp-bad"}">
+${status}
+</span>
+`;
+
+const history = getHistory();
+
+history.push({
+date:new Date().toLocaleString(),
+standard,
+actual,
+diff,
+pct,
+currency,
+status
+});
+
+localStorage.setItem("vp_history",JSON.stringify(history));
+
+updateHistory();
+
+};
+
+/* تصدير CSV */
+
+$("vp-export").onclick = () => {
+
+const history = getHistory();
+
+const rows = [
+["Date","Standard","Actual","Variance","Percentage","Currency","Status"],
+...history.map(x=>[
+x.date,
+x.standard,
+x.actual,
+x.diff,
+x.pct,
+x.currency,
+x.status
+])
+];
+
+const csv = "\uFEFF" +
+rows.map(row =>
+row.map(v =>
+`"${String(v ?? "").replace(/"/g,'""')}"`
+).join(",")
+).join("\n");
+
+const blob = new Blob([csv],{
+type:"text/csv;charset=utf-8"
+});
+
+const url = URL.createObjectURL(blob);
+const a = document.createElement("a");
+
+a.href = url;
+a.download = "variance-pro-report.csv";
+a.click();
+
+URL.revokeObjectURL(url);
+
+};
+
+/* مسح السجل */
+
+$("vp-clear").onclick = () => {
+
+if(confirm("هل تريد مسح سجل التحليلات المحلي؟")){
+
+localStorage.removeItem("vp_history");
+updateHistory();
+
+}
+
+};
+
+/* تحويل العملات */
+
+window.VariancePro = {
+
+get language(){return lang},
+
+get currency(){return currency},
+
+rates:RATES,
+
+convert(amount,from,to){
+
+if(!RATES[from] || !RATES[to]){
+throw new Error("عملة غير مدعومة");
+}
+
+return amount * RATES[from] / RATES[to];
+
+},
+
+open(){
+$("vp-panel").classList.add("open");
+},
+
+close(){
+$("vp-panel").classList.remove("open");
+}
+
+};
+
+/* بداية العرض */
+
+if(sessionStorage.getItem("vp_seen") === "1"){
+showLogin();
+}
+
+$("vp-start").addEventListener("click",()=>{
+sessionStorage.setItem("vp_seen","1");
+},{once:true});
+
+})();
