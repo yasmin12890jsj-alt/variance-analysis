@@ -336,8 +336,14 @@
       gap: 11px;
     }
 
-    @media (max-width: 620px) {
-      .grid-2 { grid-template-columns: 1fr; }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 720px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
     }
 
     .field {
@@ -419,12 +425,29 @@
       line-height: 1.7;
     }
 
+    .sub-metric-card {
+      background: var(--card-2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px;
+    }
+
     .diag-box {
       margin-top: 10px;
       padding: 10px 12px;
       border-radius: 10px;
       background: rgba(139, 92, 246, 0.12);
       border-right: 3px solid var(--violet-bright);
+    }
+
+    .steps-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(23, 16, 61, 0.9);
+      border: 1px solid var(--line);
+      font-size: 12.2px;
+      color: var(--muted);
     }
 
     .chart-row { margin-bottom: 12px; }
@@ -453,6 +476,10 @@
 
     .bar-fill.fav-bg {
       background: linear-gradient(90deg, #059669, var(--fav));
+    }
+
+    .bar-fill.defav-bg {
+      background: linear-gradient(90deg, #e11d48, var(--defav));
     }
 
     .rec-card {
@@ -713,7 +740,6 @@
           <div id="homeDiagBox" class="note-text">أدخلي عملية من تبويب «إدخال» لحساب الفرق، تحديد نوعه، معرفة أسبابه، واقتراح الحلول.</div>
         </div>
 
-        <!-- إدارة العملات وأسعار الصرف -->
         <div class="card">
           <div class="card-head">
             <h3 class="card-title" id="lblCurrCard">💱 العملات وتحديث أسعار الصرف</h3>
@@ -743,24 +769,26 @@
           <button type="button" class="subtab" onclick="openSub('budget', this)">💼 الميزانية</button>
         </div>
 
+        <!-- المواد - تفصيل كامل -->
         <div id="sub-mat" class="card sub-panel">
           <div class="card-head">
-            <h3 class="card-title">الفرق الإجمالي للمواد (Écart global sur matières)</h3>
-            <span class="pill">مواد</span>
+            <h3 class="card-title">تحليل المواد التفصيلي (Écart sur prix, quantité & global)</h3>
+            <span class="pill">تفصيل كامل</span>
           </div>
           <div class="grid-2">
-            <div class="field"><label>الكمية الفعلية</label><input type="text" inputmode="decimal" id="mQr" placeholder="1200" /></div>
-            <div class="field"><label>الكمية المعيارية</label><input type="text" inputmode="decimal" id="mQp" placeholder="1000" /></div>
-            <div class="field"><label>السعر الفعلي</label><input type="text" inputmode="decimal" id="mPr" placeholder="55" /></div>
-            <div class="field"><label>السعر المعياري</label><input type="text" inputmode="decimal" id="mPp" placeholder="50" /></div>
+            <div class="field"><label>الكمية الفعلية (Qréelle)</label><input type="text" inputmode="decimal" id="mQr" placeholder="1200" /></div>
+            <div class="field"><label>الكمية المعيارية (Qprévue)</label><input type="text" inputmode="decimal" id="mQp" placeholder="1000" /></div>
+            <div class="field"><label>السعر الفعلي (Préel)</label><input type="text" inputmode="decimal" id="mPr" placeholder="55" /></div>
+            <div class="field"><label>السعر المعياري (Pprévu)</label><input type="text" inputmode="decimal" id="mPp" placeholder="50" /></div>
           </div>
           <div class="btn-row">
-            <button type="button" class="btn btn-primary" onclick="calcMat()">حساب وتشخيص</button>
+            <button type="button" class="btn btn-primary" onclick="calcMatDetailed()">حساب وتشخيص تفصيلي</button>
             <button type="button" class="btn btn-sec" onclick="mQr.value=1200;mQp.value=1000;mPr.value=55;mPp.value=50;">مثال</button>
           </div>
           <div id="out-mat" class="res-box" style="display:none;"></div>
         </div>
 
+        <!-- اليد العاملة والمصاريف غير المباشرة -->
         <div id="sub-lab" class="card sub-panel" style="display:none;">
           <div class="card-head">
             <h3 class="card-title">اليد العاملة والمصاريف غير المباشرة</h3>
@@ -781,6 +809,7 @@
           <div id="out-lab" class="res-box" style="display:none;"></div>
         </div>
 
+        <!-- المبيعات -->
         <div id="sub-sales" class="card sub-panel" style="display:none;">
           <div class="card-head">
             <h3 class="card-title">المبيعات (Ventes) — رقم الأعمال، الكمية، السعر</h3>
@@ -799,6 +828,7 @@
           <div id="out-sales" class="res-box" style="display:none;"></div>
         </div>
 
+        <!-- الميزانية -->
         <div id="sub-budget" class="card sub-panel" style="display:none;">
           <div class="card-head">
             <h3 class="card-title">الميزانية (Budget) — تقديرية مقابل فعلية</h3>
@@ -824,8 +854,10 @@
             <span class="pill">قوانين</span>
           </div>
           <div class="rec-card">
-            <strong>1. الفرق الإجمالي للمواد:</strong> (الكمية الفعلية × السعر الفعلي) − (الكمية المعيارية × السعر المعياري).<br>
-            فرق السعر = (السعر الفعلي − السعر المعياري) × الكمية الفعلية | فرق الكمية = (الكمية الفعلية − الكمية المعيارية) × السعر المعياري.
+            <strong>1. تفصيل فروقات المواد:</strong><br>
+            • فرق السعر (Écart sur prix) = (السعر الفعلي − السعر المعياري) × الكمية الفعلية<br>
+            • فرق الكمية (Écart sur quantité) = (الكمية الفعلية − الكمية المعيارية) × السعر المعياري<br>
+            • الفرق الإجمالي (Écart global) = (الكمية الفعلية × السعر الفعلي) − (الكمية المعيارية × السعر المعياري) = فرق السعر + فرق الكمية
           </div>
           <div class="rec-card">
             <strong>2. اليد العاملة والمصاريف غير المباشرة:</strong> (الساعات الفعلية × التكلفة الفعلية) − (الساعات المعيارية × التكلفة المعيارية) + فرق الأعباء غير المباشرة.
@@ -1231,12 +1263,105 @@
       renderAll();
     }
 
+    function calcMatDetailed() {
+      const qr = val('mQr'), qp = val('mQp'), pr = val('mPr'), pp = val('mPp');
+      const baseCost = qp * pp;
+      const actCost = qr * pr;
+
+      // تفصيل متوازن: فرق السعر + فرق الكمية = الفرق الإجمالي
+      const priceDiff = (pr - pp) * qr;
+      const qtyDiff = (qr - qp) * pp;
+      const globalDiff = actCost - baseCost; // = priceDiff + qtyDiff
+
+      const priceFav = priceDiff <= 0;
+      const qtyFav = qtyDiff <= 0;
+      const globalFav = globalDiff <= 0;
+
+      const pricePct = baseCost !== 0 ? (Math.abs(priceDiff) / Math.abs(baseCost)) * 100 : 0;
+      const qtyPct = baseCost !== 0 ? (Math.abs(qtyDiff) / Math.abs(baseCost)) * 100 : 0;
+      const globalPct = baseCost !== 0 ? (Math.abs(globalDiff) / Math.abs(baseCost)) * 100 : 0;
+
+      const absSum = Math.abs(priceDiff) + Math.abs(qtyDiff);
+      const priceShare = absSum > 0 ? (Math.abs(priceDiff) / absSum) * 100 : 0;
+      const qtyShare = absSum > 0 ? (Math.abs(qtyDiff) / absSum) * 100 : 0;
+
+      const priceCause = priceFav
+        ? 'سعر الشراء الفعلي أقل من المعياري (تفاوض جيد أو انخفاض أسعار السوق).'
+        : 'سعر الشراء الفعلي أعلى من المعياري (زيادة أسعار الموردين أو شراء عاجل).';
+      const priceFix = priceFav
+        ? 'تثبيت المورد والحفاظ على شروط التوريد.'
+        : 'مقارنة عروض الموردين، التفاوض على الأسعار، أو إبرام عقود توريد.';
+
+      const qtyCause = qtyFav
+        ? 'الكمية المستهلكة أقل من المعيارية (كفاءة في الاستخدام وقلة الهدر).'
+        : 'الكمية المستهلكة أعلى من المعيارية (هدر مواد، تلف، أو عدم دقة المعايير).';
+      const qtyFix = qtyFav
+        ? 'تعميم معايير التشغيل الجيدة على بقية الورشات.'
+        : 'مراقبة الهدر، تدريب العمال، وفحص جودة المواد الأولية.';
+
+      const combinedCause = `فرق السعر: ${priceCause} | فرق الكمية: ${qtyCause}`;
+      const combinedFix = `معالجة السعر: ${priceFix} | معالجة الكمية: ${qtyFix}`;
+
+      const box = document.getElementById('out-mat');
+      box.style.display = 'block';
+      box.innerHTML = `
+        <div class="grid-3" style="margin-bottom:10px;">
+          <div class="sub-metric-card">
+            <div class="kpi-lbl">فرق السعر (Écart sur prix)</div>
+            <div class="kpi-val ${priceFav ? 'fav' : 'defav'}">${fmt(Math.abs(priceDiff))}</div>
+            <div class="kpi-sub">نسبة: ${pricePct.toFixed(2)}% • <strong class="${priceFav ? 'fav' : 'defav'}">${priceFav ? 'Favorable' : 'Défavorable'}</strong></div>
+          </div>
+          <div class="sub-metric-card">
+            <div class="kpi-lbl">فرق الكمية (Écart sur quantité)</div>
+            <div class="kpi-val ${qtyFav ? 'fav' : 'defav'}">${fmt(Math.abs(qtyDiff))}</div>
+            <div class="kpi-sub">نسبة: ${qtyPct.toFixed(2)}% • <strong class="${qtyFav ? 'fav' : 'defav'}">${qtyFav ? 'Favorable' : 'Défavorable'}</strong></div>
+          </div>
+          <div class="sub-metric-card">
+            <div class="kpi-lbl">الفرق الإجمالي (Écart global)</div>
+            <div class="kpi-val ${globalFav ? 'fav' : 'defav'}">${fmt(Math.abs(globalDiff))}</div>
+            <div class="kpi-sub">نسبة: ${globalPct.toFixed(2)}% • <strong class="${globalFav ? 'fav' : 'defav'}">${globalFav ? 'Favorable' : 'Défavorable'}</strong></div>
+          </div>
+        </div>
+
+        <div class="chart-row">
+          <div class="chart-label"><span>مساهمة فرق السعر في الإجمالي</span><span>${priceShare.toFixed(1)}%</span></div>
+          <div class="bar-track"><div class="bar-fill ${priceFav ? 'fav-bg' : 'defav-bg'}" style="width:${priceShare.toFixed(1)}%"></div></div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-label"><span>مساهمة فرق الكمية في الإجمالي</span><span>${qtyShare.toFixed(1)}%</span></div>
+          <div class="bar-track"><div class="bar-fill ${qtyFav ? 'fav-bg' : 'defav-bg'}" style="width:${qtyShare.toFixed(1)}%"></div></div>
+        </div>
+
+        <div class="steps-box">
+          <strong>المعادلات والخطوات الحسابية:</strong><br>
+          1) فرق السعر = (${pr} − ${pp}) × ${qr} = <strong>${(priceDiff).toFixed(2)}</strong><br>
+          2) فرق الكمية = (${qr} − ${qp}) × ${pp} = <strong>${(qtyDiff).toFixed(2)}</strong><br>
+          3) الفرق الإجمالي = (${qr} × ${pr}) − (${qp} × ${pp}) = <strong>${(globalDiff).toFixed(2)}</strong> (يساوي ${(priceDiff + qtyDiff).toFixed(2)})
+        </div>
+
+        <div class="diag-box">
+          <div><strong>تشخيص فرق السعر:</strong> ${priceCause}</div>
+          <div><strong>حل فرق السعر:</strong> ${priceFix}</div>
+          <hr style="border:0; border-top:1px solid var(--line); margin:8px 0;" />
+          <div><strong>تشخيص فرق الكمية:</strong> ${qtyCause}</div>
+          <div><strong>حل فرق الكمية:</strong> ${qtyFix}</div>
+        </div>
+      `;
+
+      saveEntry({
+        kind: 'mat',
+        title: 'تحليل المواد التفصيلي',
+        baseVal: baseCost,
+        actVal: actCost,
+        diffVal: Math.abs(globalDiff),
+        pct: globalPct,
+        isFav: globalFav,
+        cause: combinedCause,
+        fix: combinedFix
+      });
+    }
+
     function diagnose(kind, isFav) {
-      if (kind === 'mat') {
-        return isFav
-          ? { cause: 'انخفاض تكلفة المواد مقارنة بالمعيار نتيجة كفاءة الشراء أو الاستخدام.', fix: 'تثبيت الموردين الجيدين والمحافظة على معايير الاستهلاك.' }
-          : { cause: 'ارتفاع تكلفة المواد بسبب زيادة السعر أو كثرة الهدر/الكميات.', fix: 'مراجعة الأسعار، تنويع الموردين، وتقليل الهدر في الورشة.' };
-      }
       if (kind === 'lab') {
         return isFav
           ? { cause: 'إنجاز العمل بوقت أو أعباء أقل من المعيار.', fix: 'تعميم أساليب العمل الفعالة.' }
@@ -1279,12 +1404,6 @@
       });
     }
 
-    function calcMat() {
-      const qr = val('mQr'), qp = val('mQp'), pr = val('mPr'), pp = val('mPp');
-      const baseCost = qp * pp, actCost = qr * pr, diff = actCost - baseCost;
-      showResult('out-mat', 'الفرق الإجمالي للمواد (Écart global sur matières)', baseCost, actCost, diff, diff <= 0, 'mat');
-    }
-
     function calcLabOvh() {
       const hr = val('lHr'), hp = val('lHp'), tr = val('lTr'), tp = val('lTp'), ovhr = val('lOvhR'), ovhp = val('lOvhP');
       const baseTotal = (hp * tp) + ovhp, actTotal = (hr * tr) + ovhr, diff = actTotal - baseTotal;
@@ -1320,80 +1439,5 @@
       document.getElementById('kDefav').textContent = defav;
       document.getElementById('kPct').textContent = avgPct.toFixed(1) + '%';
 
-      const sumBase = filtered.reduce((a, b) => a + Math.abs(b.baseVal), 0);
-      const sumAct = filtered.reduce((a, b) => a + Math.abs(b.actVal), 0);
-      const maxV = Math.max(sumBase, sumAct, 1);
+      const sumBase
 
-      document.getElementById('lblStd').textContent = fmt(sumBase);
-      document.getElementById('lblAct').textContent = fmt(sumAct);
-      document.getElementById('barStd').style.width = ((sumBase / maxV) * 100).toFixed(1) + '%';
-      document.getElementById('barAct').style.width = ((sumAct / maxV) * 100).toFixed(1) + '%';
-
-      const diagBox = document.getElementById('homeDiagBox');
-      if (count > 0) {
-        const latest = filtered[0];
-        diagBox.innerHTML = `
-          <div class="rec-card" style="margin:0;">
-            <div class="rec-head">
-              <span>${latest.title} (${latest.period})</span>
-              <span class="${latest.isFav ? 'fav' : 'defav'}">${latest.isFav ? 'Favorable' : 'Défavorable'} • ${latest.pct.toFixed(1)}%</span>
-            </div>
-            <div><strong>السبب:</strong> ${latest.cause}</div>
-            <div><strong>الحل:</strong> ${latest.fix}</div>
-          </div>
-        `;
-      } else {
-        diagBox.textContent = `لا توجد تحليلات مسجلة للفترة ${period}. اختاري تبويب «إدخال» لحساب الفروقات وعرض التشخيص والحلول.`;
-      }
-
-      const histBox = document.getElementById('historyContainer');
-      if (!items.length) {
-        histBox.innerHTML = '<p class="note-text">لا توجد عمليات محفوظة بعد.</p>';
-      } else {
-        histBox.innerHTML = items.map(it => `
-          <div class="rec-card">
-            <div class="rec-head">
-              <span>${it.title} <small style="color:var(--muted)">(${it.period})</small></span>
-              <span class="${it.isFav ? 'fav' : 'defav'}">${it.isFav ? 'Favorable' : 'Défavorable'}</span>
-            </div>
-            <div>الفرق: <strong>${fmt(it.diffVal)}</strong> | النسبة: <strong>${it.pct.toFixed(2)}%</strong></div>
-            <div>السبب: ${it.cause}</div>
-            <div>الحل: ${it.fix}</div>
-            <div style="margin-top:8px; display:flex; gap:6px;">
-              <button type="button" class="btn btn-sec" style="padding:5px 10px; font-size:11.5px;" onclick="editEntry(${it.id})">تعديل</button>
-              <button type="button" class="btn btn-del" onclick="deleteEntry(${it.id})">حذف</button>
-            </div>
-          </div>
-        `).join('');
-      }
-    }
-
-    function exportCSV() {
-      if (!items.length) return;
-      const header = 'Period,Title,Diff,Currency,Percent,Status,Cause,Solution\n';
-      const rows = items.map(x => [
-        x.period,
-        `"${x.title}"`,
-        convertAmount(x.diffVal).toFixed(2),
-        getCurr(),
-        x.pct.toFixed(2) + '%',
-        x.isFav ? 'Favorable' : 'Défavorable',
-        `"${x.cause.replace(/"/g, '""')}"`,
-        `"${x.fix.replace(/"/g, '""')}"`
-      ].join(',')).join('\n');
-
-      const blob = new Blob(['\ufeff' + header + rows], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'variance-pro.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    ensureDefaultAdmin();
-    renderCurrenciesUI();
-    renderAll();
-  </script>
-</body>
-</html>
