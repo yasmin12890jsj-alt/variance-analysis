@@ -109,12 +109,13 @@
 
     .intro-skip {
       position: relative;
+      z-index: 10000;
       background: linear-gradient(135deg, var(--violet-deep), var(--violet));
       color: #fff;
       border: none;
       border-radius: 999px;
-      padding: 11px 24px;
-      font-size: 14px;
+      padding: 12px 26px;
+      font-size: 14.5px;
       font-weight: 800;
       cursor: pointer;
     }
@@ -592,7 +593,7 @@
     <div class="intro-logo">Δ</div>
     <h1 class="intro-title" id="introTitle">VARIANCE PRO</h1>
     <p class="intro-tag" id="introTag">تحليل الفروقات • Variance Analysis • Analyse des Écarts</p>
-    <button type="button" class="intro-skip" onclick="goToLogin()" id="btnIntroNext">متابعة</button>
+    <button type="button" class="intro-skip" id="btnIntroNext" onclick="goToLogin()">متابعة</button>
   </div>
 
   <!-- 2. Login Screen -->
@@ -769,7 +770,6 @@
           <button type="button" class="subtab" onclick="openSub('budget', this)">💼 الميزانية</button>
         </div>
 
-        <!-- المواد - تفصيل كامل -->
         <div id="sub-mat" class="card sub-panel">
           <div class="card-head">
             <h3 class="card-title">تحليل المواد التفصيلي (Écart sur prix, quantité & global)</h3>
@@ -788,7 +788,6 @@
           <div id="out-mat" class="res-box" style="display:none;"></div>
         </div>
 
-        <!-- اليد العاملة والمصاريف غير المباشرة -->
         <div id="sub-lab" class="card sub-panel" style="display:none;">
           <div class="card-head">
             <h3 class="card-title">اليد العاملة والمصاريف غير المباشرة</h3>
@@ -809,7 +808,6 @@
           <div id="out-lab" class="res-box" style="display:none;"></div>
         </div>
 
-        <!-- المبيعات -->
         <div id="sub-sales" class="card sub-panel" style="display:none;">
           <div class="card-head">
             <h3 class="card-title">المبيعات (Ventes) — رقم الأعمال، الكمية، السعر</h3>
@@ -828,7 +826,6 @@
           <div id="out-sales" class="res-box" style="display:none;"></div>
         </div>
 
-        <!-- الميزانية -->
         <div id="sub-budget" class="card sub-panel" style="display:none;">
           <div class="card-head">
             <h3 class="card-title">الميزانية (Budget) — تقديرية مقابل فعلية</h3>
@@ -939,15 +936,24 @@
   </div>
 
   <script>
-    const DB_KEY = 'variance_pro_db_v1';
-    const USERS_KEY = 'variance_pro_users_v1';
-    const SESSION_KEY = 'variance_pro_session_v1';
-    const RATES_KEY = 'variance_pro_rates_v1';
+    const DB_KEY = 'variance_pro_db_v2';
+    const USERS_KEY = 'variance_pro_users_v2';
+    const SESSION_KEY = 'variance_pro_session_v2';
+    const RATES_KEY = 'variance_pro_rates_v2';
 
     let items = [];
     let users = [];
     let rates = { DZD: 1, EUR: 1, USD: 1, GBP: 1, SAR: 1, AED: 1 };
     let currentUser = null;
+
+    function simpleHash(str) {
+      let h = 2166136261;
+      for (let i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return (h >>> 0).toString(16);
+    }
 
     try {
       items = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
@@ -964,20 +970,14 @@
       if (savedRates && typeof savedRates === 'object') rates = Object.assign(rates, savedRates);
     } catch (e) {}
 
-    async function hashPass(password) {
-      const enc = new TextEncoder().encode(password);
-      const buf = await crypto.subtle.digest('SHA-256', enc);
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function ensureDefaultAdmin() {
+    function ensureDefaultAdmin() {
       if (!users.some(u => u.username === 'admin')) {
         users.push({
           username: 'admin',
-          passHash: await hashPass('1234'),
+          passHash: simpleHash('1234'),
           role: 'admin'
         });
-        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        try { localStorage.setItem(USERS_KEY, JSON.stringify(users)); } catch (e) {}
       }
     }
 
@@ -989,7 +989,8 @@
       box.textContent = text;
     }
 
-    async function handleRegisterUser() {
+    function handleRegisterUser() {
+      ensureDefaultAdmin();
       const u = document.getElementById('userInput').value.trim().toLowerCase();
       const p = document.getElementById('passInput').value;
       const role = document.getElementById('roleInput').value;
@@ -1001,13 +1002,13 @@
         showAuthMsg('اسم المستخدم موجود مسبقاً، اضغطي على دخول.', false);
         return;
       }
-      users.push({ username: u, passHash: await hashPass(p), role });
-      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      users.push({ username: u, passHash: simpleHash(p), role });
+      try { localStorage.setItem(USERS_KEY, JSON.stringify(users)); } catch (e) {}
       showAuthMsg('تم إنشاء الحساب بنجاح، يمكنكِ الدخول الآن.', true);
     }
 
-    async function handleAuthLogin() {
-      await ensureDefaultAdmin();
+    function handleAuthLogin() {
+      ensureDefaultAdmin();
       const u = document.getElementById('userInput').value.trim().toLowerCase();
       const p = document.getElementById('passInput').value;
       if (!u || !p) {
@@ -1015,27 +1016,30 @@
         return;
       }
       const found = users.find(x => x.username === u);
-      const h = await hashPass(p);
+      const h = simpleHash(p);
       if (!found || found.passHash !== h) {
         showAuthMsg('بيانات الدخول غير صحيحة.', false);
         return;
       }
       currentUser = { username: found.username, role: found.role };
-      localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+      try { localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser)); } catch (e) {}
       openMainApp();
     }
 
     function logoutUser() {
       currentUser = null;
-      localStorage.removeItem(SESSION_KEY);
+      try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
       document.getElementById('mainApp').style.display = 'none';
       document.getElementById('loginScreen').style.display = 'flex';
     }
 
     function openMainApp() {
-      document.getElementById('introScreen').style.display = 'none';
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('mainApp').style.display = 'block';
+      const intro = document.getElementById('introScreen');
+      const login = document.getElementById('loginScreen');
+      const main = document.getElementById('mainApp');
+      if (intro) intro.style.display = 'none';
+      if (login) login.style.display = 'none';
+      if (main) main.style.display = 'block';
       const roleLabel = currentUser ? `${currentUser.username} (${currentUser.role.toUpperCase()})` : 'USER';
       document.getElementById('userBadge').textContent = roleLabel;
       document.getElementById('rolePill').textContent = (currentUser ? currentUser.role : 'user').toUpperCase();
@@ -1120,24 +1124,29 @@
     }
 
     function goToLogin() {
-      document.getElementById('introScreen').style.display = 'none';
-      const savedSess = localStorage.getItem(SESSION_KEY);
-      if (savedSess) {
-        try {
+      const intro = document.getElementById('introScreen');
+      const login = document.getElementById('loginScreen');
+      if (intro) intro.style.display = 'none';
+      try {
+        const savedSess = localStorage.getItem(SESSION_KEY);
+        if (savedSess) {
           currentUser = JSON.parse(savedSess);
-          openMainApp();
-          return;
-        } catch (e) {}
-      }
-      document.getElementById('loginScreen').style.display = 'flex';
+          if (currentUser && currentUser.username) {
+            openMainApp();
+            return;
+          }
+        }
+      } catch (e) {}
+      if (login) login.style.display = 'flex';
     }
 
-    setTimeout(() => {
-      const intro = document.getElementById('introScreen');
-      if (intro && intro.style.display !== 'none') {
-        goToLogin();
+    document.addEventListener('DOMContentLoaded', () => {
+      ensureDefaultAdmin();
+      const btnNext = document.getElementById('btnIntroNext');
+      if (btnNext) {
+        btnNext.addEventListener('click', goToLogin);
       }
-    }, 2000);
+    });
 
     function goPage(pageId, idx) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1194,7 +1203,7 @@
       const num = parseFloat(String(v).replace(',', '.'));
       if (!isNaN(num) && num > 0) {
         rates[code] = num;
-        localStorage.setItem(RATES_KEY, JSON.stringify(rates));
+        try { localStorage.setItem(RATES_KEY, JSON.stringify(rates)); } catch (e) {}
         renderAll();
       }
     }
@@ -1204,7 +1213,7 @@
       const rVal = parseFloat(document.getElementById('newCurrRate').value.replace(',', '.'));
       if (!code || code.length < 2) return;
       rates[code] = (!isNaN(rVal) && rVal > 0) ? rVal : 1;
-      localStorage.setItem(RATES_KEY, JSON.stringify(rates));
+      try { localStorage.setItem(RATES_KEY, JSON.stringify(rates)); } catch (e) {}
       document.getElementById('newCurrCode').value = '';
       document.getElementById('newCurrRate').value = '';
       renderCurrenciesUI();
@@ -1268,10 +1277,9 @@
       const baseCost = qp * pp;
       const actCost = qr * pr;
 
-      // تفصيل متوازن: فرق السعر + فرق الكمية = الفرق الإجمالي
       const priceDiff = (pr - pp) * qr;
       const qtyDiff = (qr - qp) * pp;
-      const globalDiff = actCost - baseCost; // = priceDiff + qtyDiff
+      const globalDiff = actCost - baseCost;
 
       const priceFav = priceDiff <= 0;
       const qtyFav = qtyDiff <= 0;
@@ -1439,5 +1447,80 @@
       document.getElementById('kDefav').textContent = defav;
       document.getElementById('kPct').textContent = avgPct.toFixed(1) + '%';
 
-      const sumBase
+      const sumBase = filtered.reduce((a, b) => a + Math.abs(b.baseVal), 0);
+      const sumAct = filtered.reduce((a, b) => a + Math.abs(b.actVal), 0);
+      const maxV = Math.max(sumBase, sumAct, 1);
 
+      document.getElementById('lblStd').textContent = fmt(sumBase);
+      document.getElementById('lblAct').textContent = fmt(sumAct);
+      document.getElementById('barStd').style.width = ((sumBase / maxV) * 100).toFixed(1) + '%';
+      document.getElementById('barAct').style.width = ((sumAct / maxV) * 100).toFixed(1) + '%';
+
+      const diagBox = document.getElementById('homeDiagBox');
+      if (count > 0) {
+        const latest = filtered[0];
+        diagBox.innerHTML = `
+          <div class="rec-card" style="margin:0;">
+            <div class="rec-head">
+              <span>${latest.title} (${latest.period})</span>
+              <span class="${latest.isFav ? 'fav' : 'defav'}">${latest.isFav ? 'Favorable' : 'Défavorable'} • ${latest.pct.toFixed(1)}%</span>
+            </div>
+            <div><strong>السبب:</strong> ${latest.cause}</div>
+            <div><strong>الحل:</strong> ${latest.fix}</div>
+          </div>
+        `;
+      } else {
+        diagBox.textContent = `لا توجد تحليلات مسجلة للفترة ${period}. اختاري تبويب «إدخال» لحساب الفروقات وعرض التشخيص والحلول.`;
+      }
+
+      const histBox = document.getElementById('historyContainer');
+      if (!items.length) {
+        histBox.innerHTML = '<p class="note-text">لا توجد عمليات محفوظة بعد.</p>';
+      } else {
+        histBox.innerHTML = items.map(it => `
+          <div class="rec-card">
+            <div class="rec-head">
+              <span>${it.title} <small style="color:var(--muted)">(${it.period})</small></span>
+              <span class="${it.isFav ? 'fav' : 'defav'}">${it.isFav ? 'Favorable' : 'Défavorable'}</span>
+            </div>
+            <div>الفرق: <strong>${fmt(it.diffVal)}</strong> | النسبة: <strong>${it.pct.toFixed(2)}%</strong></div>
+            <div>السبب: ${it.cause}</div>
+            <div>الحل: ${it.fix}</div>
+            <div style="margin-top:8px; display:flex; gap:6px;">
+              <button type="button" class="btn btn-sec" style="padding:5px 10px; font-size:11.5px;" onclick="editEntry(${it.id})">تعديل</button>
+              <button type="button" class="btn btn-del" onclick="deleteEntry(${it.id})">حذف</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function exportCSV() {
+      if (!items.length) return;
+      const header = 'Period,Title,Diff,Currency,Percent,Status,Cause,Solution\n';
+      const rows = items.map(x => [
+        x.period,
+        `"${x.title}"`,
+        convertAmount(x.diffVal).toFixed(2),
+        getCurr(),
+        x.pct.toFixed(2) + '%',
+        x.isFav ? 'Favorable' : 'Défavorable',
+        `"${x.cause.replace(/"/g, '""')}"`,
+        `"${x.fix.replace(/"/g, '""')}"`
+      ].join(',')).join('\n');
+
+      const blob = new Blob(['\ufeff' + header + rows], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'variance-pro.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    ensureDefaultAdmin();
+    renderCurrenciesUI();
+    renderAll();
+  </script>
+</body>
+</html>
