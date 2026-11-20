@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f4c81" />
+  <title>تحليل الفروقات المحاسبية - Variance Analysis</title>
+  <style>
+    :root {
+      --primary: #0f4c81;
+      --primary-dark: #093256;
+      --accent: #0ea5e9;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --fav-bg: #dcfce7;
+      --fav-text: #166534;
+      --unfav-bg: #fee2e2;
+      --unfav-text: #991b1b;
+      --warn-bg: #fef3c7;
+      --warn-text: #92400e;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 40px;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 18px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 14px rgba(15, 76, 129, 0.2);
+    }
+
+    .header-top {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      font-size: 0.82rem;
+      opacity: 0.9;
+    }
+
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    select, input, button, textarea {
+      font-size: 0.95rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      outline: none;
+    }
+
+    header select {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.35);
+      padding: 7px 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    header select option {
+      color: var(--text);
+      background: #fff;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 18px auto 0;
+      padding: 0 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-title {
+      margin: 0 0 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--text);
+    }
+
+    .field input, .field select {
+      width: 100%;
+      padding: 10px 12px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .field input:focus, .field select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+    }
+
+    .tab-btn {
+      background: #e2e8f0;
+      color: var(--text);
+      border: none;
+      padding: 9px 14px;
+      font-weight: 700;
+      font-size: 0.86rem;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 12px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 14px;
+      transition: 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .res-box {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: #f8fafc;
+    }
+
+    .res-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .res-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin: 4px 0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .badge-fav {
+      background: var(--fav-bg);
+      color: var(--fav-text);
+    }
+
+    .badge-unfav {
+      background: var(--unfav-bg);
+      color: var(--unfav-text);
+    }
+
+    .badge-neutral {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .issue-item {
+      background: var(--warn-bg);
+      color: var(--warn-text);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+
+    .issue-item strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .guide-list {
+      margin: 0;
+      padding-inline-start: 20px;
+    }
+
+    .guide-list li {
+      margin-bottom: 10px;
+    }
+
+    .hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-top">
+      <div class="brand">
+        <h1 id="appTitle">منصة تحليل الفروقات المحاسبية</h1>
+        <p id="appSubtitle">حساب الفروقات، تشخيص المشاكل، ودعم متعدد اللغات والعملات</p>
+      </div>
+
+      <div class="controls-bar">
+        <select id="langSelect" aria-label="Language">
+          <option value="ar">العربية (AR)</option>
+          <option value="fr">Français (FR)</option>
+          <option value="en">English (EN)</option>
+        </select>
+
+        <select id="currencySelect" aria-label="Currency">
+          <option value="DZD">DZD (د.ج)</option>
+          <option value="EUR">EUR (€)</option>
+          <option value="USD">USD ($)</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h2 class="card-title" id="fxCardTitle">إعدادات العملة وسعر الصرف</h2>
+      <div class="grid-3">
+        <div class="field">
+          <label id="baseCurrencyLabel" for="baseCurrency">عملة الإدخال (المعطيات)</label>
+          <select id="baseCurrency">
+            <option value="DZD">DZD - دينار جزائري</option>
+            <option value="EUR">EUR - يورو</option>
+            <option value="USD">USD - دولار أمريكي</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label id="fxRateLabel" for="fxRate">سعر التحويل إلى عملة العرض المختارة</label>
+          <input type="number" id="fxRate" step="any" value="1" min="0.000001" />
+          <div class="hint" id="fxHint">مثال: إذا أدخلت بـ EUR وتريد العرض بـ DZD، أدخل سعر الصرف (مثال 145).</div>
+        </div>
+
+        <div class="field">
+          <label id="itemNatureLabel" for="itemNature">طبيعة العنصر المحاسبي</label>
+          <select id="itemNature">
+            <option value="cost">تكلفة / أعباء (Cost / Charge)</option>
+            <option value="revenue">إيراد / مبيعات (Revenue / Sales)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="materials" id="tabMaterials">المواد الأولية</button>
+        <button class="tab-btn" data-tab="labor" id="tabLabor">اليد العاملة المباشرة</button>
+        <button class="tab-btn" data-tab="general" id="tabGeneral">أعباء غير مباشرة / نشاط</button>
+        <button class="tab-btn" data-tab="problems" id="tabProblems">معالجة مشاكل الفروقات</button>
+      </div>
+
+      <div id="panel-materials" class="tab-panel">
+        <div class="grid-2">
+          <div class="field">
+            <label id="matQActualLabel">الكمية الفعلية المستهلكة (Q فعلية)</label>
+            <input type="number" id="matQActual" step="any" value="120" />
+          </div>
+          <div class="field">
+            <label id="matQStdLabel">الكمية المعيارية المقررة (Q معيارية)</label>
+            <input type="number" id="matQStd" step="any" value="100" />
+          </div>
+          <div class="field">
+            <label id="matPActualLabel">السعر الفعلي للوحدة (P فعلي)</label>
+            <input type="number" id="matPActual" step="any" value="550" />
+          </div>
+          <div class="field">
+            <label id="matPStdLabel">السعر المعياري للوحدة (P معياري)</label>
+            <input type="number" id="matPStd" step="any" value="500" />
+          </div>
+        </div>
+        <div class="field" style="margin-top:12px;">
+          <label id="matQPurchasedLabel">الكمية المشتراة خلال الفترة (اختياري - لكشف فرق الشراء عن الاستهلاك)</label>
+          <input type="number" id="matQPurchased" step="any" placeholder="اتركه فارغاً إذا كان يساوي الكمية المستهلكة" />
+        </div>
+        <button class="btn-primary" id="calcMaterialsBtn">احسب فروقات المواد الأولية</button>
+      </div>
+
+      <div id="panel-labor" class="tab-panel" style="display:none;">
+        <div class="grid-2">
+          <div class="field">
+            <label id="labHActualLabel">الساعات الفعلية (H فعلية)</label>
+            <input type="number" id="labHActual" step="any" value="85" />
+          </div>
+          <div class="field">
+            <label id="labHStdLabel">الساعات المعيارية (H معيارية)</label>
+            <input type="number" id="labHStd" step="any" value="80" />
+          </div>
+          <div class="field">
+            <label id="labRActualLabel">معدل الأجر الفعلي للساعة (R فعلي)</label>
+            <input type="number" id="labRActual" step="any" value="1200" />
+          </div>
+          <div class="field">
+            <label id="labRStdLabel">معدل الأجر المعياري للساعة (R معياري)</label>
+            <input type="number" id="labRStd" step="any" value="1250" />
+          </div>
+        </div>
+        <button class="btn-primary" id="calcLaborBtn">احسب فروقات اليد العاملة</button>
+      </div>
+
+      <div id="panel-general" class="tab-panel" style="display:none;">
+        <div class="grid-2">
+          <div class="field">
+            <label id="genActualLabel">المبلغ / القيمة الفعلية الإجمالية</label>
+            <input type="number" id="genActual" step="any" value="240000" />
+          </div>
+          <div class="field">
+            <label id="genBudgetLabel">المبلغ / القيمة المعيارية أو المخططة</label>
+            <input type="number" id="genBudget" step="any" value="200000" />
+          </div>
+          <div class="field">
+            <label id="genActActualLabel">مستوى النشاط الفعلي (وحدات / ساعات)</label>
+            <input type="number" id="genActActual" step="any" value="110" />
+          </div>
+          <div class="field">
+            <label id="genActBudgetLabel">مستوى النشاط المخطط (وحدات / ساعات)</label>
+            <input type="number" id="genActBudget" step="any" value="100" />
+          </div>
+        </div>
+        <button class="btn-primary" id="calcGeneralBtn">احسب الفارق وتحليل النشاط</button>
+      </div>
+
+      <div id="panel-problems" class="tab-panel" style="display:none;">
+        <ul class="guide-list" id="problemsGuideList"></ul>
+      </div>
+    </div>
+
+    <div class="card" id="resultsCard">
+      <h2 class="card-title" id="resultsTitle">نتائج التحليل والتشخيص</h2>
+      <div class="results-grid" id="resultsGrid"></div>
+      <div id="issuesBox" style="margin-top:16px;"></div>
+    </div>
+  </div>
+
+  <script>
+    const DICT = {
+      ar: {
+        dir: "rtl",
+        lang: "ar",
+        appTitle: "منصة تحليل الفروقات المحاسبية",
+        appSubtitle: "حساب الفروقات، تشخيص المشاكل، ودعم متعدد اللغات والعملات",
+        fxCardTitle: "إعدادات العملة وسعر الصرف",
+        baseCurrencyLabel: "عملة الإدخال (المعطيات)",
+        fxRateLabel: "سعر التحويل إلى عملة العرض المختارة",
+        fxHint: "مثال: إذا أدخلت بـ EUR وتريد العرض بـ DZD، أدخل سعر الصرف (مثال 145).",
+        itemNatureLabel: "طبيعة العنصر المحاسبي",
+        cost: "تكلفة / أعباء (Cost)",
+        revenue: "إيراد / مبيعات (Revenue)",
+        tabMaterials: "المواد الأولية",
+        tabLabor: "اليد العاملة المباشرة",
+        tabGeneral: "أعباء غير مباشرة / نشاط",
+        tabProblems: "معالجة مشاكل الفروقات",
+        matQActualLabel: "الكمية الفعلية المستهلكة",
+        matQStdLabel: "الكمية المعيارية المقررة",
+        matPActualLabel: "السعر الفعلي للوحدة",
+        matPStdLabel: "السعر المعياري للوحدة",
+        matQPurchasedLabel: "الكمية المشتراة (اختياري - لكشف فرق الشراء عن الاستهلاك)",
+        matQPurchasedPh: "اتركه فارغاً إذا كان يساوي الكمية المستهلكة",
+        calcMaterialsBtn: "احسب فروقات المواد الأولية",
+        labHActualLabel: "الساعات الفعلية",
+        labHStdLabel: "الساعات المعيارية",
+        labRActualLabel: "معدل الأجر الفعلي للساعة",
+        labRStdLabel: "معدل الأجر المعياري للساعة",
+        calcLaborBtn: "احسب فروقات اليد العاملة",
+        genActualLabel: "المبلغ / القيمة الفعلية",
+        genBudgetLabel: "المبلغ / القيمة المعيارية أو المخططة",
+        genActActualLabel: "مستوى النشاط الفعلي",
+        genActBudgetLabel: "مستوى النشاط المخطط",
+        calcGeneralBtn: "احسب الفارق وتحليل النشاط",
+        resultsTitle: "نتائج التحليل والتشخيص",
+        fav: "ملائم (Favorable)",
+        unfav: "غير ملائم (Unfavorable)",
+        neutral: "متوازن (Zero)",
+        totalVar: "الفارق الإجمالي",
+        priceVar: "فارق السعر / المعدل",
+        qtyVar: "فارق الكمية / الوقت",
+        activityRatio: "نسبة تغير النشاط",
+        issuesHeading: "المشاكل المحتملة والتنبيهات المحاسبية:",
+        issueJointTitle: "مشكلة التداخل (Joint / Mixed Variance)",
+        issueJointDesc: "عندما يتغير السعر والكمية معاً، يظهر فرق مشترك. يُنصح بتوضيح المنهجية المعتمدة (تحميله على الكمية أو السعر أو عزله كفارق مشترك).",
+        issuePurchaseTitle: "عدم تطابق الكمية المشتراة مع المستهلكة",
+        issuePurchaseDesc: "الكمية المشتراة تختلف عن المستهلكة؛ يُفضل فصل فرق السعر عند لحظة الشراء عن فرق الكمية عند الاستهلاك الفعلي.",
+        issueActivityTitle: "تغير مستوى النشاط الفعلي عن المخطط",
+        issueActivityDesc: "مستوى النشاط تغير بنسبة ملحوظة؛ استخدم الميزانية المرنة لتفادي الخلط بين فرق الحجم/النشاط وفرق الكفاءة أو الإنفاق.",
+        issueFxTitle: "أثر تقلبات سعر الصرف والعملات الصعبة",
+        issueFxDesc: "تأكد من فصل أثر تغير سعر الصرف (EUR/USD/DZD) عن الفارق التشغيلي الحقيقي حتى لا يبدو الأداء التشغيلي أفضل أو أسوأ بسبب العملة.",
+        problemsGuide: [
+          "<strong>مشكلة التداخل (السعر × الكمية):</strong> حلها بتحديد قاعدة ثابتة (فارق السعر = (السعر الفعلي - المعياري) × الكمية المعيارية، وفارق الكمية = (الكمية الفعلية - المعيارية) × السعر المعياري، مع بيان الفارق المشترك).",
+          "<strong>فرق الكمية المشتراة عن المستهلكة:</strong> احسب فارق السعر على الكميات المشتراة وفارق الاستهلاك على الكميات المستخدمة فعلاً في الإنتاج.",
+          "<strong>تغير حجم النشاط (الميزانية الثابتة مقابل المرنة):</strong> لا تقارن تكلفة نشاط 120 وحدة بميزانية 100 وحدة مباشرة دون تعديل الميزانية المرنة.",
+          "<strong>تقلبات العملات الصعبة والدينار الجزائري:</strong> افصل فرق السعر بالعملة الأجنبية عن فرق سعر التحويل (Exchange Rate Variance)."
+        ]
+      },
+      fr: {
+        dir: "ltr",
+        lang: "fr",
+        appTitle: "Plateforme d'Analyse des Écarts",
+        appSubtitle: "Calcul des écarts, résolution des problèmes, multi-langues et multi-devises",
+        fxCardTitle: "Paramètres de devise et taux de change",
+        baseCurrencyLabel: "Devise de saisie (données)",
+        fxRateLabel: "Taux de conversion vers la devise affichée",
+        fxHint: "Exemple : saisie en EUR et affichage en DZD → saisissez le taux (ex. 145).",
+        itemNatureLabel: "Nature de l'élément comptable",
+        cost: "Coût / Charge",
+        revenue: "Produit / Chiffre d'affaires",
+        tabMaterials: "Matières premières",
+        tabLabor: "Main-d'œuvre directe",
+        tabGeneral: "Charges indirectes / Activité",
+        tabProblems: "Problèmes & solutions",
+        matQActualLabel: "Quantité réelle consommée",
+        matQStdLabel: "Quantité standard prévue",
+        matPActualLabel: "Prix unitaire réel",
+        matPStdLabel: "Prix unitaire standard",
+        matQPurchasedLabel: "Quantité achetée (optionnel - achat vs consommation)",
+        matQPurchasedPh: "Laisser vide si égale à la quantité consommée",
+        calcMaterialsBtn: "Calculer les écarts sur matières",
+        labHActualLabel: "Heures réelles",
+        labHStdLabel: "Heures standards",
+        labRActualLabel: "Taux horaire réel",
+        labRStdLabel: "Taux horaire standard",
+        calcLaborBtn: "Calculer les écarts sur main-d'œuvre",
+        genActualLabel: "Montant / Valeur réelle",
+        genBudgetLabel: "Montant / Valeur standard ou budget",
+        genActActualLabel: "Niveau d'activité réel",
+        genActBudgetLabel: "Niveau d'activité prévu",
+        calcGeneralBtn: "Calculer l'écart et l'activité",
+        resultsTitle: "Résultats et diagnostic",
+        fav: "Favorable (F)",
+        unfav: "Défavorable (Déf)",
+        neutral: "Nul (0)",
+        totalVar: "Écart global",
+        priceVar: "Écart sur prix / taux",
+        qtyVar: "Écart sur quantité / temps",
+        activityRatio: "Variation d'activité",
+        issuesHeading: "Points d'attention et problèmes fréquents :",
+        issueJointTitle: "Écart conjoint (Prix × Quantité)",
+        issueJointDesc: "Lorsque le prix et la quantité varient ensemble, précisez la convention adoptée (écart sur prix, sur quantité ou écart conjoint).",
+        issuePurchaseTitle: "Quantité achetée ≠ quantité consommée",
+        issuePurchaseDesc: "Distinguez l'écart sur prix d'achat (sur quantités achetées) de l'écart sur consommation (sur quantités utilisées).",
+        issueActivityTitle: "Variation du niveau d'activité",
+        issueActivityDesc: "Utilisez un budget flexible pour séparer l'effet volume/activité de l'effet rendement ou dépense.",
+        issueFxTitle: "Impact du taux de change (Devises fortes / DZD)",
+        issueFxDesc: "Isolez l'effet de change de la performance opérationnelle réelle.",
+        problemsGuide: [
+          "<strong>Écart conjoint :</strong> appliquez une méthode claire et constante pour éviter les ambiguïtés d'interprétation.",
+          "<strong>Achat vs consommation :</strong> calculez l'écart prix à l'achat et l'écart quantité à la consommation.",
+          "<strong>Activité réelle vs prévue :</strong> adaptez la référence au niveau d'activité réel (budget flexible).",
+          "<strong>Devises étrangères & DZD :</strong> séparez l'effet change de l'écart opérationnel."
+        ]
+      },
+      en: {
+        dir: "ltr",
+        lang: "en",
+        appTitle: "Variance Analysis Hub",
+        appSubtitle: "Variance calculation, issue troubleshooting, multi-language & multi-currency",
+        fxCardTitle: "Currency & Exchange Rate Settings",
+        baseCurrencyLabel: "Input Currency",
+        fxRateLabel: "Conversion Rate to Selected Display Currency",
+        fxHint: "Example: if inputs are in EUR and display is DZD, enter exchange rate (e.g. 145).",
+        itemNatureLabel: "Accounting Item Nature",
+        cost: "Cost / Expense",
+        revenue: "Revenue / Sales",
+        tabMaterials: "Direct Materials",
+        tabLabor: "Direct Labor",
+        tabGeneral: "Overhead / Activity",
+        tabProblems: "Variance Issues & Fixes",
+        matQActualLabel: "Actual Quantity Used",
+        matQStdLabel: "Standard Quantity",
+        matPActualLabel: "Actual Unit Price",
+        matPStdLabel: "Standard Unit Price",
+        matQPurchasedLabel: "Quantity Purchased (optional - purchase vs usage)",
+        matQPurchasedPh: "Leave blank if same as quantity used",
+        calcMaterialsBtn: "Calculate Material Variances",
+        labHActualLabel: "Actual Hours",
+        labHStdLabel: "Standard Hours",
+        labRActualLabel: "Actual Hourly Rate",
+        labRStdLabel: "Standard Hourly Rate",
+        calcLaborBtn: "Calculate Labor Variances",
+        genActualLabel: "Actual Amount / Value",
+        genBudgetLabel: "Standard / Budget Amount",
+        genActActualLabel: "Actual Activity Level",
+        genActBudgetLabel: "Budgeted Activity Level",
+        calcGeneralBtn: "Calculate Variance & Activity",
+        resultsTitle: "Analysis Results & Diagnosis",
+        fav: "Favorable (F)",
+        unfav: "Unfavorable (U)",
+        neutral: "Zero (0)",
+        totalVar: "Total Variance",
+        priceVar: "Price / Rate Variance",
+        qtyVar: "Quantity / Efficiency Variance",
+        activityRatio: "Activity Change",
+        issuesHeading: "Potential Issues & Accounting Alerts:",
+        issueJointTitle: "Joint / Mixed Variance",
+        issueJointDesc: "When both price and quantity change simultaneously, a mixed component appears. Define a clear allocation rule.",
+        issuePurchaseTitle: "Purchased vs. Consumed Quantity Mismatch",
+        issuePurchaseDesc: "Separate price variance on purchased units from usage variance on consumed units.",
+        issueActivityTitle: "Activity Level Shift",
+        issueActivityDesc: "Use flexible budgeting when actual activity differs from planned activity.",
+        issueFxTitle: "Foreign Exchange (FX) Impact",
+        issueFxDesc: "Separate currency rate shifts (EUR/USD/DZD) from operational variances.",
+        problemsGuide: [
+          "<strong>Joint Variance:</strong> use a consistent convention and document how mixed price-quantity effects are treated.",
+          "<strong>Purchased vs. Used:</strong> measure price variance at purchase and quantity variance at consumption.",
+          "<strong>Activity Shifts:</strong> adjust budgets to actual activity levels using flexible budget principles.",
+          "<strong>Hard Currencies & DZD:</strong> isolate FX rate movement from underlying operational performance."
+        ]
+      }
+    };
+
+    let currentLang = "ar";
+    let currentTab = "materials";
+
+    function applyLanguage() {
+      const t = DICT[currentLang];
+      document.documentElement.lang = t.lang;
+      document.documentElement.dir = t.dir;
+
+      const ids = [
+        "appTitle", "appSubtitle", "fxCardTitle", "baseCurrencyLabel",
+        "fxRateLabel", "fxHint", "itemNatureLabel", "tabMaterials",
+        "tabLabor", "tabGeneral", "tabProblems", "matQActualLabel",
+        "matQStdLabel", "matPActualLabel", "matPStdLabel",
+        "matQPurchasedLabel", "calcMaterialsBtn", "labHActualLabel",
+        "labHStdLabel", "labRActualLabel", "labRStdLabel",
+        "calcLaborBtn", "genActualLabel", "genBudgetLabel",
+        "genActActualLabel", "genActBudgetLabel", "calcGeneralBtn",
+        "resultsTitle"
+      ];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && t[id]) el.textContent = t[id];
+      });
+
+      document.getElementById("matQPurchased").placeholder = t.matQPurchasedPh;
+
+      const natureEl = document.getElementById("itemNature");
+      natureEl.options[0].text = t.cost;
+      natureEl.options[1].text = t.revenue;
+
+      const guideList = document.getElementById("problemsGuideList");
+      guideList.innerHTML = t.problemsGuide.map(item => `<li>${item}</li>`).join("");
+
+      runCurrentCalc();
+    }
+
+    function classifyVariance(rawDiff, nature) {
+      const t = DICT[currentLang];
+      if (Math.abs(rawDiff) < 1e-9) {
+        return { label: t.neutral, cls: "badge-neutral" };
+      }
+      const isFav = nature === "cost" ? rawDiff < 0 : rawDiff > 0;
+      return isFav
+        ? { label: t.fav, cls: "badge-fav" }
+        : { label: t.unfav, cls: "badge-unfav" };
+    }
+
+    function formatMoney(val) {
+      const rate = parseFloat(document.getElementById("fxRate").value) || 1;
+      const dispCur = document.getElementById("currencySelect").value;
+      const converted = val * rate;
+      const formatted = new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(converted);
+      return `${formatted} ${dispCur}`;
+    }
+
+    function renderCards(items, issues) {
+      const t = DICT[currentLang];
+      const grid = document.getElementById("resultsGrid");
+      grid.innerHTML = items.map(it => {
+        const badge = classifyVariance(it.value, it.nature);
+        return `
+          <div class="res-box">
+            <div class="res-label">${it.label}</div>
+            <div class="res-val">${formatMoney(it.value)}</div>
+            <span class="badge ${badge.cls}">${badge.label}</span>
+          </div>
+        `;
+      }).join("");
+
+      const issuesBox = document.getElementById("issuesBox");
+      if (!issues.length) {
+        issuesBox.innerHTML = "";
+        return;
+      }
+      issuesBox.innerHTML = `
+        <div class="res-label" style="margin-bottom:8px;">${t.issuesHeading}</div>
+        ${issues.map(iss => `
+          <div class="issue-item">
+            <strong>${iss.title}</strong>
+            <span>${iss.desc}</span>
+          </div>
+        `).join("")}
+      `;
+    }
+
+    function addCommonCurrencyAlert(issues) {
+      const t = DICT[currentLang];
+      const baseCur = document.getElementById("baseCurrency").value;
+      const dispCur = document.getElementById("currencySelect").value;
+      const rate = parseFloat(document.getElementById("fxRate").value) || 1;
+      if (baseCur !== dispCur || rate !== 1) {
+        issues.push({ title: t.issueFxTitle, desc: t.issueFxDesc });
+      }
+    }
+
+    function calcMaterials() {
+      const t = DICT[currentLang];
+      const nature = document.getElementById("itemNature").value;
+      const qa = parseFloat(document.getElementById("matQActual").value) || 0;
+      const qs = parseFloat(document.getElementById("matQStd").value) || 0;
+      const pa = parseFloat(document.getElementById("matPActual").value) || 0;
+      const ps = parseFloat(document.getElementById("matPStd").value) || 0;
+      const qPurchRaw = document.getElementById("matQPurchased").value;
+      const qPurch = qPurchRaw !== "" ? parseFloat(qPurchRaw) : qa;
+
+      const totalVar = (qa * pa) - (qs * ps);
+      const priceVar = (pa - ps) *
