@@ -58,72 +58,63 @@
 
     .intro-orb {
       position: absolute;
-      width: 280px;
-      height: 280px;
+      width: 260px;
+      height: 260px;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(167, 139, 250, 0.35), rgba(91, 33, 182, 0.05) 70%);
-      animation: pulseOrb 2.6s ease-in-out infinite alternate;
+      animation: pulseOrb 2.4s ease-in-out infinite alternate;
       pointer-events: none;
     }
 
     @keyframes pulseOrb {
       0% { transform: scale(0.85); opacity: 0.65; }
-      100% { transform: scale(1.22); opacity: 1; }
+      100% { transform: scale(1.2); opacity: 1; }
     }
 
     .intro-logo {
       position: relative;
-      width: 92px;
-      height: 92px;
+      width: 90px;
+      height: 90px;
       border-radius: 26px;
       background: linear-gradient(135deg, var(--violet-deep), var(--violet-bright));
       display: grid;
       place-items: center;
-      font-size: 42px;
+      font-size: 40px;
       font-weight: 900;
       color: #fff;
       box-shadow: 0 20px 45px rgba(139, 92, 246, 0.5);
-      margin-bottom: 18px;
-      animation: logoZoom 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      margin-bottom: 16px;
+      animation: logoZoom 0.9s ease forwards;
     }
 
     @keyframes logoZoom {
-      0% { opacity: 0; transform: scale(0.55) translateY(16px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
+      from { opacity: 0; transform: scale(0.6); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .intro-title {
       position: relative;
-      font-size: 28px;
+      font-size: 27px;
       font-weight: 900;
       margin: 0 0 8px 0;
-      opacity: 0;
-      animation: textReveal 0.85s ease 0.3s forwards;
     }
 
     .intro-tag {
       position: relative;
-      font-size: 13.5px;
+      font-size: 13px;
       color: var(--muted);
-      margin: 0 0 24px 0;
-      opacity: 0;
-      animation: textReveal 0.85s ease 0.6s forwards;
-    }
-
-    @keyframes textReveal {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
+      margin: 0 0 22px 0;
     }
 
     .intro-skip {
       position: relative;
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text);
-      border: 1px solid var(--line-strong);
+      background: linear-gradient(135deg, var(--violet-deep), var(--violet));
+      color: #fff;
+      border: none;
       border-radius: 999px;
-      padding: 10px 22px;
-      font-size: 13px;
-      font-weight: 700;
+      padding: 11px 24px;
+      font-size: 14px;
+      font-weight: 800;
       cursor: pointer;
     }
 
@@ -139,7 +130,7 @@
     .login-card {
       width: 100%;
       max-width: 420px;
-      background: linear-gradient(180deg, rgba(39, 21, 82, 0.94), rgba(29, 16, 61, 0.98));
+      background: linear-gradient(180deg, rgba(39, 21, 82, 0.95), rgba(29, 16, 61, 0.98));
       border: 1px solid var(--line-strong);
       border-radius: 22px;
       padding: 22px;
@@ -165,7 +156,7 @@
       top: 0;
       z-index: 40;
       backdrop-filter: blur(16px);
-      background: rgba(18, 9, 38, 0.88);
+      background: rgba(18, 9, 38, 0.9);
       border-bottom: 1px solid var(--line);
       padding: 10px 12px;
       display: flex;
@@ -276,7 +267,7 @@
     }
 
     .card {
-      background: linear-gradient(180deg, rgba(39, 21, 82, 0.9), rgba(29, 16, 61, 0.96));
+      background: linear-gradient(180deg, rgba(39, 21, 82, 0.92), rgba(29, 16, 61, 0.97));
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 15px;
@@ -460,4 +451,711 @@
       border: 1px solid var(--line);
       border-radius: 12px;
       padding: 11px 12px;
-      margin-bottom: 9px
+      margin-bottom: 9px;
+      font-size: 12.5px;
+      line-height: 1.65;
+    }
+
+    .rec-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .note-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-h);
+      background: rgba(20, 10, 44, 0.96);
+      backdrop-filter: blur(18px);
+      border-top: 1px solid var(--line-strong);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      z-index: 100;
+      padding: 4px 4px env(safe-area-inset-bottom, 4px);
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 4px 2px;
+    }
+
+    .nav-btn svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .nav-btn span {
+      font-size: 10.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .nav-btn.active {
+      background: rgba(167, 139, 250, 0.16);
+      color: var(--text);
+    }
+
+    .nav-btn.active svg,
+    .nav-btn.active span {
+      color: var(--violet-bright);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Intro Screen -->
+  <div id="introScreen">
+    <div class="intro-orb"></div>
+    <div class="intro-logo">Δ</div>
+    <h1 class="intro-title" id="introTitle">تحليل الفروقات</h1>
+    <p class="intro-tag">Variance Analysis • Analyse des Écarts</p>
+    <button type="button" class="intro-skip" onclick="goToLogin()">متابعة</button>
+  </div>
+
+  <!-- 2. Login Screen -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="login-top">
+        <div>
+          <h2 style="margin:0; font-size:18px; font-weight:900;" id="loginTitle">تسجيل الدخول</h2>
+          <small style="color:var(--muted);" id="loginSub">مرحباً بكِ في منصة تحليل الفروقات</small>
+        </div>
+        <select id="loginLang" class="sel" onchange="syncLang(this.value)">
+          <option value="ar">العربية</option>
+          <option value="fr">Français</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label id="lblUser">اسم المستخدم أو المؤسسة</label>
+        <input type="text" id="userInput" placeholder="مثال: ياسمين" />
+      </div>
+
+      <div class="field">
+        <label id="lblPass">كلمة المرور أو الرمز</label>
+        <input type="password" id="passInput" placeholder="••••••••" />
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" onclick="doLogin()" id="btnLogin">دخول إلى التطبيق</button>
+        <button type="button" class="btn btn-sec" onclick="quickGuestLogin()" id="btnGuest">دخول سريع</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Main App -->
+  <div id="mainApp">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">Δ</div>
+        <div>
+          <h1 id="appNameHdr">تحليل الفروقات</h1>
+          <small id="userBadge">حساب • تشخيص • معالجة</small>
+        </div>
+      </div>
+
+      <div class="controls-row">
+        <select id="monthSel" class="sel" onchange="renderAll()">
+          <option value="01">01</option>
+          <option value="02">02</option>
+          <option value="03">03</option>
+          <option value="04">04</option>
+          <option value="05">05</option>
+          <option value="06">06</option>
+          <option value="07">07</option>
+          <option value="08">08</option>
+          <option value="09">09</option>
+          <option value="10">10</option>
+          <option value="11" selected>11</option>
+          <option value="12">12</option>
+        </select>
+        <select id="yearSel" class="sel" onchange="renderAll()">
+          <option value="2025">2025</option>
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+        </select>
+        <select id="currSel" class="sel" onchange="renderAll()">
+          <option value="DZD" selected>DZD (د.ج)</option>
+          <option value="EUR">EUR (€)</option>
+          <option value="USD">USD ($)</option>
+          <option value="GBP">GBP (£)</option>
+          <option value="MAD">MAD</option>
+        </select>
+        <select id="appLang" class="sel" onchange="syncLang(this.value)">
+          <option value="ar">AR</option>
+          <option value="fr">FR</option>
+          <option value="en">EN</option>
+        </select>
+      </div>
+    </header>
+
+    <main class="container">
+
+      <!-- الرئيسية -->
+      <section id="page-home" class="page active">
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-lbl">عدد التحليلات</div>
+            <div class="kpi-val vtext" id="kCount">0</div>
+            <div class="kpi-sub" id="kPeriod">11/2026</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">ملائم (Favorable)</div>
+            <div class="kpi-val fav" id="kFav">0</div>
+            <div class="kpi-sub">أداء إيجابي</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">غير ملائم (Défavorable)</div>
+            <div class="kpi-val defav" id="kDefav">0</div>
+            <div class="kpi-sub">يحتاج معالجة</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">نسبة الفرق (%)</div>
+            <div class="kpi-val" style="color:var(--warn)" id="kPct">0.0%</div>
+            <div class="kpi-sub">متوسط النسبة</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">📊 رسوم بيانية للمقارنة</h3>
+            <span class="pill" id="currPill">DZD</span>
+          </div>
+          <div class="chart-row">
+            <div class="chart-label"><span>المعياري / التقديري</span><span id="lblStd">0.00</span></div>
+            <div class="bar-track"><div class="bar-fill" id="barStd" style="width:0%"></div></div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-label"><span>الفعلي</span><span id="lblAct">0.00</span></div>
+            <div class="bar-track"><div class="bar-fill fav-bg" id="barAct" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">🧠 سبب الفرق وكيفية المعالجة</h3>
+            <span class="pill">تشخيص</span>
+          </div>
+          <div id="homeDiagBox" class="note-text">أدخلي عملية من تبويب «إدخال» لحساب الفرق، تحديد نوعه، معرفة أسبابه، واقتراح الحلول.</div>
+        </div>
+      </section>
+
+      <!-- إدخال -->
+      <section id="page-input" class="page">
+        <div class="subtabs">
+          <button type="button" class="subtab active" onclick="openSub('mat', this)">🧱 المواد</button>
+          <button type="button" class="subtab" onclick="openSub('lab', this)">👷 اليد والأعباء</button>
+          <button type="button" class="subtab" onclick="openSub('sales', this)">📈 المبيعات</button>
+          <button type="button" class="subtab" onclick="openSub('budget', this)">💼 الميزانية</button>
+        </div>
+
+        <div id="sub-mat" class="card sub-panel">
+          <div class="card-head">
+            <h3 class="card-title">الفرق الإجمالي للمواد (Écart global sur matières)</h3>
+            <span class="pill">مواد</span>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>الكمية الفعلية</label><input type="text" inputmode="decimal" id="mQr" placeholder="1200" /></div>
+            <div class="field"><label>الكمية المعيارية</label><input type="text" inputmode="decimal" id="mQp" placeholder="1000" /></div>
+            <div class="field"><label>السعر الفعلي</label><input type="text" inputmode="decimal" id="mPr" placeholder="55" /></div>
+            <div class="field"><label>السعر المعياري</label><input type="text" inputmode="decimal" id="mPp" placeholder="50" /></div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="calcMat()">حساب وتشخيص</button>
+            <button type="button" class="btn btn-sec" onclick="mQr.value=1200;mQp.value=1000;mPr.value=55;mPp.value=50;">مثال</button>
+          </div>
+          <div id="out-mat" class="res-box" style="display:none;"></div>
+        </div>
+
+        <div id="sub-lab" class="card sub-panel" style="display:none;">
+          <div class="card-head">
+            <h3 class="card-title">اليد العاملة والمصاريف غير المباشرة</h3>
+            <span class="pill">يد + أعباء</span>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>الساعات الفعلية</label><input type="text" inputmode="decimal" id="lHr" placeholder="420" /></div>
+            <div class="field"><label>الساعات المعيارية</label><input type="text" inputmode="decimal" id="lHp" placeholder="400" /></div>
+            <div class="field"><label>تكلفة الساعة الفعلية</label><input type="text" inputmode="decimal" id="lTr" placeholder="320" /></div>
+            <div class="field"><label>تكلفة الساعة المعيارية</label><input type="text" inputmode="decimal" id="lTp" placeholder="300" /></div>
+            <div class="field"><label>المصاريف غير المباشرة الفعلية</label><input type="text" inputmode="decimal" id="lOvhR" placeholder="185000" /></div>
+            <div class="field"><label>المصاريف غير المباشرة المعيارية</label><input type="text" inputmode="decimal" id="lOvhP" placeholder="170000" /></div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="calcLabOvh()">حساب وتشخيص</button>
+            <button type="button" class="btn btn-sec" onclick="lHr.value=420;lHp.value=400;lTr.value=320;lTp.value=300;lOvhR.value=185000;lOvhP.value=170000;">مثال</button>
+          </div>
+          <div id="out-lab" class="res-box" style="display:none;"></div>
+        </div>
+
+        <div id="sub-sales" class="card sub-panel" style="display:none;">
+          <div class="card-head">
+            <h3 class="card-title">المبيعات (Ventes) — رقم الأعمال، الكمية، السعر</h3>
+            <span class="pill">مبيعات</span>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>الكمية المباعة الفعلية</label><input type="text" inputmode="decimal" id="sQr" placeholder="950" /></div>
+            <div class="field"><label>الكمية المباعة المخططة</label><input type="text" inputmode="decimal" id="sQp" placeholder="1000" /></div>
+            <div class="field"><label>سعر البيع الفعلي</label><input type="text" inputmode="decimal" id="sPr" placeholder="1300" /></div>
+            <div class="field"><label>سعر البيع المخطط</label><input type="text" inputmode="decimal" id="sPp" placeholder="1200" /></div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="calcSales()">حساب وتشخيص</button>
+            <button type="button" class="btn btn-sec" onclick="sQr.value=950;sQp.value=1000;sPr.value=1300;sPp.value=1200;">مثال</button>
+          </div>
+          <div id="out-sales" class="res-box" style="display:none;"></div>
+        </div>
+
+        <div id="sub-budget" class="card sub-panel" style="display:none;">
+          <div class="card-head">
+            <h3 class="card-title">الميزانية (Budget) — تقديرية مقابل فعلية</h3>
+            <span class="pill">ميزانية</span>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>الميزانية التقديرية</label><input type="text" inputmode="decimal" id="bPrevu" placeholder="900000" /></div>
+            <div class="field"><label>الميزانية الفعلية</label><input type="text" inputmode="decimal" id="bReel" placeholder="945000" /></div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="calcBudget()">حساب وتشخيص</button>
+            <button type="button" class="btn btn-sec" onclick="bPrevu.value=900000;bReel.value=945000;">مثال</button>
+          </div>
+          <div id="out-budget" class="res-box" style="display:none;"></div>
+        </div>
+      </section>
+
+      <!-- القوانين -->
+      <section id="page-laws" class="page">
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">📘 القوانين الحسابية وشرحها</h3>
+            <span class="pill">قوانين</span>
+          </div>
+          <div class="rec-card">
+            <strong>1. الفرق الإجمالي للمواد:</strong> (الكمية الفعلية × السعر الفعلي) − (الكمية المعيارية × السعر المعياري).<br>
+            فرق السعر = (السعر الفعلي − السعر المعياري) × الكمية الفعلية | فرق الكمية = (الكمية الفعلية − الكمية المعيارية) × السعر المعياري.
+          </div>
+          <div class="rec-card">
+            <strong>2. اليد العاملة والمصاريف غير المباشرة:</strong> (الساعات الفعلية × التكلفة الفعلية) − (الساعات المعيارية × التكلفة المعيارية) + فرق الأعباء غير المباشرة.
+          </div>
+          <div class="rec-card">
+            <strong>3. المبيعات:</strong> فرق رقم الأعمال = الفعلي − المخطط، ويتحلل إلى فرق السعر وفرق الكمية.
+          </div>
+          <div class="rec-card">
+            <strong>4. الميزانية ونسبة الفرق (%):</strong> الفرق = الفعلي − التقديري | النسبة (%) = (الفرق ÷ المرجع) × 100.
+          </div>
+        </div>
+      </section>
+
+      <!-- الحلول -->
+      <section id="page-solutions" class="page">
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">🛠️ أسباب الفروقات والحلول</h3>
+            <span class="pill">معالجة</span>
+          </div>
+          <div class="rec-card">
+            <div class="rec-head"><span class="defav">ارتفاع تكاليف المواد / الأسعار</span></div>
+            <strong>الأسباب:</strong> ارتفاع أسعار السوق أو تعدد الطلبيات الصغيرة.<br>
+            <strong>الحلول:</strong> التفاوض مع الموردين، تجميع الطلبيات، والبحث عن بدائل بجودة مناسبة.
+          </div>
+          <div class="rec-card">
+            <div class="rec-head"><span class="defav">تجاوز الوقت أو المصاريف غير المباشرة</span></div>
+            <strong>الأسباب:</strong> توقف الآلات أو بطء وتيرة العمل.<br>
+            <strong>الحلول:</strong> الصيانة الدورية، تحسين جدولة الإنتاج، وضبط الأعباء الثابتة والمتغيرة.
+          </div>
+          <div class="rec-card">
+            <div class="rec-head"><span class="defav">انخفاض المبيعات أو تجاوز الميزانية</span></div>
+            <strong>الأسباب:</strong> ضعف التسويق أو إنفاق يتجاوز السقف المحدد.<br>
+            <strong>الحلول:</strong> تحسين العروض التجارية وتطبيق رقابة صارمة على المصاريف.
+          </div>
+        </div>
+      </section>
+
+      <!-- السجل -->
+      <section id="page-history" class="page">
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">🗂️ السجل والتصدير</h3>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn-sec" style="padding:6px 10px; font-size:11.5px;" onclick="exportCSV()">تصدير</button>
+              <button type="button" class="btn btn-del" onclick="clearAll()">مسح</button>
+            </div>
+          </div>
+          <div id="historyContainer">
+            <p class="note-text">لا توجد عمليات محفوظة بعد.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+      <button type="button" class="nav-btn active" onclick="goPage('page-home', 0)">
+        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
+        <span>الرئيسية</span>
+      </button>
+      <button type="button" class="nav-btn" onclick="goPage('page-input', 1)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>
+        <span>إدخال</span>
+      </button>
+      <button type="button" class="nav-btn" onclick="goPage('page-laws', 2)">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>القوانين</span>
+      </button>
+      <button type="button" class="nav-btn" onclick="goPage('page-solutions', 3)">
+        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        <span>الحلول</span>
+      </button>
+      <button type="button" class="nav-btn" onclick="goPage('page-history', 4)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span>السجل</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    const DB_KEY = 'va_violet_clean_v5';
+    let items = [];
+    try {
+      items = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+      if (!Array.isArray(items)) items = [];
+    } catch (e) {
+      items = [];
+    }
+
+    const i18n = {
+      ar: {
+        dir: 'rtl',
+        appTitle: 'تحليل الفروقات',
+        loginTitle: 'تسجيل الدخول',
+        loginSub: 'مرحباً بكِ في منصة تحليل الفروقات',
+        lblUser: 'اسم المستخدم أو المؤسسة',
+        lblPass: 'كلمة المرور أو الرمز',
+        btnLogin: 'دخول إلى التطبيق',
+        btnGuest: 'دخول سريع'
+      },
+      fr: {
+        dir: 'ltr',
+        appTitle: 'Analyse des Écarts',
+        loginTitle: 'Connexion',
+        loginSub: 'Bienvenue sur la plateforme d’analyse des écarts',
+        lblUser: 'Nom d’utilisateur ou entreprise',
+        lblPass: 'Mot de passe ou code',
+        btnLogin: 'Entrer dans l’application',
+        btnGuest: 'Accès rapide'
+      },
+      en: {
+        dir: 'ltr',
+        appTitle: 'Variance Analysis',
+        loginTitle: 'Sign In',
+        loginSub: 'Welcome to the Variance Analysis platform',
+        lblUser: 'Username or Organization',
+        lblPass: 'Password or Code',
+        btnLogin: 'Enter Application',
+        btnGuest: 'Quick Access'
+      }
+    };
+
+    function syncLang(lang) {
+      const cfg = i18n[lang] || i18n.ar;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = cfg.dir;
+      document.getElementById('loginLang').value = lang;
+      document.getElementById('appLang').value = lang;
+      document.getElementById('introTitle').textContent = cfg.appTitle;
+      document.getElementById('appNameHdr').textContent = cfg.appTitle;
+      document.getElementById('loginTitle').textContent = cfg.loginTitle;
+      document.getElementById('loginSub').textContent = cfg.loginSub;
+      document.getElementById('lblUser').textContent = cfg.lblUser;
+      document.getElementById('lblPass').textContent = cfg.lblPass;
+      document.getElementById('btnLogin').textContent = cfg.btnLogin;
+      document.getElementById('btnGuest').textContent = cfg.btnGuest;
+    }
+
+    function goToLogin() {
+      document.getElementById('introScreen').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    }
+
+    setTimeout(() => {
+      const intro = document.getElementById('introScreen');
+      if (intro && intro.style.display !== 'none') {
+        goToLogin();
+      }
+    }, 2000);
+
+    function doLogin() {
+      const name = document.getElementById('userInput').value.trim() || 'مستخدم';
+      document.getElementById('userBadge').textContent = name;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      renderAll();
+    }
+
+    function quickGuestLogin() {
+      document.getElementById('userBadge').textContent = 'حساب • تشخيص • معالجة';
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      renderAll();
+    }
+
+    function goPage(pageId, idx) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(pageId);
+      if (target) target.classList.add('active');
+      document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openSub(sub, btn) {
+      document.querySelectorAll('.sub-panel').forEach(p => p.style.display = 'none');
+      document.getElementById('sub-' + sub).style.display = 'block';
+      document.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    }
+
+    function val(id) {
+      const raw = document.getElementById(id).value.replace(',', '.').trim();
+      const n = parseFloat(raw);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function getCurr() {
+      return document.getElementById('currSel').value;
+    }
+
+    function fmt(n) {
+      return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + getCurr();
+    }
+
+    function saveEntry(entry) {
+      const month = document.getElementById('monthSel').value;
+      const year = document.getElementById('yearSel').value;
+      items.unshift({
+        id: Date.now() + Math.random(),
+        period: `${month}/${year}`,
+        ...entry
+      });
+      try {
+        localStorage.setItem(DB_KEY, JSON.stringify(items));
+      } catch (e) {}
+      renderAll();
+    }
+
+    function deleteEntry(id) {
+      items = items.filter(x => x.id !== id);
+      try {
+        localStorage.setItem(DB_KEY, JSON.stringify(items));
+      } catch (e) {}
+      renderAll();
+    }
+
+    function editEntry(id) {
+      const target = items.find(x => x.id === id);
+      if (!target) return;
+      const updated = prompt('تعديل السبب أو الملاحظة:', target.cause);
+      if (updated !== null && updated.trim() !== '') {
+        target.cause = updated.trim();
+        try {
+          localStorage.setItem(DB_KEY, JSON.stringify(items));
+        } catch (e) {}
+        renderAll();
+      }
+    }
+
+    function clearAll() {
+      items = [];
+      try {
+        localStorage.removeItem(DB_KEY);
+      } catch (e) {}
+      renderAll();
+    }
+
+    function diagnose(kind, isFav) {
+      if (kind === 'mat') {
+        return isFav
+          ? { cause: 'انخفاض تكلفة المواد مقارنة بالمعيار نتيجة كفاءة الشراء أو الاستخدام.', fix: 'تثبيت الموردين الجيدين والمحافظة على معايير الاستهلاك.' }
+          : { cause: 'ارتفاع تكلفة المواد بسبب زيادة السعر أو كثرة الهدر/الكميات.', fix: 'مراجعة الأسعار، تنويع الموردين، وتقليل الهدر في الورشة.' };
+      }
+      if (kind === 'lab') {
+        return isFav
+          ? { cause: 'إنجاز العمل بوقت أو أعباء أقل من المعيار.', fix: 'تعميم أساليب العمل الفعالة.' }
+          : { cause: 'تجاوز الساعات أو ارتفاع المصاريف غير المباشرة.', fix: 'صيانة المعدات، تحسين التنظيم، وضبط الأعباء.' };
+      }
+      if (kind === 'sales') {
+        return isFav
+          ? { cause: 'تحسن رقم الأعمال بفضل ارتفاع السعر أو زيادة الكمية المباعة.', fix: 'دعم المنتجات الأعلى هامشاً وتوسيع التوزيع.' }
+          : { cause: 'تراجع المبيعات بسبب انخفاض الكمية أو ضغط الأسعار.', fix: 'تنشيط التسويق وتحسين العروض التجارية.' };
+      }
+      return isFav
+        ? { cause: 'التزام بالميزانية التقديرية وتحقيق وفورات.', fix: 'الاستمرار في المراقبة الدورية.' }
+        : { cause: 'تجاوز الميزانية الفعلية للتقديرية.', fix: 'إعادة ضبط بنود الإنفاق وتحديد أولويات الصرف.' };
+    }
+
+    function showResult(boxId, title, baseVal, actVal, diffVal, isFav, kind) {
+      const pct = baseVal !== 0 ? ((Math.abs(diffVal) / Math.abs(baseVal)) * 100) : 0;
+      const d = diagnose(kind, isFav);
+      const cls = isFav ? 'fav' : 'defav';
+      const label = isFav ? 'ملائم (Favorable)' : 'غير ملائم (Défavorable)';
+
+      const box = document.getElementById(boxId);
+      box.style.display = 'block';
+      box.innerHTML = `
+        <div><strong>${title}</strong></div>
+        <div>الفرق: <strong class="${cls}">${fmt(Math.abs(diffVal))}</strong></div>
+        <div>نسبة الفرق (%): <strong>${pct.toFixed(2)}%</strong></div>
+        <div>الحالة: <strong class="${cls}">${label}</strong></div>
+        <div class="diag-box">
+          <div><strong>السبب:</strong> ${d.cause}</div>
+          <div><strong>الحل:</strong> ${d.fix}</div>
+        </div>
+      `;
+
+      saveEntry({
+        kind, title, baseVal, actVal,
+        diffVal: Math.abs(diffVal),
+        pct, isFav,
+        cause: d.cause, fix: d.fix
+      });
+    }
+
+    function calcMat() {
+      const qr = val('mQr'), qp = val('mQp'), pr = val('mPr'), pp = val('mPp');
+      const baseCost = qp * pp, actCost = qr * pr, diff = actCost - baseCost;
+      showResult('out-mat', 'الفرق الإجمالي للمواد (Écart global sur matières)', baseCost, actCost, diff, diff <= 0, 'mat');
+    }
+
+    function calcLabOvh() {
+      const hr = val('lHr'), hp = val('lHp'), tr = val('lTr'), tp = val('lTp'), ovhr = val('lOvhR'), ovhp = val('lOvhP');
+      const baseTotal = (hp * tp) + ovhp, actTotal = (hr * tr) + ovhr, diff = actTotal - baseTotal;
+      showResult('out-lab', 'اليد العاملة والمصاريف غير المباشرة', baseTotal, actTotal, diff, diff <= 0, 'lab');
+    }
+
+    function calcSales() {
+      const qr = val('sQr'), qp = val('sQp'), pr = val('sPr'), pp = val('sPp');
+      const baseRev = qp * pp, actRev = qr * pr, diff = actRev - baseRev;
+      showResult('out-sales', 'تحليل المبيعات (Ventes)', baseRev, actRev, diff, diff >= 0, 'sales');
+    }
+
+    function calcBudget() {
+      const bp = val('bPrevu'), br = val('bReel'), diff = br - bp;
+      showResult('out-budget', 'مقارنة الميزانية التقديرية بالفعلية', bp, br, diff, diff <= 0, 'budget');
+    }
+
+    function renderAll() {
+      const m = document.getElementById('monthSel').value;
+      const y = document.getElementById('yearSel').value;
+      const period = `${m}/${y}`;
+      document.getElementById('kPeriod').textContent = period;
+      document.getElementById('currPill').textContent = getCurr();
+
+      const filtered = items.filter(x => x.period === period);
+      const count = filtered.length;
+      const fav = filtered.filter(x => x.isFav).length;
+      const defav = count - fav;
+      const avgPct = count ? (filtered.reduce((a, b) => a + b.pct, 0) / count) : 0;
+
+      document.getElementById('kCount').textContent = count;
+      document.getElementById('kFav').textContent = fav;
+      document.getElementById('kDefav').textContent = defav;
+      document.getElementById('kPct').textContent = avgPct.toFixed(1) + '%';
+
+      const sumBase = filtered.reduce((a, b) => a + Math.abs(b.baseVal), 0);
+      const sumAct = filtered.reduce((a, b) => a + Math.abs(b.actVal), 0);
+      const maxV = Math.max(sumBase, sumAct, 1);
+
+      document.getElementById('lblStd').textContent = fmt(sumBase);
+      document.getElementById('lblAct').textContent = fmt(sumAct);
+      document.getElementById('barStd').style.width = ((sumBase / maxV) * 100).toFixed(1) + '%';
+      document.getElementById('barAct').style.width = ((sumAct / maxV) * 100).toFixed(1) + '%';
+
+      const diagBox = document.getElementById('homeDiagBox');
+      if (count > 0) {
+        const latest = filtered[0];
+        diagBox.innerHTML = `
+          <div class="rec-card" style="margin:0;">
+            <div class="rec-head">
+              <span>${latest.title} (${latest.period})</span>
+              <span class="${latest.isFav ? 'fav' : 'defav'}">${latest.isFav ? 'Favorable' : 'Défavorable'} • ${latest.pct.toFixed(1)}%</span>
+            </div>
+            <div><strong>السبب:</strong> ${latest.cause}</div>
+            <div><strong>الحل:</strong> ${latest.fix}</div>
+          </div>
+        `;
+      } else {
+        diagBox.textContent = `لا توجد تحليلات مسجلة للفترة ${period}. اختاري تبويب «إدخال» لحساب الفروقات وعرض التشخيص والحلول.`;
+      }
+
+      const histBox = document.getElementById('historyContainer');
+      if (!items.length) {
+        histBox.innerHTML = '<p class="note-text">لا توجد عمليات محفوظة بعد.</p>';
+      } else {
+        histBox.innerHTML = items.map(it => `
+          <div class="rec-card">
+            <div class="rec-head">
+              <span>${it.title} <small style="color:var(--muted)">(${it.period})</small></span>
+              <span class="${it.isFav ? 'fav' : 'defav'}">${it.isFav ? 'Favorable' : 'Défavorable'}</span>
+            </div>
+            <div>الفرق: <strong>${fmt(it.diffVal)}</strong> | النسبة: <strong>${it.pct.toFixed(2)}%</strong></div>
+            <div>السبب: ${it.cause}</div>
+            <div>الحل: ${it.fix}</div>
+            <div style="margin-top:8px; display:flex; gap:6px;">
+              <button type="button" class="btn btn-sec" style="padding:5px 10px; font-size:11.5px;" onclick="editEntry(${it.id})">تعديل</button>
+              <button type="button" class="btn btn-del" onclick="deleteEntry(${it.id})">حذف</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function exportCSV() {
+      if (!items.length) return;
+      const header = 'Period,Title,Diff,Currency,Percent,Status,Cause,Solution\n';
+      const rows = items.map(x => [
+        x.period,
+        `"${x.title}"`,
+        x.diffVal.toFixed(2),
+        getCurr(),
+        x.pct.toFixed(2) + '%',
+        x.isFav ? 'Favorable' : 'Défavorable',
+        `"${x.cause.replace(/"/g, '""')}"`,
+        `"${x.fix.replace(/"/g, '""')}"`
+      ].join(',')).join('\n');
+
+      const blob = new Blob(['\ufeff' + header + rows], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'variance-analysis.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
