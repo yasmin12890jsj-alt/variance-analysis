@@ -10,15 +10,15 @@
   "description": "Variance analysis and cost calculation tool",
   "icons": [
     {
-      "src": "./da8978a981c6c31b16d3f5ef8915c68d.jpg",
+      "src": "./LargeTile.scale-200.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./da8978a981c6c31b16d3f5ef8915c68d.jpg",
+      "src": "./LargeTile.scale-200.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ]
